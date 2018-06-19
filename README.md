@@ -4,6 +4,10 @@ This library will add Vim motions and operators to all your input fields on
 OS X. Not all motions and operators are probably implemented, but I tried to
 at least hit the major ones I use day-to-day!
 
+# TODO
+
+- [ ] support prefixing commands with numbers to repeat them (e.g. `2dw`)
+
 # Usage
 
 * To enter normal mode, hit whichever key you bind to it.
