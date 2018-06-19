@@ -51,8 +51,8 @@ VimMode.spoonPath = getSpoonPath()
 
 VimMode.dimScreen = function()
   hs.screen.primaryScreen():setGamma(
-    {alpha=1.0,red=0.0,green=0.0,blue=0.0},
-    {blue=0.0,green=1.0,red=0.0}
+    {red=1.0,green=1.0,blue=0.8},
+    {alpha=1.0,blue=0.0,green=0.0,red=0.0}
   )
 end
 
