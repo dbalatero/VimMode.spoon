@@ -4,21 +4,21 @@ This library will add Vim motions and operators to all your input fields on
 OS X. Not all motions and operators are probably implemented, but I tried to
 at least hit the major ones I use day-to-day!
 
-# TODO
+## TODO
 
 - [ ] support prefixing commands with numbers to repeat them (e.g. `2dw`)
 
-# Usage
+## Usage
 
 * To enter normal mode, hit whichever key you bind to it.
 * The screen should slightly dim when you enter normal mode.
 * To exit normal mode, press `i` - business as usual.
 
-# Prerequisites
+## Prerequisites
 
 * Install [Hammerspoon](http://www.hammerspoon.org/go/)
 
-# Installation
+## Installation
 
 Run this in your Terminal:
 
@@ -42,7 +42,7 @@ hs.hotkey.bind({'ctrl'}, ';', function()
 end)
 ```
 
-# Binding jk to enter Vim Mode
+## Binding jk to enter Vim Mode
 
 ```lua
 vim = hs.loadSpoon('VimMode')
@@ -57,7 +57,7 @@ You can also use modifiers in this sequence:
 vim:enableKeySequence('j', 'k', {'shift'})
 ```
 
-# Disabling vim mode for certain apps
+## Disabling vim mode for certain apps
 
 You probably want to disable this Vim mode in the terminal, or any actual 
 instance of Vim. Calling `vim:disableForApp(...)` allows you to disable or
