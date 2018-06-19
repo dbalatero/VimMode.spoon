@@ -14,6 +14,10 @@ at least hit the major ones I use day-to-day!
 * The screen should slightly dim when you enter normal mode.
 * To exit normal mode, press `i` - business as usual.
 
+# Prerequisites
+
+* Install [Hammerspoon](http://www.hammerspoon.org/go/)
+
 # Installation
 
 Run this in your Terminal:
