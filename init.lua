@@ -227,8 +227,15 @@ function VimMode:enableKeySequence(key1, key2, modifiers)
         else
           -- Pass thru the first key as well as the second one if we aren't
           -- typing the sequence.
-          utils.sendKeys(modifiers, key1)
-          return false
+          local currentModifiers = event:getFlags()
+          local currentKey = event:getKeyCode()
+
+          return true, {
+            hs.eventtap.event.newKeyEvent(modifiers, key1, true),
+            hs.eventtap.event.newKeyEvent(modifiers, key1, false),
+            hs.eventtap.event.newKeyEvent(currentModifiers, currentKey, true),
+            hs.eventtap.event.newKeyEvent(currentModifiers, currentKey, false)
+          }
         end
       end
 
