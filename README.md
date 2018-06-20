@@ -1,8 +1,8 @@
 # VimMode.spoon
 
 This library will add Vim motions and operators to all your input fields on
-OS X. Not all motions and operators are probably implemented, but I tried to
-at least hit the major ones I use day-to-day!
+OS X. Why should Emacs users have all the fun? Not all motions or operators 
+are implemented, but I tried to at least hit the major ones I use day-to-day!
 
 My goal was to make this library fairly easy to drop in, even if you aren't
 currently running Hammerspoon. I welcome any PRs or additions to extend
