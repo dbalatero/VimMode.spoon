@@ -4,6 +4,12 @@ This library will add Vim motions and operators to all your input fields on
 OS X. Not all motions and operators are probably implemented, but I tried to
 at least hit the major ones I use day-to-day!
 
+My goal was to make this library fairly easy to drop in, even if you aren't
+currently running Hammerspoon. I welcome any PRs or additions to extend
+the motions and/or operators that are supported.
+
+This is my first Lua library, so things might be a little weird :)
+
 ## TODO
 
 - [ ] support prefixing commands with numbers to repeat them (e.g. `2dw`)
