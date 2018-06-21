@@ -277,11 +277,18 @@ function VimMode:bindModeKeys()
   ------------ operators
   self.mode:bind({}, 'c', operators.change(self))
   self.mode:bind({}, 'd', operators.delete(self))
-  self.mode:bind({}, 'p', operators.paste(self))
-  self.mode:bind({}, 'u', operators.undo(self))
   self.mode:bind({}, 'y', operators.yank(self))
 
   ------------ shortcuts
+
+  local paste = function()
+    utils.sendKeys({'cmd'}, 'v')
+  end
+
+  local undo = function()
+    utils.sendKeys({'cmd'}, 'z')
+    self:restoreCursor()
+  end
 
   local deleteUnderCursor = compose(
     operators.delete(self),
@@ -313,6 +320,8 @@ function VimMode:bindModeKeys()
   self.mode:bind({}, 'x', deleteUnderCursor)
   self.mode:bind({}, 'o', newLineBelow)
   self.mode:bind({'shift'}, 'o', newLineAbove)
+  self.mode:bind({}, 'p', paste)
+  self.mode:bind({}, 'u', undo)
 
   ---------- commands
   self.mode:bind({}, '/', searchAhead)

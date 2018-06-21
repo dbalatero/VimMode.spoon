@@ -8,7 +8,7 @@ local function operator(fn)
       vim.commandState.selection = definition.selection or false
       vim.commandState.operatorFn = definition.fn
 
-      if vim.commandState.visualMode then vim.runOperator() end
+      if vim:isVisualMode() then vim:runOperator() end
     end
   end
 end
@@ -28,27 +28,6 @@ operators.yank = operator(function()
     selection = true,
     fn = function(vim)
       utils.sendKeys({'cmd'}, 'c')
-      vim:restoreCursor()
-    end
-  }
-end)
-
-operators.paste = operator(function()
-  return {
-    selection = false,
-    fn = function()
-      hs.printf("pasting")
-      utils.sendKeys({'cmd'}, 'v')
-    end
-  }
-end)
-
-operators.undo = operator(function()
-  return {
-    selection = false,
-    fn = function(vim)
-      hs.printf("undo")
-      utils.sendKeys({'cmd'}, 'z')
       vim:restoreCursor()
     end
   }
