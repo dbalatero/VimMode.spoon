@@ -290,6 +290,20 @@ function VimMode:bindModeKeys()
     self:restoreCursor()
   end
 
+  local cutNext = function()
+    if not self.commandState.visualMode then
+      utils.sendKeys({'shift'}, 'right')
+      utils.sendKeys({'cmd'}, 'x')
+    else
+      utils.sendKeys({'cmd'}, 'x')
+    end
+  end
+
+  local cut = compose(
+    cutNext,
+    exit
+  )
+
   local deleteUnderCursor = compose(
     operators.delete(self),
     isNormalMode(motions.right(self))
@@ -317,7 +331,13 @@ function VimMode:bindModeKeys()
   self.mode:bind({'shift'}, 'i', compose(motions.beginningOfLine(self), exit))
   self.mode:bind({'shift'}, 'd', compose(operators.delete(self), motions.endOfLine(self)))
   self.mode:bind({}, 's', compose(deleteUnderCursor, exit))
-  self.mode:bind({}, 'x', deleteUnderCursor)
+  --self.mode:bind({}, 'x', deleteUnderCursor)
+  self.mode:bind({}, 'z', cutNext) -- works as expected, binding a non-x char ?!
+  --self.mode:bind({}, 'x', cutNext) -- only selects, not cuts
+  --self.mode:bind({'shift'}, 'x', cutNext) -- only selects, not cuts
+  --self.mode:bind({}, 'x', compose(cutNext, motions.right(self))) -- test compose
+  self.mode:bind({}, 'x', cut) -- test external `compose`: selects 1 char and exits VimMode
+
   self.mode:bind({}, 'o', newLineBelow)
   self.mode:bind({'shift'}, 'o', newLineAbove)
   self.mode:bind({}, 'p', paste)
