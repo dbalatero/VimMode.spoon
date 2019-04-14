@@ -318,8 +318,6 @@ function VimMode:bindModeKeys()
     )
   )
 
-  self.mode:bind({}, 'p', operators.paste(self))
-  self.mode:bind({}, 'u', operators.undo(self))
   self.mode:bind({}, 'y', operators.yank(self))
 
   ------------ shortcuts
