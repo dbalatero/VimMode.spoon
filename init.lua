@@ -165,6 +165,10 @@ function VimMode:resetState()
   self.commandState = VimMode.buildCommandState()
 end
 
+function VimMode:hasOperator()
+  return not not self.commandState.operatorFn
+end
+
 ---------- hooks
 
 function VimMode:registerAfterExit(fn)
@@ -272,6 +276,16 @@ function VimMode:bindModeKeys()
     end
   end
 
+  local function operatorOrMotion(operatorFn, motionFn)
+    return function()
+      if self:hasOperator() then
+        motionFn()
+      else
+        operatorFn()
+      end
+    end
+  end
+
   ------------ exiting
   self.mode:bind({}, 'i', exit)
 
@@ -289,7 +303,23 @@ function VimMode:bindModeKeys()
 
   ------------ operators
   self.mode:bind({}, 'c', operators.change(self))
-  self.mode:bind({}, 'd', operators.delete(self))
+
+  endOfLine = motions.endOfLine(self)
+
+  self.mode:bind({}, 'd',
+    operatorOrMotion(
+      operators.delete(self),
+      function()
+        utils.sendKeys({'command'}, 'left')
+        endOfLine()
+        utils.sendKeys({}, 'down')
+        utils.sendKeys({}, 'delete')
+      end
+    )
+  )
+
+  self.mode:bind({}, 'p', operators.paste(self))
+  self.mode:bind({}, 'u', operators.undo(self))
   self.mode:bind({}, 'y', operators.yank(self))
 
   ------------ shortcuts

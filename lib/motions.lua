@@ -29,6 +29,7 @@ end
 
 local function defineMotion(key, modifiers, complete, direction)
   if complete == nil then complete = true end
+
   modifiers = modifiers or {}
   direction = direction or 'forward'
 
@@ -49,7 +50,6 @@ return {
   beginningOfLine = defineMotion('left', {'command'}),
   endOfLine = defineMotion('right', {'command'}),
   endOfText = defineMotion('down', {'command'}),
-
   left = defineMotion('left'),
   right = defineMotion('right'),
   up = defineMotion('up'),
