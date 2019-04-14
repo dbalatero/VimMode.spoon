@@ -50,10 +50,23 @@ end
 VimMode.spoonPath = getSpoonPath()
 
 VimMode.dimScreen = function()
-  hs.screen.primaryScreen():setGamma(
-    {red=1.0,green=1.0,blue=0.8},
-    {alpha=1.0,blue=0.0,green=0.0,red=0.0}
-  )
+  -- Stole these shifts from flux-like plugin
+  -- https://github.com/calvinwyoung/.dotfiles/blob/master/darwin/hammerspoon/flux.lua
+  whiteShift = {
+    alpha = 1.0,
+    red = 1.0,
+    green = 0.95201559,
+    blue = 0.90658983,
+  }
+
+  blackShift = {
+    alpha = 1.0,
+    red = 0,
+    green = 0,
+    blue = 0,
+  }
+
+  hs.screen.primaryScreen():setGamma(whiteShift, blackShift)
 end
 
 VimMode.restoreDim = function()
