@@ -134,6 +134,15 @@ function VimMode:disableForApp(disabledApp)
 
   watcher:start()
 
+  -- If we are currently in this disabled application, exit vim mode
+  -- and disable
+  local currentApplication = hs.application.frontmostApplication()
+
+  if currentApplication:name() == disabledApp then
+    vim:exit()
+    vim:disable()
+  end
+
   self.watchers[disabledApp] = watcher
 end
 
