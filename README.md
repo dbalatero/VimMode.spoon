@@ -33,6 +33,7 @@ This is my first Lua library, so things might be a little weird :)
 - [x] `shift + d` delete to end of line
 - [x] `c` - delete and exit normal mode
 - [x] `d` - delete
+- [ ] `cc` - delete line and enter insert mode
 - [x] `dd` - delete line
 - [ ] `r<char>` to replace - currently broken
 - [x] `x` to delete char under cursor
