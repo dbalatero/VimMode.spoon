@@ -297,6 +297,7 @@ function VimMode:bindModeKeys()
 
   ------------ exiting
   self.mode:bind({}, 'i', exit)
+  self.mode:bind({}, 'a', motions.right(self), exit)
 
   ------------ motions
   self.mode:bind({}, 'b', motions.backWord(self), nil, motions.backWord(self))
