@@ -16,7 +16,7 @@ before_install:
   - bin/dev-setup
 
 install:
-  - luarocks make
+  - echo "Nothing to install"
 
 script:
   - busted -c
