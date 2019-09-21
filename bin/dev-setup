@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+function install_lua_package() {
+  local package_name=$1
+
+  if ! luarocks show "$package_name" 2>&1 >/dev/null; then
+    echo "===> $ luarocks install $package_name"
+    luarocks install $package_name
+    echo
+  else
+    echo "===> $package_name already installed"
+  fi
+}
+
+install_lua_package luacheck
+install_lua_package luaunit
