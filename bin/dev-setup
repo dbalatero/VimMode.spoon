@@ -12,5 +12,5 @@ function install_lua_package() {
   fi
 }
 
+install_lua_package busted
 install_lua_package luacheck
-install_lua_package luaunit
