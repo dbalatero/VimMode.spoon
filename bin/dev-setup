@@ -12,5 +12,6 @@ function install_lua_package() {
   fi
 }
 
+install_lua_package luacov-coveralls
 install_lua_package busted
 install_lua_package luacheck
