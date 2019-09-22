@@ -320,10 +320,11 @@ function VimMode:bindModeKeys()
     operatorOrMotion(
       operators.delete(self),
       function()
+        self:resetState()
         utils.sendKeys({'command'}, 'left')
-        endOfLine()
-        utils.sendKeys({}, 'down')
-        utils.sendKeys({}, 'delete')
+        utils.sendKeys({'command', 'shift'}, 'right')
+        utils.sendKeys({'command'}, 'x')
+        utils.sendKeys({}, 'forwarddelete')
       end
     )
   )
