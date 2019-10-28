@@ -116,3 +116,10 @@ vim:disableForApp('iTerm')
 vim:disableForApp('MacVim')
 vim:disableForApp('Terminal')
 ```
+
+## Showing on-screen alerts when you enter normal mode
+
+```
+vim = hs.loadSpoon('VimMode')
+vim:enableAlerts()
+```

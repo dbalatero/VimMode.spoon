@@ -1,10 +1,13 @@
 VimMode = {
   afterExitHooks = nil,
+  alertUuid = nil,
+  alertFont = "Courier New",
   commandState = nil,
   entered = false,
   enabled = true,
   mode = nil,
-  sequence = nil
+  sequence = nil,
+  showAlerts = false
 }
 
 VimMode.name = "VimMode"
@@ -82,6 +85,7 @@ VimMode.new = function()
   self.enabled = true
   self.mode = hs.hotkey.modal.new()
 
+  self.showAlerts = false
   self.sequence = {
     tap = nil,
     waitingForPress = false
@@ -96,6 +100,40 @@ function VimMode:init()
   self:bindModeKeys()
 end
 
+function VimMode:showAlert()
+  if self.showAlerts then
+    self.alertUuid = hs.alert.show(
+      "$ vi",
+      {
+        atScreenEdge = 2,
+        radius = 0,
+        strokeWidth = 4,
+        textFont = self.alertFont,
+        textSize = 18,
+        fadeInDuration = 0.25,
+        fadeOutDuration = 0.25,
+        fillColor = { red = 4 / 255, green = 135 / 255, blue = 250 / 255, alpha = 0.95 }
+      },
+      hs.screen.mainScreen(),
+      "infinite"
+    )
+  end
+end
+
+function VimMode:hideAlert()
+  if self.showAlerts then
+    hs.alert.closeSpecific(self.alertUuid)
+  end
+end
+
+function VimMode:enableAlerts()
+  self.showAlerts = true
+end
+
+function VimMode:setAlertFont(name)
+  self.alertFont = name
+end
+
 ---------- toggling
 function VimMode:enter()
   if self.enabled then
@@ -104,6 +142,7 @@ function VimMode:enter()
     self.entered = true
     self:resetState()
 
+    self:showAlert()
     VimMode.dimScreen()
   end
 end
@@ -111,7 +150,9 @@ end
 function VimMode:exit()
   self.mode:exit()
 
+  self:hideAlert()
   VimMode.restoreDim()
+
   self.entered = false
 
   self:runAfterExitHooks()
