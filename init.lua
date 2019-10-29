@@ -7,7 +7,8 @@ VimMode = {
   enabled = true,
   mode = nil,
   sequence = nil,
-  showAlerts = false
+  shouldDimScreen = true,
+  showAlerts = true
 }
 
 VimMode.name = "VimMode"
@@ -52,30 +53,6 @@ end
 
 VimMode.spoonPath = getSpoonPath()
 
-VimMode.dimScreen = function()
-  -- Stole these shifts from flux-like plugin
-  -- https://github.com/calvinwyoung/.dotfiles/blob/master/darwin/hammerspoon/flux.lua
-  whiteShift = {
-    alpha = 1.0,
-    red = 1.0,
-    green = 0.95201559,
-    blue = 0.90658983,
-  }
-
-  blackShift = {
-    alpha = 1.0,
-    red = 0,
-    green = 0,
-    blue = 0,
-  }
-
-  hs.screen.primaryScreen():setGamma(whiteShift, blackShift)
-end
-
-VimMode.restoreDim = function()
-  hs.screen.restoreGamma()
-end
-
 VimMode.new = function()
   local self = utils.deepcopy(VimMode)
 
@@ -84,8 +61,9 @@ VimMode.new = function()
   self.entered = false
   self.enabled = true
   self.mode = hs.hotkey.modal.new()
+  self.showAlerts = true
+  self.shouldDimScreen = true
 
-  self.showAlerts = false
   self.sequence = {
     tap = nil,
     waitingForPress = false
@@ -120,14 +98,46 @@ function VimMode:showAlert()
   end
 end
 
+function VimMode:dimScreen()
+  if self.shouldDimScreen then
+    -- Stole these shifts from flux-like plugin
+    -- https://github.com/calvinwyoung/.dotfiles/blob/master/darwin/hammerspoon/flux.lua
+    whiteShift = {
+      alpha = 1.0,
+      red = 1.0,
+      green = 0.95201559,
+      blue = 0.90658983,
+    }
+
+    blackShift = {
+      alpha = 1.0,
+      red = 0,
+      green = 0,
+      blue = 0,
+    }
+
+    hs.screen.primaryScreen():setGamma(whiteShift, blackShift)
+  end
+end
+
+function VimMode:restoreDim()
+  if self.shouldDimScreen then
+    hs.screen.restoreGamma()
+  end
+end
+
 function VimMode:hideAlert()
   if self.showAlerts then
     hs.alert.closeSpecific(self.alertUuid)
   end
 end
 
-function VimMode:enableAlerts()
-  self.showAlerts = true
+function VimMode:shouldDimScreenInNormalMode(value)
+  self.shouldDimScreen = value
+end
+
+function VimMode:shouldShowAlertInNormalMode(value)
+  self.showAlerts = value
 end
 
 function VimMode:setAlertFont(name)
@@ -143,7 +153,7 @@ function VimMode:enter()
     self:resetState()
 
     self:showAlert()
-    VimMode.dimScreen()
+    self:dimScreen()
   end
 end
 
@@ -151,7 +161,7 @@ function VimMode:exit()
   self.mode:exit()
 
   self:hideAlert()
-  VimMode.restoreDim()
+  self:restoreDim()
 
   self.entered = false
 
