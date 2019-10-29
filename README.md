@@ -117,9 +117,16 @@ vim:disableForApp('MacVim')
 vim:disableForApp('Terminal')
 ```
 
-## Showing on-screen alerts when you enter normal mode
+## Disabling on-screen alerts when you enter normal mode
 
 ```
 vim = hs.loadSpoon('VimMode')
-vim:enableAlerts()
+vim:shouldShowAlertInNormalMode(false)
+```
+
+## Disabling screen dim when you enter normal mode
+
+```
+vim = hs.loadSpoon('VimMode')
+vim:shouldDimScreenInNormalMode(false)
 ```
