@@ -15,6 +15,14 @@ describe("Selection", function()
     end)
   end)
 
+  describe("#positionEnd", function()
+    it("should return the position plus length", function()
+      local selection = Selection:new(10, 50)
+
+      assert.are.equals(selection:positionEnd(), 60)
+    end)
+  end)
+
   describe("#isSelected", function()
     it("is selected if length > 0", function()
       local selection = Selection:new(10, 1)
