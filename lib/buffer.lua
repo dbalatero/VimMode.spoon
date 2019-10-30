@@ -12,6 +12,15 @@ function Buffer:new(contents, selection)
   return buffer
 end
 
+function Buffer:nextChar()
+  local nextPosition = self.selection:positionEnd() + 1
+  local contents = string.sub(self.contents, nextPosition, nextPosition)
+
+  if contents == "" then return nil end
+
+  return contents
+end
+
 function Buffer:getContentsBeforeSelection()
   local contents = string.sub(self.contents, 0, self.selection:positionEnd())
 
