@@ -35,6 +35,22 @@ describe("Word", function()
         word:getRange(buffer)
       )
     end)
+
+    it("flips to an inclusive motion if last word in buffer", function()
+      local selection = Selection:new(0, 0)
+      local buffer = Buffer:new("cat", selection)
+      local word = Word:new()
+
+      assert.are.same(
+        {
+          start = 0,
+          finish = 3,
+          mode = "inclusive",
+          direction = "characterwise"
+        },
+        word:getRange(buffer)
+      )
+    end)
   end)
 
   describe("#getMovements", function()
