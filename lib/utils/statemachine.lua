@@ -29,6 +29,8 @@ machine.__index = machine
 local NONE = "none"
 local ASYNC = "async"
 
+local unpack = unpack or table.unpack
+
 local function call_handler(handler, params)
   if handler then
     return handler(unpack(params))
