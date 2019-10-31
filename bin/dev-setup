@@ -15,3 +15,4 @@ function install_lua_package() {
 install_lua_package luacov-coveralls
 install_lua_package busted
 install_lua_package luacheck
+install_lua_package debugger

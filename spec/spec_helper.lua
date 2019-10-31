@@ -8,3 +8,6 @@ vimLogger.i = vimLogger.info
 vimLogger.d = vimLogger.debug
 vimLogger.e = vimLogger.error
 vimLogger.v = vimLogger.trace
+
+debugger = require("debugger")
+debugger.auto_where = 2
