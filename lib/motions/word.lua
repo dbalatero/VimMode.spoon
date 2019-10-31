@@ -1,6 +1,7 @@
-local Motion = require("lib/motion")
+local Motion = dofile(vimModeScriptPath .. "lib/motion.lua")
+local Set = dofile(vimModeScriptPath .. "lib/utils/set.lua")
+
 local Word = Motion:new()
-local Set = require("lib/utils/set")
 
 -- word motion, exclusive
 --
@@ -26,8 +27,8 @@ function Word:getRange(buffer)
 
   local range = {
     start = start,
-    motion = 'exclusive',
-    mode = 'characterwise'
+    mode = 'exclusive',
+    direction = 'characterwise'
   }
 
   range.finish = start
