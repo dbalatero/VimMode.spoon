@@ -13,8 +13,8 @@ describe("Word", function()
         {
           start = 0,
           finish = 5,
-          motion = "exclusive",
-          mode = "characterwise"
+          mode = "exclusive",
+          direction = "characterwise"
         },
         word:getRange(buffer)
       )
@@ -29,8 +29,8 @@ describe("Word", function()
         {
           start = 0,
           finish = 3,
-          motion = "exclusive",
-          mode = "characterwise"
+          mode = "exclusive",
+          direction = "characterwise"
         },
         word:getRange(buffer)
       )

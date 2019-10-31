@@ -1,4 +1,4 @@
-local Operator = require("lib/operator")
+local Operator = dofile(vimModeScriptPath .. "lib/operator.lua")
 local Delete = Operator:new()
 
 function Delete.getKeys()
@@ -9,3 +9,5 @@ function Delete.getKeys()
     }
   }
 end
+
+return Delete
