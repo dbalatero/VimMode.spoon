@@ -56,7 +56,7 @@ function selectTextRange(start, finish)
 
   local setSelectedTextRange = currentElement:dynamicMethods(true)["setSelectedTextRange"]
 
-  currentElement:setAttributeValue("AXSelectedTextRange", {
+  currentElement:setSelectedTextRange({
     location = start,
     length = finish - start
   })
