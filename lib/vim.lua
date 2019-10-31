@@ -50,11 +50,22 @@ function Vim:getBuffer()
   end
 end
 
-function selectTextRange(start, finish)
+function Vim.currentElementSupportsAccessibility()
   local systemElement = ax.systemWideElement()
   local currentElement = systemElement:attributeValue("AXFocusedUIElement")
 
-  local setSelectedTextRange = currentElement:dynamicMethods(true)["setSelectedTextRange"]
+  if not currentElement then return false end
+
+  local range = currentElement:attributeValue("AXSelectedTextRange")
+
+  if not range then return false end
+
+  return true
+end
+
+function selectTextRange(start, finish)
+  local systemElement = ax.systemWideElement()
+  local currentElement = systemElement:attributeValue("AXFocusedUIElement")
 
   currentElement:setSelectedTextRange({
     location = start,
@@ -63,9 +74,8 @@ function selectTextRange(start, finish)
 end
 
 function Vim:spikeWordDelete()
-  local buffer = self:getBuffer()
-
-  if buffer then
+  if self:currentElementSupportsAccessibility() then
+    local buffer = self:getBuffer()
     local operator = Delete:new()
     local motion = Word:new()
     local range = motion:getRange(buffer)
