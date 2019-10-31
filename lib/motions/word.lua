@@ -34,8 +34,9 @@ function Word:getRange(buffer)
   range.finish = start
 
   local seenWhitespace = false
+  local bufferLength = buffer:getLength()
 
-  while range.finish < buffer:getLength() do
+  while range.finish < bufferLength do
     local charIndex = range.finish + 1 -- lua strings are 1-indexed :(
     local char = string.sub(buffer.contents, charIndex, charIndex)
 
@@ -47,6 +48,10 @@ function Word:getRange(buffer)
     if not seenWhitespace and char == " " then
       seenWhitespace = true
     end
+  end
+
+  if range.finish == bufferLength then
+    range.mode = 'inclusive'
   end
 
   return range
