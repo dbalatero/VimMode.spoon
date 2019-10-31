@@ -21,6 +21,10 @@ function Buffer:nextChar()
   return contents
 end
 
+function Buffer:getLength()
+  return #(self.contents)
+end
+
 function Buffer:getContentsBeforeSelection()
   local contents = string.sub(self.contents, 0, self.selection:positionEnd())
 

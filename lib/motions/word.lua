@@ -1,12 +1,57 @@
 local Motion = require("lib/motion")
 local Word = Motion:new()
+local Set = require("lib/utils/set")
 
-function Word:getMovements(buffer)
-  local nextChar = buffer:nextChar()
+-- word motion, exclusive
+--
+-- from :help motions.txt
+--
+-- <S-Right>	or					*<S-Right>* *w*
+-- w			[count] words forward.  |exclusive| motion.
+--
+--
 
-  if not nextChar then return nil end
-  if nextChar == "\n" then return nil end
+local punctuation = Set{
+  "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "=", "+", "[", "{",
+  "}", "]", "|", " '", "\"", ":", ";", ",", ".", "/", "?", "`"
+}
 
+function isPunctuation(char)
+  return not not punctuation[char]
+end
+
+-- TODO handle more edge cases for :help word
+function Word:getRange(buffer)
+  local start = buffer.selection:positionEnd()
+
+  local range = {
+    start = start,
+    motion = 'exclusive',
+    mode = 'characterwise'
+  }
+
+  range.finish = start
+
+  local seenWhitespace = false
+
+  while range.finish < buffer:getLength() do
+    local charIndex = range.finish + 1 -- lua strings are 1-indexed :(
+    local char = string.sub(buffer.contents, charIndex, charIndex)
+
+    range.finish = range.finish + 1
+
+    if seenWhitespace and char ~= " " then break end
+    if isPunctuation(char) then break end
+
+    if not seenWhitespace and char == " " then
+      seenWhitespace = true
+    end
+  end
+
+  return range
+end
+
+function Word.getMovements()
   return {
     {
       modifiers = { 'alt' },

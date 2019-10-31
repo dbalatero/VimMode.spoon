@@ -9,8 +9,12 @@ function Motion:new()
   return motion
 end
 
-function Motion:getMovements(buffer)
+function Motion:getMovements()
   error("Please implement getMovements()")
+end
+
+function Motion:getRange(buffer)
+  error("Please implement getRange()")
 end
 
 return Motion
