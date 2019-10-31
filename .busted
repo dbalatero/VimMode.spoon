@@ -1,0 +1,5 @@
+return {
+  _all = {
+    helper = "spec/spec_helper.lua"
+  }
+}
