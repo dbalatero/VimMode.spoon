@@ -52,7 +52,6 @@ function Word:getRange(buffer)
 
   if range.finish == bufferLength then
     -- don't go off the right edge of the buffer
-    range.finish = range.finish - 1
     range.mode = 'inclusive'
   end
 

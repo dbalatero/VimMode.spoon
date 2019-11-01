@@ -48,7 +48,7 @@ describe("Word", function()
       assert.are.same(
         {
           start = 0,
-          finish = 2,
+          finish = 3,
           mode = "inclusive",
           direction = "characterwise"
         },

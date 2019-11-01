@@ -5,6 +5,7 @@ local function createStateMachine(vim)
     initial = 'insert-mode',
     events = {
       { name = 'enterNormal', from = 'insert-mode', to = 'normal-mode' },
+      { name = 'enterMotion', from = 'normal-mode', to = 'entered-motion' },
       { name = 'enterOperator', from = 'normal-mode', to = 'operator-pending' },
       { name = 'cancelOperator', from = 'operator-pending', to = 'normalmode' },
       { name = 'enterMotion', from = 'operator-pending', to = 'entered-motion' },
@@ -21,8 +22,8 @@ local function createStateMachine(vim)
         vim.modals.normal:enter()
       end,
       onenterInsert = function()
-        vim.modals.normal:exit()
         vim:setInsertMode()
+        vim.modals.normal:exit()
       end,
       onenterOperator = function(_, _, _, _, operator)
         vim.commandState.operator = operator
