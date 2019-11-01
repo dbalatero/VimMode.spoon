@@ -11,18 +11,20 @@ local Word = Motion:new{ name = 'word' }
 -- w			[count] words forward.  |exclusive| motion.
 --
 --
+-- https://pubs.opengroup.org/onlinepubs/9699919799/utilities/vi.html
+--
 
 local punctuation = Set{
   "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "=", "+", "[", "{",
   "}", "]", "|", " '", "\"", ":", ";", ",", ".", "/", "?", "`"
 }
 
-function isPunctuation(char)
+local function isPunctuation(char)
   return not not punctuation[char]
 end
 
 -- TODO handle more edge cases for :help word
-function Word:getRange(buffer)
+function Word.getRange(_, buffer)
   local start = buffer.selection:positionEnd()
 
   local range = {
@@ -40,6 +42,7 @@ function Word:getRange(buffer)
     local charIndex = range.finish + 1 -- lua strings are 1-indexed :(
     local char = string.sub(buffer.contents, charIndex, charIndex)
 
+    if char == "\n" then break end
     if seenWhitespace and char ~= " " then break end
     if isPunctuation(char) then break end
 
