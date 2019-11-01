@@ -40,6 +40,22 @@ describe("Word", function()
       )
     end)
 
+    it("stops on new lines", function()
+      local selection = Selection:new(4, 0)
+      local buffer = Buffer:new("cat dog\nfish", selection)
+      local word = Word:new()
+
+      assert.are.same(
+        {
+          start = 4,
+          finish = 7,
+          mode = "exclusive",
+          direction = "characterwise"
+        },
+        word:getRange(buffer)
+      )
+    end)
+
     it("flips to an inclusive motion if last word in buffer #focus", function()
       local selection = Selection:new(0, 0)
       local buffer = Buffer:new("cat", selection)
