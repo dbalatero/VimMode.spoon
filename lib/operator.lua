@@ -9,6 +9,10 @@ function Operator:new(fields)
   return operator
 end
 
+function Operator.getModeForTransition()
+  return "normal"
+end
+
 function Operator.getKeys()
   error("Please implement getKeys()")
 end

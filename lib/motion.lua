@@ -17,4 +17,8 @@ function Motion:getRange(buffer)
   error("Please implement getRange()")
 end
 
+function Motion.getModeForTransition()
+  return "normal"
+end
+
 return Motion

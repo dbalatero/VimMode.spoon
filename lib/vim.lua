@@ -51,7 +51,6 @@ function Vim:buildNormalModeModal()
 end
 
 function Vim:exit()
-  vimLogger.i("Exiting Vim")
   self.state:enterInsert()
 end
 
@@ -166,6 +165,12 @@ function Vim:fireCommandState()
         hs.eventtap.keyStroke(movement.modifiers, movement.key, 0)
       end
     end
+  end
+
+  if operator then
+    return operator.getModeForTransition()
+  else
+    return motion.getModeForTransition()
   end
 end
 
