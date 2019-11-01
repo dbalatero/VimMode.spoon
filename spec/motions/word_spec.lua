@@ -123,8 +123,6 @@ describe("Word", function()
 
   describe("#getMovements", function()
     it("returns the key sequence to move by word", function()
-      local selection = Selection:new(0, 0)
-      local buffer = Buffer:new("cat dog mouse", selection)
       local word = Word:new()
 
       assert.are.same(
@@ -134,7 +132,7 @@ describe("Word", function()
             key = 'right'
           }
         },
-        word:getMovements(buffer)
+        word:getMovements()
       )
     end)
   end)
