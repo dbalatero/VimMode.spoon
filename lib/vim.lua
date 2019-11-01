@@ -8,6 +8,7 @@ local BigWord = dofile(vimModeScriptPath .. "lib/motions/big_word.lua")
 local EndOfWord = dofile(vimModeScriptPath .. "lib/motions/end_of_word.lua")
 local Word = dofile(vimModeScriptPath .. "lib/motions/word.lua")
 
+local Left = dofile(vimModeScriptPath .. "lib/motions/left.lua")
 local Right = dofile(vimModeScriptPath .. "lib/motions/right.lua")
 
 local Change = dofile(vimModeScriptPath .. "lib/operators/change.lua")
@@ -66,6 +67,7 @@ function Vim:buildNormalModeModal()
     :bind({}, 'c', nil, operator(Change))
     :bind({}, 'd', nil, operator(Delete))
     :bindWithRepeat({}, 'e', motion(EndOfWord))
+    :bindWithRepeat({}, 'h', motion(Left))
     :bindWithRepeat({}, 'l', motion(Right))
     :bindWithRepeat({}, 'w', motion(Word))
     :bindWithRepeat({'shift'}, 'w', motion(BigWord))
@@ -145,16 +147,14 @@ function Vim:fireCommandState()
   if self:currentElementSupportsAccessibility() then
     local buffer = self:getBuffer()
     local range = motion:getRange(buffer)
+
+    local start = range.start
     local finish = range.finish
 
     if operator then
       if range.mode == 'exclusive' then finish = finish - 1 end
 
-      local newBuffer = operator.getModifiedBuffer(
-        buffer,
-        range.start,
-        finish
-      )
+      local newBuffer = operator.getModifiedBuffer(buffer, start, finish)
 
       -- update value and cursor
       getCurrentElement():setValue(newBuffer.contents)
@@ -163,8 +163,14 @@ function Vim:fireCommandState()
         length = newBuffer.selection.length
       })
     else
+      local direction = 'right'
+
+      if start < buffer.selection.position then
+        direction = 'left'
+      end
+
       getCurrentElement():setSelectedTextRange({
-        location = finish,
+        location = (direction == 'left' and start) or finish,
         length = 0
       })
     end
