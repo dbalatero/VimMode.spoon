@@ -40,6 +40,22 @@ describe("Word", function()
       )
     end)
 
+    it("continues from punctuation to the next word", function()
+      local selection = Selection:new(2, 0)
+      local buffer = Buffer:new("ab- cd", selection)
+      local word = Word:new()
+
+      assert.are.same(
+        {
+          start = 2,
+          finish = 4,
+          mode = "exclusive",
+          direction = "characterwise"
+        },
+        word:getRange(buffer)
+      )
+    end)
+
     it("stops on punctuation", function()
       local selection = Selection:new(0, 0)
       local buffer = Buffer:new("ab-cd-ef", selection)
