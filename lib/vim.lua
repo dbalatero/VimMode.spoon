@@ -9,14 +9,7 @@ local Delete = dofile(vimModeScriptPath .. "lib/operators/delete.lua")
 
 local Vim = {}
 
-function runTimes(n, fn)
-  local i = 0
-
-  while i < n do
-    fn()
-    i = i + 1
-  end
-end
+vimLogger = hs.logger.new('vim', 'debug')
 
 function Vim:new()
   local vim = {
@@ -63,11 +56,17 @@ function Vim.currentElementSupportsAccessibility()
   return true
 end
 
-function selectTextRange(start, finish)
+function getCurrentElement()
   local systemElement = ax.systemWideElement()
-  local currentElement = systemElement:attributeValue("AXFocusedUIElement")
+  return systemElement:attributeValue("AXFocusedUIElement")
+end
 
-  currentElement:setSelectedTextRange({
+function setValue(value)
+  getCurrentElement().setValue(value)
+end
+
+function selectTextRange(start, finish)
+  getCurrentElement():setSelectedTextRange({
     location = start,
     length = finish - start
   })
@@ -83,11 +82,18 @@ function Vim:spikeWordDelete()
     local finish = range.finish
     if range.mode == 'exclusive' then finish = finish - 1 end
 
-    selectTextRange(range.start, finish)
+    local newBuffer = operator.getModifiedBuffer(
+      buffer,
+      range.start,
+      finish
+    )
 
-    for _, stroke in ipairs(operator:getKeys()) do
-      hs.eventtap.keyStroke(stroke.modifiers, stroke.key, 0)
-    end
+    -- update value and cursor
+    getCurrentElement():setValue(newBuffer.contents)
+    getCurrentElement():setSelectedTextRange({
+      location = newBuffer.selection.position,
+      length = newBuffer.selection.length
+    })
   end
 end
 
