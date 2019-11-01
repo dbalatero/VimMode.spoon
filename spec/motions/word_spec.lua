@@ -12,7 +12,7 @@ describe("Word", function()
       assert.are.same(
         {
           start = 0,
-          finish = 5,
+          finish = 4,
           mode = "exclusive",
           direction = "characterwise"
         },
@@ -28,7 +28,7 @@ describe("Word", function()
       assert.are.same(
         {
           start = 0,
-          finish = 3,
+          finish = 2,
           mode = "exclusive",
           direction = "characterwise"
         },
@@ -36,7 +36,7 @@ describe("Word", function()
       )
     end)
 
-    it("flips to an inclusive motion if last word in buffer", function()
+    it("flips to an inclusive motion if last word in buffer #focus", function()
       local selection = Selection:new(0, 0)
       local buffer = Buffer:new("cat", selection)
       local word = Word:new()
@@ -44,7 +44,7 @@ describe("Word", function()
       assert.are.same(
         {
           start = 0,
-          finish = 3,
+          finish = 2,
           mode = "inclusive",
           direction = "characterwise"
         },

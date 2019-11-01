@@ -40,17 +40,19 @@ function Word:getRange(buffer)
     local charIndex = range.finish + 1 -- lua strings are 1-indexed :(
     local char = string.sub(buffer.contents, charIndex, charIndex)
 
-    range.finish = range.finish + 1
-
     if seenWhitespace and char ~= " " then break end
     if isPunctuation(char) then break end
 
     if not seenWhitespace and char == " " then
       seenWhitespace = true
     end
+
+    range.finish = range.finish + 1
   end
 
   if range.finish == bufferLength then
+    -- don't go off the right edge of the buffer
+    range.finish = range.finish - 1
     range.mode = 'inclusive'
   end
 
