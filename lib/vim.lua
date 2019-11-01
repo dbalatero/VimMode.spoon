@@ -8,6 +8,8 @@ local BigWord = dofile(vimModeScriptPath .. "lib/motions/big_word.lua")
 local EndOfWord = dofile(vimModeScriptPath .. "lib/motions/end_of_word.lua")
 local Word = dofile(vimModeScriptPath .. "lib/motions/word.lua")
 
+local Right = dofile(vimModeScriptPath .. "lib/motions/right.lua")
+
 local Change = dofile(vimModeScriptPath .. "lib/operators/change.lua")
 local Delete = dofile(vimModeScriptPath .. "lib/operators/delete.lua")
 local createStateMachine = dofile(vimModeScriptPath .. "lib/state.lua")
@@ -39,31 +41,34 @@ function Vim:resetCommandState()
 end
 
 function Vim:buildNormalModeModal()
+  local operator = function(type)
+    return function()
+      self.state:enterOperator(type:new())
+    end
+  end
+
+  local motion = function(type)
+    return function()
+      self.state:enterMotion(type:new())
+    end
+  end
+
   local modal = hs.hotkey.modal.new()
 
-  modal:bind({}, 'i', function() self:exit() end)
+  modal.bindWithRepeat = function(self, mods, key, fn)
+    local message = nil
 
-  modal:bind({}, 'd', function()
-    self.state:enterOperator(Delete:new())
-  end)
-
-  modal:bind({}, 'c', function()
-    self.state:enterOperator(Change:new())
-  end)
-
-  modal:bind({}, 'w', function()
-    self.state:enterMotion(Word:new())
-  end)
-
-  modal:bind({'shift'}, 'w', function()
-    self.state:enterMotion(BigWord:new())
-  end)
-
-  modal:bind({}, 'e', function()
-    self.state:enterMotion(EndOfWord:new())
-  end)
+    return self:bind(mods, key, message, fn, fn, fn)
+  end
 
   return modal
+    :bind({}, 'i', function() self:exit() end)
+    :bind({}, 'c', nil, operator(Change))
+    :bind({}, 'd', nil, operator(Delete))
+    :bindWithRepeat({}, 'e', motion(EndOfWord))
+    :bindWithRepeat({}, 'l', motion(Right))
+    :bindWithRepeat({}, 'w', motion(Word))
+    :bindWithRepeat({'shift'}, 'w', motion(BigWord))
 end
 
 function Vim:exit()
