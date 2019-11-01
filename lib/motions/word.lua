@@ -63,7 +63,7 @@ function Word.getMovements()
   return {
     {
       modifiers = { 'alt' },
-      character = 'right'
+      key = 'right'
     }
   }
 end
