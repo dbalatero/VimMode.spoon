@@ -63,7 +63,7 @@ describe("Word", function()
         {
           {
             modifiers = { 'alt' },
-            character = 'right'
+            key = 'right'
           }
         },
         word:getMovements(buffer)
