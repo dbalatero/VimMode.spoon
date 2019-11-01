@@ -24,6 +24,7 @@ local function createStateMachine(vim)
       onenterInsert = function()
         vim:setInsertMode()
         vim.modals.normal:exit()
+        vimLogger.i("Exiting Vim")
       end,
       onenterOperator = function(_, _, _, _, operator)
         vim.commandState.operator = operator
@@ -33,8 +34,13 @@ local function createStateMachine(vim)
         self:fire()
       end,
       onfire = function(self)
-        vim:fireCommandState()
-        self:enterNormal()
+        local transition = vim:fireCommandState()
+
+        if transition == "normal" then
+          self:enterNormal()
+        else
+          self:enterInsert()
+        end
       end,
     }
   })
