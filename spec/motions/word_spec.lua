@@ -56,6 +56,22 @@ describe("Word", function()
       )
     end)
 
+    it("moves from punctuation", function()
+      local selection = Selection:new(2, 0)
+      local buffer = Buffer:new("ab-cd-ef", selection)
+      local word = Word:new()
+
+      assert.are.same(
+        {
+          start = 2,
+          finish = 3,
+          mode = "exclusive",
+          direction = "characterwise"
+        },
+        word:getRange(buffer)
+      )
+    end)
+
     it("stops on new lines", function()
       local selection = Selection:new(4, 0)
       local buffer = Buffer:new("cat dog\nfish", selection)
