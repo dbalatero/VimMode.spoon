@@ -44,7 +44,6 @@ function Vim:buildNormalModeModal()
   end)
 
   modal:bind({}, 'w', function()
-    vimLogger.i("firing w")
     self.state:enterMotion(Word:new())
   end)
 
