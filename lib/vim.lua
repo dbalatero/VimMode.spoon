@@ -126,35 +126,46 @@ function Vim:fireCommandState()
   if self:currentElementSupportsAccessibility() then
     local buffer = self:getBuffer()
     local range = motion:getRange(buffer)
-
     local finish = range.finish
-    if range.mode == 'exclusive' then finish = finish - 1 end
 
-    local newBuffer = operator.getModifiedBuffer(
-      buffer,
-      range.start,
-      finish
-    )
+    if operator then
+      if range.mode == 'exclusive' then finish = finish - 1 end
 
-    -- update value and cursor
-    getCurrentElement():setValue(newBuffer.contents)
-    getCurrentElement():setSelectedTextRange({
-      location = newBuffer.selection.position,
-      length = newBuffer.selection.length
-    })
+      local newBuffer = operator.getModifiedBuffer(
+        buffer,
+        range.start,
+        finish
+      )
+
+      -- update value and cursor
+      getCurrentElement():setValue(newBuffer.contents)
+      getCurrentElement():setSelectedTextRange({
+        location = newBuffer.selection.position,
+        length = newBuffer.selection.length
+      })
+    else
+      getCurrentElement():setSelectedTextRange({
+        location = finish,
+        length = 0
+      })
+    end
   else
     -- select the movement
     for _, movement in ipairs(motion.getMovements()) do
-      hs.eventtap.keyStroke(
-        { "shift", table.unpack(movement.modifiers) },
-        movement.key,
-        0
-      )
+      local modifiers = movement.modifiers
+
+      if operator then
+        modifiers = { "shift", table.unpack(modifiers) }
+      end
+
+      hs.eventtap.keyStroke(modifiers, movement.key, 0)
     end
 
-    -- fire the operator
-    for _, movement in pairs(operator.getKeys()) do
-      hs.eventtap.keyStroke(movement.modifiers, movement.key, 0)
+    if operator then
+      -- fire the operator
+      for _, movement in pairs(operator.getKeys()) do
+        hs.eventtap.keyStroke(movement.modifiers, movement.key, 0)
+      end
     end
   end
 end
