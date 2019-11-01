@@ -54,12 +54,18 @@ function Vim:buildNormalModeModal()
     end
   end
 
+  local alias = function(keys)
+    return function()
+      hs.eventtap.keyStrokes(keys)
+    end
+  end
+
   local modal = hs.hotkey.modal.new()
 
-  modal.bindWithRepeat = function(self, mods, key, fn)
+  modal.bindWithRepeat = function(mdl, mods, key, fn)
     local message = nil
 
-    return self:bind(mods, key, message, fn, fn, fn)
+    return mdl:bind(mods, key, message, fn, fn, fn)
   end
 
   return modal
@@ -71,6 +77,10 @@ function Vim:buildNormalModeModal()
     :bindWithRepeat({}, 'l', motion(Right))
     :bindWithRepeat({}, 'w', motion(Word))
     :bindWithRepeat({'shift'}, 'w', motion(BigWord))
+    :bindWithRepeat({}, 'x', function()
+      operator(Delete)()
+      motion(Right)()
+    end)
 end
 
 function Vim:exit()
