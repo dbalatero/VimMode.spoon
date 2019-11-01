@@ -42,7 +42,12 @@ function Word.getRange(_, buffer)
     local charIndex = range.finish + 1 -- lua strings are 1-indexed :(
     local char = string.sub(buffer.contents, charIndex, charIndex)
 
-    if char == "\n" then break end
+    if char == "\n" then
+      if start == range.finish then range.finish = range.finish + 1 end
+
+      break
+    end
+
     if seenWhitespace and char ~= " " then break end
     if isPunctuation(char) then break end
 
