@@ -4,7 +4,10 @@ local Buffer = dofile(vimModeScriptPath .. "lib/buffer.lua")
 local Selection = dofile(vimModeScriptPath .. "lib/selection.lua")
 local CommandState = dofile(vimModeScriptPath .. "lib/command_state.lua")
 
+local BigWord = dofile(vimModeScriptPath .. "lib/motions/big_word.lua")
+local EndOfWord = dofile(vimModeScriptPath .. "lib/motions/end_of_word.lua")
 local Word = dofile(vimModeScriptPath .. "lib/motions/word.lua")
+
 local Change = dofile(vimModeScriptPath .. "lib/operators/change.lua")
 local Delete = dofile(vimModeScriptPath .. "lib/operators/delete.lua")
 local createStateMachine = dofile(vimModeScriptPath .. "lib/state.lua")
@@ -50,6 +53,14 @@ function Vim:buildNormalModeModal()
 
   modal:bind({}, 'w', function()
     self.state:enterMotion(Word:new())
+  end)
+
+  modal:bind({'shift'}, 'w', function()
+    self.state:enterMotion(BigWord:new())
+  end)
+
+  modal:bind({}, 'e', function()
+    self.state:enterMotion(EndOfWord:new())
   end)
 
   return modal
