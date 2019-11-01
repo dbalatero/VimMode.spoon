@@ -1,11 +1,8 @@
 local Motion = dofile(vimModeScriptPath .. "lib/motion.lua")
 local stringUtils = dofile(vimModeScriptPath .. "lib/utils/string_utils.lua")
+local isWhitespace = stringUtils.isWhitespace
 
 local BigWord = Motion:new{ name = 'big_word' }
-
-local isPunctuation = stringUtils.isPunctuation
-local isWhitespace = stringUtils.isWhitespace
-local isPrintableChar = stringUtils.isPrintableChar
 
 -- <C-Right>	or					*<C-Right>* *W*
 -- W			[count] WORDS forward.  |exclusive| motion.
@@ -45,6 +42,8 @@ function BigWord.getRange(_, buffer)
     if not seenWhitespace and isWhitespace(char) then seenWhitespace = true end
 
     range.finish = range.finish + 1
+
+    if char == "\n" then break end
   end
 
   if range.finish == bufferLength then
