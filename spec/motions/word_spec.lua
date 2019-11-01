@@ -3,6 +3,10 @@ local Selection = require("lib/selection")
 local Word = require("lib/motions/word")
 
 describe("Word", function()
+  it("has a name", function()
+    assert.are.equals("word", Word:new().name)
+  end)
+
   describe("#getRange", function()
     it("handles simple words", function()
       local selection = Selection:new(0, 0)

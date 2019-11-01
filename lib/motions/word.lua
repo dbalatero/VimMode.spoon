@@ -1,7 +1,7 @@
 local Motion = dofile(vimModeScriptPath .. "lib/motion.lua")
 local Set = dofile(vimModeScriptPath .. "lib/utils/set.lua")
 
-local Word = Motion:new()
+local Word = Motion:new{ name = 'word' }
 
 -- word motion, exclusive
 --

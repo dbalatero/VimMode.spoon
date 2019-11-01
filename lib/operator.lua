@@ -1,7 +1,7 @@
 local Operator = {}
 
-function Operator:new()
-  local operator = {}
+function Operator:new(fields)
+  local operator = fields or {}
 
   setmetatable(operator, self)
   self.__index = self
