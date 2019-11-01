@@ -5,6 +5,7 @@ local Selection = dofile(vimModeScriptPath .. "lib/selection.lua")
 local CommandState = dofile(vimModeScriptPath .. "lib/command_state.lua")
 
 local Word = dofile(vimModeScriptPath .. "lib/motions/word.lua")
+local Change = dofile(vimModeScriptPath .. "lib/operators/change.lua")
 local Delete = dofile(vimModeScriptPath .. "lib/operators/delete.lua")
 local createStateMachine = dofile(vimModeScriptPath .. "lib/state.lua")
 
@@ -41,6 +42,10 @@ function Vim:buildNormalModeModal()
 
   modal:bind({}, 'd', function()
     self.state:enterOperator(Delete:new())
+  end)
+
+  modal:bind({}, 'c', function()
+    self.state:enterOperator(Change:new())
   end)
 
   modal:bind({}, 'w', function()
