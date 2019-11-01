@@ -2,7 +2,7 @@ local Buffer = dofile(vimModeScriptPath .. "lib/buffer.lua")
 local Operator = dofile(vimModeScriptPath .. "lib/operator.lua")
 local Selection = dofile(vimModeScriptPath .. "lib/selection.lua")
 
-local Delete = Operator:new()
+local Delete = Operator:new{name = 'delete'}
 
 function Delete.getModifiedBuffer(buffer, rangeStart, rangeFinish)
   local stringStart, stringFinish = rangeStart + 1, rangeFinish + 1

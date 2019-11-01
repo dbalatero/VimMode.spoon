@@ -1,7 +1,7 @@
 local Motion = {}
 
-function Motion:new()
-  local motion = {}
+function Motion:new(fields)
+  local motion = fields or {}
 
   setmetatable(motion, self)
   self.__index = self

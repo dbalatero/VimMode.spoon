@@ -3,6 +3,10 @@ local Selection = require("lib/selection")
 local Delete = require("lib/operators/delete")
 
 describe("Delete", function()
+  it("has a name", function()
+    assert.are.equals("delete", Delete:new().name)
+  end)
+
   describe("#getModifiedBuffer", function()
     it("deletes the range of text starting from the beginning", function()
       local buffer = Buffer:new("word one two", Selection:new(0, 0))
