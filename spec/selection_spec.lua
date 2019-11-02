@@ -2,10 +2,10 @@ local Selection = require('lib/selection')
 
 describe("Selection", function()
   describe("data accessors", function()
-    it("has position", function()
+    it("has location", function()
       local selection = Selection:new(10, 1)
 
-      assert.are.equals(selection.position, 10)
+      assert.are.equals(selection.location, 10)
     end)
 
     it("has selection length", function()
@@ -16,7 +16,7 @@ describe("Selection", function()
   end)
 
   describe("#positionEnd", function()
-    it("should return the position plus length", function()
+    it("should return the location plus length", function()
       local selection = Selection:new(10, 50)
 
       assert.are.equals(selection:positionEnd(), 60)

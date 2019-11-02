@@ -21,7 +21,7 @@ local BigWord = Motion:new{ name = 'big_word' }
 -- 4. The last non- <newline> in the edit buffer
 
 function BigWord.getRange(_, buffer)
-  local start = buffer.selection:positionEnd()
+  local start = buffer:getSelectionRange():positionEnd()
 
   local range = {
     start = start,
@@ -31,12 +31,13 @@ function BigWord.getRange(_, buffer)
 
   local seenWhitespace = false
   local bufferLength = buffer:getLength()
+  local contents = buffer:getValue()
 
   range.finish = start
 
   while range.finish < bufferLength do
     local charIndex = range.finish + 1 -- lua strings are 1-indexed :(
-    local char = string.sub(buffer.contents, charIndex, charIndex)
+    local char = string.sub(contents, charIndex, charIndex)
 
     if seenWhitespace and not isWhitespace(char) then break end
     if not seenWhitespace and isWhitespace(char) then seenWhitespace = true end

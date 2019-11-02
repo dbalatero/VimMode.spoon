@@ -1,22 +1,19 @@
-local Buffer = dofile(vimModeScriptPath .. "lib/buffer.lua")
 local Operator = dofile(vimModeScriptPath .. "lib/operator.lua")
-local Selection = dofile(vimModeScriptPath .. "lib/selection.lua")
-
 local Delete = Operator:new{name = 'delete'}
 
 function Delete.getModifiedBuffer(buffer, rangeStart, rangeFinish)
-  local stringStart, stringFinish = rangeStart + 1, rangeFinish + 1
+  local value = buffer:getValue()
+
   local contents = ""
+  local stringStart, stringFinish = rangeStart + 1, rangeFinish + 1
 
   if stringStart > 1 then
-    contents = string.sub(buffer.contents, 1, stringStart - 1)
+    contents = string.sub(value, 1, stringStart - 1)
   end
 
-  contents = contents .. string.sub(buffer.contents, stringFinish + 1, -1)
+  contents = contents .. string.sub(value, stringFinish + 1, -1)
 
-  local selection = Selection:new(rangeStart, 0)
-
-  return Buffer:new(contents, selection)
+  return buffer:createNew(contents, rangeStart, 0)
 end
 
 function Delete.getKeys()

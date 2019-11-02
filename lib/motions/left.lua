@@ -3,7 +3,7 @@ local Motion = dofile(vimModeScriptPath .. "lib/motion.lua")
 local Left = Motion:new{ name = 'left' }
 
 function Left.getRange(_, buffer)
-  local start = buffer.selection:positionEnd()
+  local start = buffer:getSelectionRange():positionEnd()
 
   return {
     start = start - 1,

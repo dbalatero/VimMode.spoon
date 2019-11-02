@@ -9,8 +9,10 @@ describe("BigWord", function()
 
   describe("#getRange", function()
     it("handles simple words", function()
-      local selection = Selection:new(0, 0)
-      local buffer = Buffer:new("cat dog mouse", selection)
+      local buffer = Buffer:new()
+      buffer:setValue("cat dog mouse")
+      buffer:setSelectionRange(0, 0)
+
       local bigWord = BigWord:new()
 
       assert.are.same(
@@ -25,8 +27,10 @@ describe("BigWord", function()
     end)
 
     it("handles punctuation boundaries", function()
-      local selection = Selection:new(0, 0)
-      local buffer = Buffer:new("www.site.com ok", selection)
+      local buffer = Buffer:new()
+      buffer:setValue("www.site.com ok")
+      buffer:setSelectionRange(0, 0)
+
       local bigWord = BigWord:new()
 
       assert.are.same(
