@@ -51,7 +51,7 @@ local parser = machine.create({
 })
 
 function EndOfWord.getRange(_, buffer)
-  local start = buffer.selection:positionEnd()
+  local start = buffer:getSelectionRange():positionEnd()
 
   local range = {
     start = start,
@@ -61,10 +61,11 @@ function EndOfWord.getRange(_, buffer)
   }
 
   local bufferLength = buffer:getLength()
+  local contents = buffer:getValue()
 
   while range.finish < bufferLength do
     local charIndex = range.finish + 1 -- lua strings are 1-indexed :(
-    local char = string.sub(buffer.contents, charIndex, charIndex)
+    local char = string.sub(contents, charIndex, charIndex)
 
     if char == "\n" then parser:seenNewLine(char) end
     if isPunctuation(char) then parser:seenPunctuation(char) end

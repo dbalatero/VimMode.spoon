@@ -6,8 +6,10 @@ describe("Buffer", function()
 
   describe("#getContentsBeforeSelection()", function()
     it("returns the text in before the cursor", function()
-      local selection = Selection:new(1, 0)
-      local buffer = Buffer:new(text, selection)
+      local buffer = Buffer:new()
+
+      buffer:setValue(text)
+      buffer:setSelectionRange(1, 0)
 
       assert.are.equals(
         "f",
@@ -16,8 +18,10 @@ describe("Buffer", function()
     end)
 
     it("returns nil if we're at the start", function()
-      local selection = Selection:new(0, 0)
-      local buffer = Buffer:new(text, selection)
+      local buffer = Buffer:new()
+
+      buffer:setValue(text)
+      buffer:setSelectionRange(0, 0)
 
       assert.are.equals(
         nil,
@@ -28,8 +32,10 @@ describe("Buffer", function()
 
   describe("#getContentsAfterSelection()", function()
     it("returns the text in front of the cursor", function()
-      local selection = Selection:new(1, 0)
-      local buffer = Buffer:new(text, selection)
+      local buffer = Buffer:new()
+
+      buffer:setValue(text)
+      buffer:setSelectionRange(1, 0)
 
       assert.are.equals(
         "dsafdsa",
@@ -38,8 +44,10 @@ describe("Buffer", function()
     end)
 
     it("returns nil if we're at the end", function()
-      local selection = Selection:new(8, 0)
-      local buffer = Buffer:new(text, selection)
+      local buffer = Buffer:new()
+
+      buffer:setValue(text)
+      buffer:setSelectionRange(8, 0)
 
       assert.are.equals(
         nil,
@@ -50,8 +58,10 @@ describe("Buffer", function()
 
   describe("#nextChar", function()
     it("returns the next char after the cursor", function()
-      local selection = Selection:new(1, 0)
-      local buffer = Buffer:new(text, selection)
+      local buffer = Buffer:new()
+
+      buffer:setValue(text)
+      buffer:setSelectionRange(1, 0)
 
       assert.are.equals(
         "d",

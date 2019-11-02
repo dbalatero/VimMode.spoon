@@ -9,8 +9,10 @@ describe("Word", function()
 
   describe("#getRange", function()
     it("handles simple words", function()
-      local selection = Selection:new(0, 0)
-      local buffer = Buffer:new("cat dog mouse", selection)
+      local buffer = Buffer:new()
+      buffer:setValue("cat dog mouse")
+      buffer:setSelectionRange(0, 0)
+
       local word = Word:new()
 
       assert.are.same(
@@ -25,8 +27,10 @@ describe("Word", function()
     end)
 
     it("deals with being on a new line", function()
-      local selection = Selection:new(2, 0)
-      local buffer = Buffer:new("ok\n\nfish", selection)
+      local buffer = Buffer:new()
+      buffer:setValue("ok\n\nfish")
+      buffer:setSelectionRange(2, 0)
+
       local word = Word:new()
 
       assert.are.same(
@@ -41,8 +45,10 @@ describe("Word", function()
     end)
 
     it("continues from punctuation to the next word", function()
-      local selection = Selection:new(2, 0)
-      local buffer = Buffer:new("ab- cd", selection)
+      local buffer = Buffer:new()
+      buffer:setValue("ab- cd")
+      buffer:setSelectionRange(2, 0)
+
       local word = Word:new()
 
       assert.are.same(
@@ -57,8 +63,10 @@ describe("Word", function()
     end)
 
     it("stops on punctuation", function()
-      local selection = Selection:new(0, 0)
-      local buffer = Buffer:new("ab-cd-ef", selection)
+      local buffer = Buffer:new()
+      buffer:setValue("ab-cd-ef")
+      buffer:setSelectionRange(0, 0)
+
       local word = Word:new()
 
       assert.are.same(
@@ -73,8 +81,10 @@ describe("Word", function()
     end)
 
     it("moves from punctuation", function()
-      local selection = Selection:new(2, 0)
-      local buffer = Buffer:new("ab-cd-ef", selection)
+      local buffer = Buffer:new()
+      buffer:setValue("ab-cd-ef")
+      buffer:setSelectionRange(2, 0)
+
       local word = Word:new()
 
       assert.are.same(
@@ -89,8 +99,10 @@ describe("Word", function()
     end)
 
     it("stops on new lines", function()
-      local selection = Selection:new(4, 0)
-      local buffer = Buffer:new("cat dog\nfish", selection)
+      local buffer = Buffer:new()
+      buffer:setValue("cat dog\nfish")
+      buffer:setSelectionRange(4, 0)
+
       local word = Word:new()
 
       assert.are.same(
@@ -105,8 +117,10 @@ describe("Word", function()
     end)
 
     it("flips to an inclusive motion if last word in buffer #focus", function()
-      local selection = Selection:new(0, 0)
-      local buffer = Buffer:new("cat", selection)
+      local buffer = Buffer:new()
+      buffer:setValue("cat")
+      buffer:setSelectionRange(0, 0)
+
       local word = Word:new()
 
       assert.are.same(

@@ -20,7 +20,7 @@ local isPrintableChar = stringUtils.isPrintableChar
 
 -- TODO handle more edge cases for :help word
 function Word.getRange(_, buffer)
-  local start = buffer.selection:positionEnd()
+  local start = buffer:getSelectionRange():positionEnd()
 
   local range = {
     start = start,
@@ -32,9 +32,10 @@ function Word.getRange(_, buffer)
 
   local seenWhitespace = false
   local bufferLength = buffer:getLength()
+  local contents = buffer:getValue()
 
   local startingChar = string.sub(
-    buffer.contents,
+    contents,
     range.finish + 1,
     range.finish + 1
   )
@@ -43,7 +44,7 @@ function Word.getRange(_, buffer)
 
   while range.finish < bufferLength do
     local charIndex = range.finish + 1 -- lua strings are 1-indexed :(
-    local char = string.sub(buffer.contents, charIndex, charIndex)
+    local char = string.sub(contents, charIndex, charIndex)
 
     if char == "\n" then
       if start == range.finish then range.finish = range.finish + 1 end

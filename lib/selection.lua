@@ -1,8 +1,8 @@
 local Selection = {}
 
-function Selection:new(position, length)
+function Selection:new(location, length)
   local selection = {
-    position = position,
+    location = location,
     length = length
   }
 
@@ -17,7 +17,7 @@ function Selection:isSelected()
 end
 
 function Selection:positionEnd()
-  return self.length + self.position
+  return self.length + self.location
 end
 
 return Selection
