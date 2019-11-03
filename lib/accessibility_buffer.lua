@@ -1,11 +1,11 @@
 local ax = require("hs._asm.axuielement")
-
 local Buffer = dofile(vimModeScriptPath .. "lib/buffer.lua")
+local Selection = dofile(vimModeScriptPath .. "lib/selection.lua")
 
-local AccessibilityBuffer = Buffer.new()
+local AccessibilityBuffer = Buffer:new()
 
 function AccessibilityBuffer:new()
-  buffer = Buffer:new()
+  local buffer = Buffer:new()
 
   setmetatable(buffer, self)
   self.__index = self
@@ -13,8 +13,6 @@ function AccessibilityBuffer:new()
   buffer.currentElement = nil
   buffer.value = nil
   buffer.selection = nil
-
-  buffer:enableLiveApplicationPatches()
 
   return buffer
 end
@@ -38,7 +36,7 @@ function AccessibilityBuffer:getSelectionRange()
   if not self:getCurrentElement() then return nil end
 
   local range = self:getCurrentElement():attributeValue("AXSelectedTextRange")
-  self.selection = Selection:new(range.loc, range.length)
+  self.selection = Selection:new(range.loc, range.len)
 
   return self.selection
 end
@@ -46,12 +44,12 @@ end
 function AccessibilityBuffer:setSelectionRange(location, length)
   self.selection = Selection:new(location, length)
 
-  getCurrentElement():setSelectedTextRange({
+  self:getCurrentElement():setSelectedTextRange({
     location = location,
     length = length
   })
 
-  return self.selection
+  return self
 end
 
 function AccessibilityBuffer:getValue()
@@ -65,9 +63,9 @@ function AccessibilityBuffer:setValue(value)
   if not self:getCurrentElement() then return end
 
   self.value = value
-  self:getCurrentElement().setValue(value)
+  self:getCurrentElement():setValue(value)
 
-  return self.value
+  return self
 end
 
 function AccessibilityBuffer:isValid()
