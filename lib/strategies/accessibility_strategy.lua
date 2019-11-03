@@ -13,6 +13,8 @@ function AccessibilityStrategy:new(vim)
   setmetatable(strategy, self)
   self.__index = self
 
+  strategy:enableLiveApplicationPatches()
+
   return strategy
 end
 
@@ -21,8 +23,6 @@ function AccessibilityStrategy:fire()
 end
 
 function AccessibilityStrategy:getNextBuffer()
-  self:enableLiveApplicationPatches()
-
   local operator = self.vim.commandState.operator
   local motion = self.vim.commandState.motion
 
@@ -59,6 +59,8 @@ function AccessibilityStrategy:getCurrentElement()
 end
 
 function AccessibilityStrategy:getSelection()
+  if not self:getCurrentElement() then return nil end
+
   local range = self:getCurrentElement():attributeValue("AXSelectedTextRange")
 
   return Selection:new(range.loc, range.length)
