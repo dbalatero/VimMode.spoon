@@ -13,20 +13,19 @@ function Buffer:new()
   return buffer
 end
 
-function Buffer:getClass()
+function Buffer.getClass()
   return Buffer
 end
 
 function Buffer:createNew(value, rangeLocation, rangeLength)
-  local buffer = self.getClass():new()
-  buffer:setValue(value)
-  buffer:setSelectionRange(rangeLocation or 0, rangeLength or 0)
-
-  return buffer
+  return self.getClass():new()
+    :setValue(value)
+    :setSelectionRange(rangeLocation or 0, rangeLength or 0)
 end
 
 function Buffer:setValue(value)
   self.value = value
+  return self
 end
 
 function Buffer:getValue()
@@ -39,6 +38,12 @@ end
 
 function Buffer:setSelectionRange(location, length)
   self.selection = Selection:new(location, length)
+  return self
+end
+
+function Buffer:setSelectionRangeFromSelection(selection)
+  self.selection = selection
+  return self
 end
 
 function Buffer:nextChar()

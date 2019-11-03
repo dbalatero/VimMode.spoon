@@ -1,8 +1,8 @@
 local ax = require("hs._asm.axuielement")
 
-local AccessibilityBuffer = dofile(vimModeScriptPath .. "lib/accessibility_buffer.lua")
-local Selection = dofile(vimModeScriptPath .. "lib/selection.lua")
 local CommandState = dofile(vimModeScriptPath .. "lib/command_state.lua")
+local AccessibilityStrategy = dofile(vimModeScriptPath .. "lib/strategies/accessibility_strategy.lua")
+local KeyboardStrategy = dofile(vimModeScriptPath .. "lib/strategies/keyboard_strategy.lua")
 
 local BigWord = dofile(vimModeScriptPath .. "lib/motions/big_word.lua")
 local EndOfWord = dofile(vimModeScriptPath .. "lib/motions/end_of_word.lua")
@@ -100,60 +100,28 @@ function Vim:enter()
   self.state:enterNormal()
 end
 
+function findFirst(list, fn)
+  for _, item in ipairs(list) do
+    if fn(item) then return item end
+  end
+
+  return nil
+end
+
 function Vim:fireCommandState()
   local operator = self.commandState.operator
   local motion = self.commandState.motion
 
-  local buffer = AccessibilityBuffer:new()
+  local strategies = {
+    AccessibilityStrategy:new(self),
+    KeyboardStrategy:new(self)
+  }
 
-  if buffer:isValid() then
-    local range = motion:getRange(buffer)
+  local strategy = findFirst(strategies, function(strategy)
+    return strategy:isValid()
+  end)
 
-    local start = range.start
-    local finish = range.finish
-
-    if operator then
-      if range.mode == 'exclusive' then finish = finish - 1 end
-
-      operator.getModifiedBuffer(buffer, start, finish)
-
-      -- update value and cursor
-      getCurrentElement():setValue(newBuffer.contents)
-      getCurrentElement():setSelectedTextRange({
-        location = newBuffer.selection.location,
-        length = newBuffer.selection.length
-      })
-    else
-      local direction = 'right'
-
-      if start < buffer.selection.location then
-        direction = 'left'
-      end
-
-      getCurrentElement():setSelectedTextRange({
-        location = (direction == 'left' and start) or finish,
-        length = 0
-      })
-    end
-  else
-    -- select the movement
-    for _, movement in ipairs(motion.getMovements()) do
-      local modifiers = movement.modifiers
-
-      if operator then
-        modifiers = { "shift", table.unpack(modifiers) }
-      end
-
-      hs.eventtap.keyStroke(modifiers, movement.key, 0)
-    end
-
-    if operator then
-      -- fire the operator
-      for _, movement in pairs(operator.getKeys()) do
-        hs.eventtap.keyStroke(movement.modifiers, movement.key, 0)
-      end
-    end
-  end
+  strategy:fire()
 
   if operator then
     return operator.getModeForTransition()
