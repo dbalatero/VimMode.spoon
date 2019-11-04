@@ -2,6 +2,7 @@ local Operator = dofile(vimModeScriptPath .. "lib/operator.lua")
 local Delete = Operator:new{name = 'delete'}
 
 function Delete.getModifiedBuffer(buffer, rangeStart, rangeFinish)
+  local value = buffer:getValue()
   local length = rangeFinish - rangeStart + 1
 
   local contents = ""
@@ -13,9 +14,7 @@ function Delete.getModifiedBuffer(buffer, rangeStart, rangeFinish)
 
   contents = contents .. string.sub(value, stringFinish + 1, -1)
 
-  return vimBenchmark("createNew()", function()
-    return buffer:createNew(contents, rangeStart, 0)
-  end)
+  return buffer:createNew(contents, rangeStart, 0)
 end
 
 function Delete.getKeys()
