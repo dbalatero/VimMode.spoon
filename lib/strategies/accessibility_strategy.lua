@@ -1,8 +1,9 @@
 local ax = require("hs._asm.axuielement")
+local Strategy = dofile(vimModeScriptPath .. "lib/strategy.lua")
 local AccessibilityBuffer = dofile(vimModeScriptPath .. "lib/accessibility_buffer.lua")
 local Selection = dofile(vimModeScriptPath .. "lib/selection.lua")
 
-local AccessibilityStrategy = {}
+local AccessibilityStrategy = Strategy:new()
 
 function AccessibilityStrategy:new(vim)
   local strategy = {
@@ -61,7 +62,11 @@ end
 function AccessibilityStrategy:getSelection()
   if not self:getCurrentElement() then return nil end
 
+  vimLogger.i(inspect(self:getCurrentElement()))
+
   local range = self:getCurrentElement():attributeValue("AXSelectedTextRange")
+
+  if not range then return nil end
 
   return Selection:new(range.loc, range.length)
 end

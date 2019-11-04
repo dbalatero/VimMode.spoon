@@ -1,4 +1,6 @@
-local KeyboardStrategy = {}
+local Strategy = dofile(vimModeScriptPath .. "lib/strategy.lua")
+
+local KeyboardStrategy = Strategy:new()
 
 function KeyboardStrategy:new(vim)
   local strategy = {
@@ -19,6 +21,7 @@ end
 function KeyboardStrategy:fireMovement()
   -- select the movement
   local motion = self.vim.commandState.motion
+  local operator = self.vim.commandState.operator
 
   for _, movement in ipairs(motion.getMovements()) do
     local modifiers = movement.modifiers
