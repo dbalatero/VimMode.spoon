@@ -1,5 +1,7 @@
 local ax = require("hs._asm.axuielement")
 
+dofile(vimModeScriptPath .. "lib/utils/benchmark.lua")
+
 local CommandState = dofile(vimModeScriptPath .. "lib/command_state.lua")
 local AccessibilityStrategy = dofile(vimModeScriptPath .. "lib/strategies/accessibility_strategy.lua")
 local KeyboardStrategy = dofile(vimModeScriptPath .. "lib/strategies/keyboard_strategy.lua")

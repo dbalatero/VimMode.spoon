@@ -18,9 +18,16 @@ function Buffer.getClass()
 end
 
 function Buffer:createNew(value, rangeLocation, rangeLength)
-  return self.getClass():new()
-    :setValue(value)
-    :setSelectionRange(rangeLocation or 0, rangeLength or 0)
+  local buffer = vimBenchmark("new", function()
+    return self.getClass():new()
+  end)
+
+  vimBenchmark("setValue", function() buffer:setValue(value) end)
+  vimBenchmark("setSelectionRange", function()
+    buffer:setSelectionRange(rangeLocation or 0, rangeLength or 0)
+  end)
+
+  return buffer
 end
 
 function Buffer:setValue(value)

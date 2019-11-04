@@ -5,7 +5,7 @@ local Selection = dofile(vimModeScriptPath .. "lib/selection.lua")
 local AccessibilityBuffer = Buffer:new()
 
 function AccessibilityBuffer:new()
-  local buffer = Buffer:new()
+  local buffer = {}
 
   setmetatable(buffer, self)
   self.__index = self
