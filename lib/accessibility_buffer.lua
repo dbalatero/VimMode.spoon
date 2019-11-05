@@ -44,7 +44,7 @@ end
 function AccessibilityBuffer:setSelectionRange(location, length)
   self.selection = Selection:new(location, length)
 
-  self:getCurrentElement():setSelectedTextRange({
+  self:getCurrentElement():setAttributeValue("AXSelectedTextRange", {
     location = location,
     length = length
   })
@@ -63,7 +63,7 @@ function AccessibilityBuffer:setValue(value)
   if not self:getCurrentElement() then return end
 
   self.value = value
-  self:getCurrentElement():setValue(value)
+  self:getCurrentElement():setAttributeValue("AXValue", value)
 
   return self
 end
