@@ -1,5 +1,4 @@
 local Buffer = require("lib/buffer")
-local Selection = require("lib/selection")
 local EndOfWord = require("lib/motions/end_of_word")
 
 describe("EndOfWord", function()
