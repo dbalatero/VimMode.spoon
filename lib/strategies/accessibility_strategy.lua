@@ -62,8 +62,6 @@ end
 function AccessibilityStrategy:getSelection()
   if not self:getCurrentElement() then return nil end
 
-  vimLogger.i(inspect(self:getCurrentElement()))
-
   local range = self:getCurrentElement():attributeValue("AXSelectedTextRange")
 
   if not range then return nil end
