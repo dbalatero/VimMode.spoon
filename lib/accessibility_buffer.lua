@@ -76,6 +76,17 @@ function AccessibilityBuffer:isValid()
   return true
 end
 
+function AccessibilityBuffer:getCurrentLineNumber()
+  return self:getCurrentElement():insertionPointLineNumber() + 1
+end
+
+function AccessibilityBuffer:getCurrentLineRange()
+  local axLineNumber = self:getCurrentLineNumber() - 1
+  local range = self:getCurrentElement():rangeForLineWithParameter(axLineNumber)
+
+  return Selection:new(range.loc, range.len)
+end
+
 function AccessibilityBuffer.getCurrentApplication()
   return ax.applicationElement(hs.application.frontmostApplication())
 end

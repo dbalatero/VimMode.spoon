@@ -1,5 +1,4 @@
 local Buffer = require("lib/buffer")
-local Selection = require("lib/selection")
 local Word = require("lib/motions/word")
 
 describe("Word", function()
