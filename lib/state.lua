@@ -19,15 +19,16 @@ local function createStateMachine(vim)
         vim:resetCommandState()
         vim:setNormalMode()
 
-        vim.modals.normal:enter()
+        vim:enterModal('normal')
       end,
       onenterInsert = function()
         vim:setInsertMode()
-        vim.modals.normal:exit()
+        vim:exitAllModals()
         vimLogger.i("Exiting Vim")
       end,
       onenterOperator = function(_, _, _, _, operator)
         vim.commandState.operator = operator
+        vim:enterModal('operatorPending')
       end,
       onenterMotion = function(self, _, _, _, motion)
         vim.commandState.motion = motion

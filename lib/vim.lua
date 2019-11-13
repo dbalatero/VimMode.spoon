@@ -50,7 +50,8 @@ function Vim:new()
   vim.state = createStateMachine(vim)
 
   vim.modals = {
-    normal = vim:buildNormalModeModal()
+    normal = vim:buildNormalModeModal(),
+    operatorPending = vim:buildOperatorPendingModal()
   }
 
   return vim
@@ -83,6 +84,12 @@ function Vim:bindMotionsToModal(modal)
     :bindWithRepeat({}, 'l', self:motion(Right))
     :bindWithRepeat({}, 'w', self:motion(Word))
     :bindWithRepeat({'shift'}, 'w', self:motion(BigWord))
+end
+
+function Vim:buildOperatorPendingModal()
+  local modal = self:bindMotionsToModal(createVimModal())
+
+  return modal
 end
 
 function Vim:buildNormalModeModal()
@@ -152,6 +159,18 @@ end
 function Vim:enter()
   vimLogger.i("Entering Vim")
   self.state:enterNormal()
+end
+
+function Vim:exitAllModals()
+  for _, modal in pairs(self.modals) do
+    modal:exit()
+  end
+end
+
+function Vim:enterModal(name)
+  vimLogger.i("Entering modal " .. name)
+  self:exitAllModals()
+  self.modals[name]:enter()
 end
 
 function findFirst(list, fn)
