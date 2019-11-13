@@ -73,13 +73,12 @@ function Buffer:getCurrentLineNumber()
   local currentPosition = 0
 
   while currentPosition <= cursorPosition do
-
     if currentLine > #lines then break end
 
     currentLine = currentLine + 1
 
     -- add 1 for the missing \n that was on the line before splitting
-    currentPosition = currentPosition + string.len(lines[currentLine]) + 1
+    currentPosition = currentPosition + string.len(lines[currentLine])
   end
 
   return currentLine
@@ -107,10 +106,15 @@ end
 
 function Buffer:getLines()
   if not self.lines then
-    self.lines = stringUtils.split("\n", self:getValue())
+    self.lines = stringUtils.split("\n", self:getValue(), true)
   end
 
   return self.lines
+end
+
+function Buffer:getCurrentLine()
+  local lines = self:getLines()
+  return lines[self:getCurrentLineNumber()]
 end
 
 function Buffer:getCurrentLineRange()
@@ -120,13 +124,10 @@ function Buffer:getCurrentLineRange()
 
   for i, line in ipairs(lines) do
     if i == currentLineNumber then break end
-    start = start + #line + 1
+    start = start + string.len(line)
   end
 
   local length = #lines[currentLineNumber]
-
-  -- add 1 for the \n
-  if currentLineNumber < #lines then length = length + 1 end
 
   return Selection:new(start, length)
 end

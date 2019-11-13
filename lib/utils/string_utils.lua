@@ -20,7 +20,8 @@ function stringUtils.isPrintableChar(char)
     not stringUtils.isWhitespace(char)
 end
 
-function stringUtils.split(delimiter, text)
+function stringUtils.split(delimiter, text, includeDelimiter)
+  local includeDelimiter = includeDelimiter or false
   local list = {}
   local pos = 1
 
@@ -32,7 +33,10 @@ function stringUtils.split(delimiter, text)
     local first, last = string.find(text, delimiter, pos)
 
     if first then -- found?
-      table.insert(list, string.sub(text, pos, first - 1))
+      local part = string.sub(text, pos, first - 1)
+      if includeDelimiter then part = part .. delimiter end
+
+      table.insert(list, part)
       pos = last + 1
     else
       table.insert(list, string.sub(text, pos))
@@ -41,6 +45,10 @@ function stringUtils.split(delimiter, text)
   end
 
   return list
+end
+
+function stringUtils.lastChar(text)
+  return string.sub(text, #text, #text)
 end
 
 return stringUtils
