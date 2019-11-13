@@ -90,6 +90,7 @@ function Vim:buildOperatorPendingModal()
   local modal = self:bindMotionsToModal(createVimModal())
 
   return modal
+    :bind({}, 'ESCAPE', function() self:exit() end)
 end
 
 function Vim:buildNormalModeModal()
