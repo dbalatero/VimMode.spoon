@@ -7,12 +7,12 @@ local function createStateMachine(vim)
       { name = 'enterNormal', from = 'insert-mode', to = 'normal-mode' },
       { name = 'enterMotion', from = 'normal-mode', to = 'entered-motion' },
       { name = 'enterOperator', from = 'normal-mode', to = 'operator-pending' },
-      { name = 'cancelOperator', from = 'operator-pending', to = 'normalmode' },
       { name = 'enterMotion', from = 'operator-pending', to = 'entered-motion' },
       { name = 'fire', from = 'entered-motion', to = 'firing' },
       { name = 'enterNormal', from = 'firing', to = 'normal-mode' },
       { name = 'enterInsert', from = 'firing', to = 'insert-mode' },
       { name = 'enterInsert', from = 'normal-mode', to = 'insert-mode' },
+      { name = 'enterInsert', from = 'operator-pending', to = 'insert-mode' },
     },
     callbacks = {
       onenterNormal = function()
