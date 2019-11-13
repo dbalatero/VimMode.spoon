@@ -26,6 +26,18 @@ local Vim = {}
 
 vimLogger = hs.logger.new('vim', 'debug')
 
+local function createVimModal()
+  local modal = hs.hotkey.modal.new()
+
+  modal.bindWithRepeat = function(mdl, mods, key, fn)
+    local message = nil
+
+    return mdl:bind(mods, key, message, fn, fn, fn)
+  end
+
+  return modal
+end
+
 function Vim:new()
   local vim = {}
 
@@ -48,38 +60,39 @@ function Vim:resetCommandState()
   self.commandState = CommandState:new()
 end
 
+function Vim:operator(type)
+  return function()
+    self.state:enterOperator(type:new())
+  end
+end
+
+
+function Vim:motion(type)
+  return function()
+    self.state:enterMotion(type:new())
+  end
+end
+
+function Vim:bindMotionsToModal(modal)
+  return modal
+    :bindWithRepeat({}, '0', self:motion(LineBeginning))
+    :bindWithRepeat({'shift'}, '4', self:motion(LineEnd)) -- $
+    :bindWithRepeat({}, 'b', self:motion(BackWord))
+    :bindWithRepeat({}, 'e', self:motion(EndOfWord))
+    :bindWithRepeat({}, 'h', self:motion(Left))
+    :bindWithRepeat({}, 'l', self:motion(Right))
+    :bindWithRepeat({}, 'w', self:motion(Word))
+    :bindWithRepeat({'shift'}, 'w', self:motion(BigWord))
+end
+
 function Vim:buildNormalModeModal()
-  local operator = function(type)
-    return function()
-      self.state:enterOperator(type:new())
-    end
-  end
-
-  local motion = function(type)
-    return function()
-      self.state:enterMotion(type:new())
-    end
-  end
-
-  local alias = function(keys)
-    return function()
-      hs.eventtap.keyStrokes(keys)
-    end
-  end
-
-  local modal = hs.hotkey.modal.new()
-
-  modal.bindWithRepeat = function(mdl, mods, key, fn)
-    local message = nil
-
-    return mdl:bind(mods, key, message, fn, fn, fn)
-  end
+  local modal = self:bindMotionsToModal(createVimModal())
 
   return modal
     :bind({}, 'i', function() self:exit() end)
-    :bind({}, 'c', nil, operator(Change))
-    :bind({}, 'd', nil, operator(Delete))
-    :bind({}, 'y', nil, operator(Yank))
+    :bind({}, 'c', nil, self:operator(Change))
+    :bind({}, 'd', nil, self:operator(Delete))
+    :bind({}, 'y', nil, self:operator(Yank))
     :bind({}, '/', function()
       hs.eventtap.keyStroke({'cmd'}, 'f', 0)
       self:exit()
@@ -107,28 +120,20 @@ function Vim:buildNormalModeModal()
       hs.eventtap.keyStroke({}, 'up', 0)
     end)
     :bind({'shift'}, 'a', function()
-      motion(LineEnd)()
+      self:motion(LineEnd)()
       self:exit()
     end)
     :bind({'shift'}, 'c', function()
-      operator(Change)()
-      motion(LineEnd)()
+      self:operator(Change)()
+      self:motion(LineEnd)()
     end)
     :bind({'shift'}, 'd', function()
-      operator(Delete)()
-      motion(LineEnd)()
+      self:operator(Delete)()
+      self:motion(LineEnd)()
     end)
-    :bindWithRepeat({}, '0', motion(LineBeginning))
-    :bindWithRepeat({'shift'}, '4', motion(LineEnd)) -- $
-    :bindWithRepeat({}, 'b', motion(BackWord))
-    :bindWithRepeat({}, 'e', motion(EndOfWord))
-    :bindWithRepeat({}, 'h', motion(Left))
-    :bindWithRepeat({}, 'l', motion(Right))
-    :bindWithRepeat({}, 'w', motion(Word))
-    :bindWithRepeat({'shift'}, 'w', motion(BigWord))
     :bindWithRepeat({}, 'x', function()
-      operator(Delete)()
-      motion(Right)()
+      self:operator(Delete)()
+      self:motion(Right)()
     end)
 end
 
