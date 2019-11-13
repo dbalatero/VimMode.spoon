@@ -18,6 +18,8 @@ local Right = dofile(vimModeScriptPath .. "lib/motions/right.lua")
 
 local Change = dofile(vimModeScriptPath .. "lib/operators/change.lua")
 local Delete = dofile(vimModeScriptPath .. "lib/operators/delete.lua")
+local Yank = dofile(vimModeScriptPath .. "lib/operators/yank.lua")
+
 local createStateMachine = dofile(vimModeScriptPath .. "lib/state.lua")
 
 local Vim = {}
@@ -77,10 +79,22 @@ function Vim:buildNormalModeModal()
     :bind({}, 'i', function() self:exit() end)
     :bind({}, 'c', nil, operator(Change))
     :bind({}, 'd', nil, operator(Delete))
+    :bind({}, 'y', nil, operator(Yank))
+    :bind({}, 'p', function()
+      hs.eventtap.keyStroke({'cmd'}, 'v', 0)
+    end)
     :bind({}, 'o', function()
       self:exit()
       hs.eventtap.keyStroke({'cmd'}, 'right', 0)
       hs.eventtap.keyStroke({}, 'return', 0)
+    end)
+    :bind({}, 'u', function()
+      -- undo
+      hs.eventtap.keyStroke({'cmd'}, 'z', 0)
+    end)
+    :bind({'ctrl'}, 'r', function()
+      -- redo
+      hs.eventtap.keyStroke({'cmd','shift'}, 'z', 0)
     end)
     :bind({'shift'}, 'o', function()
       self:exit()
