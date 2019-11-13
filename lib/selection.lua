@@ -17,7 +17,7 @@ function Selection:isSelected()
 end
 
 function Selection:positionEnd()
-  return self.length + self.location
+  return self.location + self.length
 end
 
 return Selection
