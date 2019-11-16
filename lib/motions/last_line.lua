@@ -1,9 +1,9 @@
 local Motion = dofile(vimModeScriptPath .. "lib/motion.lua")
 
-local LastLine = Motion:new{ name = 'right' }
+local LastLine = Motion:new{ name = 'last_line' }
 
 function LastLine.getRange(_, buffer)
-  local start = buffer:getSelectionRange():positionEnd()
+  local start = buffer:getCurrentLineRange().position
 
   return {
     start = start,
@@ -15,6 +15,10 @@ end
 
 function LastLine.getMovements()
   return {
+    {
+      modifiers = {'cmd'},
+      key = 'left' -- reset to beginning of line
+    },
     {
       modifiers = {'cmd'},
       key = 'down'

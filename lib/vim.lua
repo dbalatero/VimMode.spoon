@@ -10,6 +10,7 @@ local BackWord = dofile(vimModeScriptPath .. "lib/motions/back_word.lua")
 local BigWord = dofile(vimModeScriptPath .. "lib/motions/big_word.lua")
 local EndOfWord = dofile(vimModeScriptPath .. "lib/motions/end_of_word.lua")
 local EntireLine = dofile(vimModeScriptPath .. "lib/motions/entire_line.lua")
+local FirstLine = dofile(vimModeScriptPath .. "lib/motions/first_line.lua")
 local LastLine = dofile(vimModeScriptPath .. "lib/motions/last_line.lua")
 local LineBeginning = dofile(vimModeScriptPath .. "lib/motions/line_beginning.lua")
 local LineEnd = dofile(vimModeScriptPath .. "lib/motions/line_end.lua")
@@ -61,7 +62,8 @@ function Vim:new()
 
   vim.modals = {
     normal = vim:buildNormalModeModal(),
-    operatorPending = vim:buildOperatorPendingModal()
+    operatorPending = vim:buildOperatorPendingModal(),
+    g = vim:buildGModal()
   }
 
   return vim
@@ -84,6 +86,13 @@ function Vim:motion(type)
   end
 end
 
+-- commands prefixed with g
+function Vim:buildGModal()
+  return createVimModal()
+    :bind({}, 'ESCAPE', function() self:exit() end)
+    :bind({}, 'g', nil, self:motion(FirstLine))
+end
+
 -- type is either 'motion' or 'operator'
 function Vim:bindMotionsToModal(modal, type)
   return modal
@@ -103,6 +112,7 @@ function Vim:bindMotionsToModal(modal, type)
     :bindWithRepeat({}, 'w', self:motion(Word))
     :bindWithRepeat({'shift'}, 'w', self:motion(BigWord))
     :bindWithRepeat({'shift'}, 'g', self:motion(LastLine))
+    :bind({}, 'g', function() self:enterModal('g') end)
 end
 
 function Vim:pushDigitTo(name, digit)
