@@ -88,6 +88,10 @@ function Buffer:getLength()
   return #(self:getValue())
 end
 
+function Buffer:getLastIndex()
+  return self:getLength()
+end
+
 function Buffer:lastValueIndex()
   local length = self:getLength()
 
