@@ -184,6 +184,10 @@ function Vim:buildNormalModeModal()
       self:operator(Delete)()
       self:motion(Right)()
     end)
+    :bindWithRepeat({}, 's', function()
+      self:operator(Change)()
+      self:motion(Right)()
+    end)
 end
 
 function Vim:exit()
