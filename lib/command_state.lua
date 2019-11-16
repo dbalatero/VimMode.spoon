@@ -1,17 +1,35 @@
+local numberUtils = dofile(vimModeScriptPath .. "lib/utils/number_utils.lua")
+
 local CommandState = {}
 
 function CommandState:new()
   local state = {
     motion = nil,
-    motionTimes = 1,
+    motionTimes = nil,
     operator = nil,
-    operatorTimes = 1
+    operatorTimes = nil
   }
 
   setmetatable(state, self)
   self.__index = self
 
   return state
+end
+
+function CommandState:getRepeatTimes()
+  local operatorTimes = self:getCount('operator') or 1
+  local motionTimes = self:getCount('motion') or 1
+
+  return operatorTimes * motionTimes
+end
+
+function CommandState:getCount(type)
+  return self[type .. "Times"]
+end
+
+function CommandState:pushCountDigit(type, digit)
+  local key = type .. "Times"
+  self[key] = numberUtils.pushDigit(self[key], digit)
 end
 
 return CommandState

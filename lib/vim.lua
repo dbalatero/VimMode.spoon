@@ -39,6 +39,14 @@ local function createVimModal()
   return modal
 end
 
+local function findFirst(list, fn)
+  for _, item in ipairs(list) do
+    if fn(item) then return item end
+  end
+
+  return nil
+end
+
 function Vim:new()
   local vim = {}
 
@@ -75,9 +83,17 @@ function Vim:motion(type)
   end
 end
 
-function Vim:bindMotionsToModal(modal)
+-- type is either 'motion' or 'operator'
+function Vim:bindMotionsToModal(modal, type)
   return modal
-    :bindWithRepeat({}, '0', self:motion(LineBeginning))
+    :bindWithRepeat({}, '0', function()
+      -- we've already started adding a count here
+      if self.commandState:getCount(type) then
+        self:pushDigitTo(type, 0)()
+      else
+        self:motion(LineBeginning)
+      end
+    end)
     :bindWithRepeat({'shift'}, '4', self:motion(LineEnd)) -- $
     :bindWithRepeat({}, 'b', self:motion(BackWord))
     :bindWithRepeat({}, 'e', self:motion(EndOfWord))
@@ -87,8 +103,28 @@ function Vim:bindMotionsToModal(modal)
     :bindWithRepeat({'shift'}, 'w', self:motion(BigWord))
 end
 
+function Vim:pushDigitTo(name, digit)
+  return function()
+    self.commandState:pushCountDigit(name, digit)
+  end
+end
+
+function Vim:bindCountsToModal(modal, name)
+  return modal
+    :bindWithRepeat({}, '1', self:pushDigitTo(name, 1))
+    :bindWithRepeat({}, '2', self:pushDigitTo(name, 2))
+    :bindWithRepeat({}, '3', self:pushDigitTo(name, 3))
+    :bindWithRepeat({}, '4', self:pushDigitTo(name, 4))
+    :bindWithRepeat({}, '5', self:pushDigitTo(name, 5))
+    :bindWithRepeat({}, '6', self:pushDigitTo(name, 6))
+    :bindWithRepeat({}, '7', self:pushDigitTo(name, 7))
+    :bindWithRepeat({}, '8', self:pushDigitTo(name, 8))
+    :bindWithRepeat({}, '9', self:pushDigitTo(name, 9))
+end
+
 function Vim:buildOperatorPendingModal()
   local modal = self:bindMotionsToModal(createVimModal())
+  modal = self:bindCountsToModal(modal, 'motion')
 
   return modal
     :bind({}, 'ESCAPE', function() self:exit() end)
@@ -98,6 +134,7 @@ end
 
 function Vim:buildNormalModeModal()
   local modal = self:bindMotionsToModal(createVimModal())
+  modal = self:bindCountsToModal(modal, 'operator')
 
   return modal
     :bind({}, 'i', function() self:exit() end)
@@ -175,14 +212,6 @@ function Vim:enterModal(name)
   vimLogger.i("Entering modal " .. name)
   self:exitAllModals()
   self.modals[name]:enter()
-end
-
-function findFirst(list, fn)
-  for _, item in ipairs(list) do
-    if fn(item) then return item end
-  end
-
-  return nil
 end
 
 function Vim:fireCommandState()
