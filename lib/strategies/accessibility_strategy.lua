@@ -30,6 +30,9 @@ function AccessibilityStrategy:getNextBuffer()
   local buffer = AccessibilityBuffer:new()
   local range = motion:getRange(buffer)
 
+  -- just cancel if the motion doesn't decide to do anything
+  if not range then return nil end
+
   local start = range.start
   local finish = range.finish
 

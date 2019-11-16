@@ -137,17 +137,41 @@ function Buffer:charAt(position)
   return string.sub(self:getValue(), position + 1, position + 1)
 end
 
+-- 1 indexed
+-- clamps the position to the end of the line in case the column is
+-- out of bounds.
+function Buffer:getPositionForLineAndColumn(line, column)
+  local lineRange = self:getRangeForLineNumber(line)
+  local maxColumn = lineRange.length
+
+  column = math.min(column, maxColumn)
+
+  return lineRange.location + column - 1
+end
+
+function Buffer:getCurrentColumn()
+  local start = self:getCurrentLineRange().location
+  local currentPosition = self:getCursorPosition()
+
+  return currentPosition - start + 1
+end
+
 function Buffer:getCurrentLineRange()
   local currentLineNumber = self:getCurrentLineNumber()
+
+  return self:getRangeForLineNumber(currentLineNumber)
+end
+
+function Buffer:getRangeForLineNumber(lineNumber)
   local lines = self:getLines()
   local start = 0
 
   for i, line in ipairs(lines) do
-    if i == currentLineNumber then break end
+    if i == lineNumber then break end
     start = start + string.len(line)
   end
 
-  local length = #lines[currentLineNumber]
+  local length = #lines[lineNumber]
 
   return Selection:new(start, length)
 end

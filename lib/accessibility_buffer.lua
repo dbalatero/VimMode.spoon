@@ -105,8 +105,13 @@ function AccessibilityBuffer:getCurrentLineNumber()
 end
 
 function AccessibilityBuffer:getCurrentLineRange()
-  local axLineNumber = self:getCurrentLineNumber() - 1
-  local range = self:getCurrentElement():rangeForLineWithParameter(axLineNumber)
+  return self:getRangeForLineNumber(self:getCurrentLineNumber())
+end
+
+function AccessibilityBuffer:getRangeForLineNumber(lineNumber)
+  local range = self
+    :getCurrentElement()
+    :rangeForLineWithParameter(lineNumber - 1)
 
   return Selection:new(range.loc, range.len)
 end
