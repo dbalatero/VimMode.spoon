@@ -106,6 +106,7 @@ end
 function Vim:pushDigitTo(name, digit)
   return function()
     self.commandState:pushCountDigit(name, digit)
+    vimLogger.i("Count is now " .. self.commandState:getCount(name))
   end
 end
 
