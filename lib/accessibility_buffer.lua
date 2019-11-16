@@ -30,6 +30,11 @@ function AccessibilityBuffer:getCurrentElement()
   return self.currentElement
 end
 
+function AccessibilityBuffer:resetToBeginningOfLineForIndex()
+  local selection = self:getCurrentLineRange()
+  self:setSelectionRange(selection.location, 0)
+end
+
 function AccessibilityBuffer:getSelectionRange()
   if self.selection then return self.selection end
 
@@ -46,6 +51,18 @@ function AccessibilityBuffer:getCurrentLine()
   local start = range.location + 1
 
   return string.sub(self:getValue(), start, start + range.length - 1)
+end
+
+function AccessibilityBuffer:getCurrentLineNumber()
+  return self
+    :getCurrentElement()
+    :lineForIndexWithParameter(self:getCurrentLineRange().location)
+end
+
+function AccessibilityBuffer:getLineCount()
+  return self
+    :getCurrentElement()
+    :lineForIndexWithParameter(self:lastValueIndex()) + 1
 end
 
 function AccessibilityBuffer:setSelectionRange(location, length)

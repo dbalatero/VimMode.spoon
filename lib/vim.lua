@@ -9,6 +9,7 @@ local KeyboardStrategy = dofile(vimModeScriptPath .. "lib/strategies/keyboard_st
 local BackWord = dofile(vimModeScriptPath .. "lib/motions/back_word.lua")
 local BigWord = dofile(vimModeScriptPath .. "lib/motions/big_word.lua")
 local EndOfWord = dofile(vimModeScriptPath .. "lib/motions/end_of_word.lua")
+local EntireLine = dofile(vimModeScriptPath .. "lib/motions/entire_line.lua")
 local LineBeginning = dofile(vimModeScriptPath .. "lib/motions/line_beginning.lua")
 local LineEnd = dofile(vimModeScriptPath .. "lib/motions/line_end.lua")
 local Word = dofile(vimModeScriptPath .. "lib/motions/word.lua")
@@ -91,6 +92,8 @@ function Vim:buildOperatorPendingModal()
 
   return modal
     :bind({}, 'ESCAPE', function() self:exit() end)
+    :bind({}, 'c', self:motion(EntireLine)) -- cc
+    :bind({}, 'd', self:motion(EntireLine)) -- dd
 end
 
 function Vim:buildNormalModeModal()

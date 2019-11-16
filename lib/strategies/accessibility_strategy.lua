@@ -36,7 +36,14 @@ function AccessibilityStrategy:getNextBuffer()
   if operator then
     if range.mode == 'exclusive' then finish = finish - 1 end
 
-    return operator.getModifiedBuffer(buffer, start, finish)
+    local buffer = operator.getModifiedBuffer(buffer, start, finish)
+
+    if range.direction == 'linewise' then
+      -- reset the cursor to the beginning of the line
+      buffer:resetToBeginningOfLineForIndex()
+    end
+
+    return buffer
   else
     local direction = 'right'
 

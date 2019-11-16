@@ -88,6 +88,14 @@ function Buffer:getLength()
   return #(self:getValue())
 end
 
+function Buffer:lastValueIndex()
+  local length = self:getLength()
+
+  if length == 0 then return 0 end
+
+  return length - 1
+end
+
 function Buffer:getContentsBeforeSelection()
   local contents = string.sub(self:getValue(), 0, self.selection:positionEnd())
 
@@ -112,9 +120,17 @@ function Buffer:getLines()
   return self.lines
 end
 
+function Buffer:getLineCount()
+  return #self:getLines()
+end
+
 function Buffer:getCurrentLine()
   local lines = self:getLines()
   return lines[self:getCurrentLineNumber()]
+end
+
+function Buffer:charAt(position)
+  return string.sub(self:getValue(), position + 1, position + 1)
 end
 
 function Buffer:getCurrentLineRange()
@@ -134,6 +150,10 @@ end
 
 function Buffer:getCursorPosition()
   return self:getSelectionRange():positionEnd()
+end
+
+function Buffer:isOnLastLine()
+  return self:getCurrentLineNumber() == self:getLineCount()
 end
 
 return Buffer
