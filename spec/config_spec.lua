@@ -8,7 +8,6 @@ describe("Config", function()
       assert.are.same(
         {
           shouldDimScreen = true,
-          disabledForApps = { 'iTerm', 'iTerm2', 'Terminal' }
         },
         config
       )
@@ -18,9 +17,9 @@ describe("Config", function()
   describe("#setOptions", function()
     it("sets options", function()
       local config = Config:new()
-      config:setOptions({ disabledForApps = { 'Code' } })
+      config:setOptions({ shouldDimScreen = false })
 
-      assert.are.same({ 'Code' }, config.disabledForApps)
+      assert.are.same(false, config.shouldDimScreen)
     end)
   end)
 end)
