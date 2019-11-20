@@ -22,9 +22,10 @@ local function createStateMachine(vim)
         vim:enterModal('normal')
       end,
       onenterInsert = function()
+        vimLogger.i("Exiting Vim")
         vim:setInsertMode()
         vim:exitAllModals()
-        vimLogger.i("Exiting Vim")
+        vim:enableSequence()
       end,
       onenterOperator = function(_, _, _, _, operator)
         vim.commandState.operator = operator

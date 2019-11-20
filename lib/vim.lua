@@ -5,6 +5,7 @@ dofile(vimModeScriptPath .. "lib/utils/benchmark.lua")
 local CommandState = dofile(vimModeScriptPath .. "lib/command_state.lua")
 local AccessibilityStrategy = dofile(vimModeScriptPath .. "lib/strategies/accessibility_strategy.lua")
 local KeyboardStrategy = dofile(vimModeScriptPath .. "lib/strategies/keyboard_strategy.lua")
+local KeySequence = dofile(vimModeScriptPath .. "lib/key_sequence.lua")
 
 local BackWord = dofile(vimModeScriptPath .. "lib/motions/back_word.lua")
 local BigWord = dofile(vimModeScriptPath .. "lib/motions/big_word.lua")
@@ -61,6 +62,7 @@ function Vim:new()
 
   vim.mode = 'insert'
   vim.state = createStateMachine(vim)
+  vim.sequence = nil
 
   vim.modals = {
     normal = vim:buildNormalModeModal(),
@@ -204,6 +206,31 @@ function Vim:buildNormalModeModal()
       self:operator(Change)()
       self:motion(Right)()
     end)
+end
+
+function Vim:enableKeySequence(key1, key2, modifiers)
+  modifiers = modifiers or {}
+
+  local onSequencePressed = function()
+    self:enter()
+  end
+
+  self.sequence = KeySequence
+    :new{ key1 = key1, key2 = key2, modifiers = modifiers }
+    :setOnSequencePressed(onSequencePressed)
+    :enable()
+
+  return self
+end
+
+function Vim:disableSequence()
+  if not self.sequence then return end
+  self.sequence:disable()
+end
+
+function Vim:enableSequence()
+  if not self.sequence then return end
+  self.sequence:enable()
 end
 
 function Vim:exit()
