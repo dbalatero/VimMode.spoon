@@ -7,6 +7,7 @@ describe("Config", function()
 
       assert.are.same(
         {
+          shouldDimScreen = true,
           disabledForApps = { 'iTerm', 'iTerm2', 'Terminal' }
         },
         config
