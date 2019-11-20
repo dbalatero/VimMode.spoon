@@ -5,7 +5,8 @@ function Config:new(options)
 
   -- defaults
   local config = {
-    disabledForApps = { 'iTerm', 'iTerm2', 'Terminal' }
+    disabledForApps = { 'iTerm', 'iTerm2', 'Terminal' },
+    shouldDimScreen = true
   }
 
   setmetatable(config, self)
