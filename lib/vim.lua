@@ -1,4 +1,9 @@
-local VimMode = {}
+local VimMode = {
+  author = "David Balatero <dbalatero@gmail.com>",
+  license = "ISC",
+  name = "VimMode",
+  version = "1.0.0",
+}
 
 ---------------------------------------------
 
