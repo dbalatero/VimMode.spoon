@@ -1,5 +1,6 @@
 local VimMode = {
   author = "David Balatero <dbalatero@gmail.com>",
+  homepage = "https://github.com/dbalatero/VimMode.spoon",
   license = "ISC",
   name = "VimMode",
   version = "1.0.0",
