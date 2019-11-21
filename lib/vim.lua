@@ -47,18 +47,6 @@ local findFirst = dofile(vimModeScriptPath .. "lib/utils/find_first.lua")
 
 vimLogger = hs.logger.new('vim', 'debug')
 
-local function createVimModal()
-  local modal = hs.hotkey.modal.new()
-
-  modal.bindWithRepeat = function(mdl, mods, key, fn)
-    local message = nil
-
-    return mdl:bind(mods, key, message, fn, fn, fn)
-  end
-
-  return modal
-end
-
 function VimMode:new()
   local vim = {}
 
@@ -84,6 +72,19 @@ function VimMode:new()
 
   return vim
 end
+
+local function createVimModal()
+  local modal = hs.hotkey.modal.new()
+
+  modal.bindWithRepeat = function(mdl, mods, key, fn)
+    local message = nil
+
+    return mdl:bind(mods, key, message, fn, fn, fn)
+  end
+
+  return modal
+end
+
 
 function VimMode:shouldShowAlertInNormalMode(showAlert)
   self.config.shouldShowAlertInNormalMode = showAlert
