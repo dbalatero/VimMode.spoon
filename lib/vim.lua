@@ -144,7 +144,7 @@ function Vim:bindMotionsToModal(modal, type)
       if self.commandState:getCount(type) then
         self:pushDigitTo(type, 0)()
       else
-        self:motion(LineBeginning)
+        self:motion(LineBeginning)()
       end
     end)
     :bindWithRepeat({'shift'}, '4', self:motion(LineEnd)) -- $
@@ -181,7 +181,7 @@ function Vim:bindCountsToModal(modal, name)
 end
 
 function Vim:buildOperatorPendingModal()
-  local modal = self:bindMotionsToModal(createVimModal())
+  local modal = self:bindMotionsToModal(createVimModal(), 'motion')
   modal = self:bindCountsToModal(modal, 'motion')
 
   return modal
@@ -191,7 +191,7 @@ function Vim:buildOperatorPendingModal()
 end
 
 function Vim:buildNormalModeModal()
-  local modal = self:bindMotionsToModal(createVimModal())
+  local modal = self:bindMotionsToModal(createVimModal(), 'operator')
   modal = self:bindCountsToModal(modal, 'operator')
 
   return modal
