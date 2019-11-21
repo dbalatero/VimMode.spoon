@@ -4,6 +4,7 @@ local VimMode = {
   license = "ISC",
   name = "VimMode",
   version = "1.0.0",
+  spoonPath = vimModeScriptPath
 }
 
 ---------------------------------------------
