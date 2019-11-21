@@ -10,6 +10,7 @@ local Config = dofile(vimModeScriptPath .. "lib/config.lua")
 local KeySequence = dofile(vimModeScriptPath .. "lib/key_sequence.lua")
 local KeyboardStrategy = dofile(vimModeScriptPath .. "lib/strategies/keyboard_strategy.lua")
 local ScreenDimmer = dofile(vimModeScriptPath .. "lib/screen_dimmer.lua")
+local WaitForChar = dofile(vimModeScriptPath .. "lib/wait_for_char.lua")
 
 local BackWord = dofile(vimModeScriptPath .. "lib/motions/back_word.lua")
 local BigWord = dofile(vimModeScriptPath .. "lib/motions/big_word.lua")
@@ -28,6 +29,7 @@ local Down = dofile(vimModeScriptPath .. "lib/motions/down.lua")
 
 local Change = dofile(vimModeScriptPath .. "lib/operators/change.lua")
 local Delete = dofile(vimModeScriptPath .. "lib/operators/delete.lua")
+local Replace = dofile(vimModeScriptPath .. "lib/operators/replace.lua")
 local Yank = dofile(vimModeScriptPath .. "lib/operators/yank.lua")
 
 local createStateMachine = dofile(vimModeScriptPath .. "lib/state.lua")
@@ -123,6 +125,38 @@ function Vim:operator(type)
   end
 end
 
+function Vim:cancel()
+  self.state:enterNormal()
+end
+
+function Vim:operatorNeedingChar(type, optionalMotion)
+  return function()
+    self:exitAllModals()
+    vimLogger.i("waiting on char...")
+
+    local waiter = WaitForChar:new{
+      onCancel = function()
+        vimLogger.i("onCancel()")
+        self:cancel()
+      end,
+      onChar = function(character)
+        local operator = type:new()
+        operator:setExtraChar(character)
+
+        vimLogger.i("Got a character " .. character .. " for " .. operator.name)
+
+        self.state:enterOperator(operator)
+
+        if optionalMotion then
+          self.state:enterMotion(optionalMotion:new())
+        end
+      end
+    }
+
+    waiter:start()
+  end
+end
+
 function Vim:motion(type)
   return function()
     self.state:enterMotion(type:new())
@@ -144,7 +178,7 @@ function Vim:bindMotionsToModal(modal, type)
       if self.commandState:getCount(type) then
         self:pushDigitTo(type, 0)()
       else
-        self:motion(LineBeginning)
+        self:motion(LineBeginning)()
       end
     end)
     :bindWithRepeat({'shift'}, '4', self:motion(LineEnd)) -- $
@@ -181,17 +215,17 @@ function Vim:bindCountsToModal(modal, name)
 end
 
 function Vim:buildOperatorPendingModal()
-  local modal = self:bindMotionsToModal(createVimModal())
+  local modal = self:bindMotionsToModal(createVimModal(), 'motion')
   modal = self:bindCountsToModal(modal, 'motion')
 
   return modal
-    :bind({}, 'ESCAPE', function() self:exit() end)
+    :bind({}, 'ESCAPE', function() self:cancel() end)
     :bind({}, 'c', self:motion(EntireLine)) -- cc
     :bind({}, 'd', self:motion(EntireLine)) -- dd
 end
 
 function Vim:buildNormalModeModal()
-  local modal = self:bindMotionsToModal(createVimModal())
+  local modal = self:bindMotionsToModal(createVimModal(), 'operator')
   modal = self:bindCountsToModal(modal, 'operator')
 
   return modal
@@ -199,6 +233,7 @@ function Vim:buildNormalModeModal()
     :bind({}, 'c', nil, self:operator(Change))
     :bind({}, 'd', nil, self:operator(Delete))
     :bind({}, 'y', nil, self:operator(Yank))
+    :bind({}, 'r', nil, self:operatorNeedingChar(Replace, Right))
     :bind({}, '/', function()
       hs.eventtap.keyStroke({'cmd'}, 'f', 0)
       self:exit()
