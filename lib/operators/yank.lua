@@ -1,7 +1,7 @@
 local Operator = dofile(vimModeScriptPath .. "lib/operator.lua")
 local Yank = Operator:new{name = 'yank'}
 
-function Yank.getModifiedBuffer(buffer, rangeStart, rangeFinish)
+function Yank.getModifiedBuffer(_, buffer, rangeStart, rangeFinish)
   -- we just want to set it in the pasteboard
   if hs then
     local stringStart, stringFinish = rangeStart + 1, rangeFinish + 1

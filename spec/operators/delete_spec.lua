@@ -15,7 +15,7 @@ describe("Delete", function()
 
       local delete = Delete:new()
 
-      local newBuffer = delete.getModifiedBuffer(buffer, 0, 4)
+      local newBuffer = delete:getModifiedBuffer(buffer, 0, 4)
 
       assert.are.equals("one two", newBuffer:getValue())
       assert.are.same(
@@ -31,7 +31,7 @@ describe("Delete", function()
 
       local delete = Delete:new()
 
-      local newBuffer = delete.getModifiedBuffer(buffer, 5, 8)
+      local newBuffer = delete:getModifiedBuffer(buffer, 5, 8)
 
       assert.are.equals("word two", newBuffer:getValue())
       assert.are.same(

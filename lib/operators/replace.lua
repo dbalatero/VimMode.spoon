@@ -1,8 +1,11 @@
 local Operator = dofile(vimModeScriptPath .. "lib/operator.lua")
-local Delete = Operator:new{name = 'delete'}
+local times = dofile(vimModeScriptPath .. "lib/utils/times.lua")
+local Replace = Operator:new{name = 'replace'}
 
-function Delete.getModifiedBuffer(_, buffer, rangeStart, rangeFinish)
+function Replace:getModifiedBuffer(buffer, rangeStart, rangeFinish)
   local value = buffer:getValue()
+  local replaceChar = self:getExtraChar()
+
   local length = rangeFinish - rangeStart + 1
 
   local contents = ""
@@ -12,18 +15,20 @@ function Delete.getModifiedBuffer(_, buffer, rangeStart, rangeFinish)
     contents = string.sub(value, 1, stringStart - 1)
   end
 
+  local numChars = rangeFinish - rangeStart + 1
+
+  times(numChars, function()
+    contents = contents .. replaceChar
+  end)
+
   contents = contents .. string.sub(value, stringFinish + 1, -1)
 
   return buffer:createNew(contents, rangeStart, 0)
 end
 
-function Delete.getKeys()
-  return {
-    {
-      modifiers = {},
-      key = 'delete'
-    }
-  }
+-- TODO
+function Replace.getKeys()
+  return {}
 end
 
-return Delete
+return Replace
