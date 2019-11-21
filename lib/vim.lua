@@ -2,11 +2,12 @@ local ax = require("hs._asm.axuielement")
 
 dofile(vimModeScriptPath .. "lib/utils/benchmark.lua")
 
-local CommandState = dofile(vimModeScriptPath .. "lib/command_state.lua")
 local AccessibilityStrategy = dofile(vimModeScriptPath .. "lib/strategies/accessibility_strategy.lua")
-local KeyboardStrategy = dofile(vimModeScriptPath .. "lib/strategies/keyboard_strategy.lua")
-local KeySequence = dofile(vimModeScriptPath .. "lib/key_sequence.lua")
+local AppWatcher = dofile(vimModeScriptPath .. "lib/app_watcher.lua")
+local CommandState = dofile(vimModeScriptPath .. "lib/command_state.lua")
 local Config = dofile(vimModeScriptPath .. "lib/config.lua")
+local KeySequence = dofile(vimModeScriptPath .. "lib/key_sequence.lua")
+local KeyboardStrategy = dofile(vimModeScriptPath .. "lib/strategies/keyboard_strategy.lua")
 local ScreenDimmer = dofile(vimModeScriptPath .. "lib/screen_dimmer.lua")
 
 local BackWord = dofile(vimModeScriptPath .. "lib/motions/back_word.lua")
@@ -63,6 +64,7 @@ function Vim:new()
   vim:resetCommandState()
 
   vim.config = Config:new()
+  vim.enabled = true
   vim.mode = 'insert'
   vim.state = createStateMachine(vim)
   vim.sequence = nil
@@ -73,11 +75,34 @@ function Vim:new()
     g = vim:buildGModal()
   }
 
+  vim.appWatcher = AppWatcher:new(vim):start()
+
   return vim
 end
 
 function Vim:shouldDimScreenInNormalMode(shouldDimScreen)
   self.config.shouldDimScreen = shouldDimScreen
+  return self
+end
+
+function Vim:disableForApp(appName)
+  self.appWatcher:disableApp(appName)
+
+  return self
+end
+
+function Vim:disable()
+  self.enabled = false
+  self:disableSequence()
+
+  return self
+end
+
+function Vim:enable()
+  self.enabled = true
+  self:enableSequence()
+  self:resetCommandState()
+
   return self
 end
 
@@ -90,7 +115,6 @@ function Vim:operator(type)
     self.state:enterOperator(type:new())
   end
 end
-
 
 function Vim:motion(type)
   return function()
@@ -266,8 +290,10 @@ function Vim:shouldDimScreen()
 end
 
 function Vim:enter()
-  vimLogger.i("Entering Vim")
-  self.state:enterNormal()
+  if self.enabled then
+    vimLogger.i("Entering Vim")
+    self.state:enterNormal()
+  end
 end
 
 function Vim:exitAllModals()
