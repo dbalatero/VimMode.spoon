@@ -43,6 +43,7 @@ local Replace = dofile(vimModeScriptPath .. "lib/operators/replace.lua")
 local Yank = dofile(vimModeScriptPath .. "lib/operators/yank.lua")
 
 local createStateMachine = dofile(vimModeScriptPath .. "lib/state.lua")
+local findFirst = dofile(vimModeScriptPath .. "lib/utils/find_first.lua")
 
 vimLogger = hs.logger.new('vim', 'debug')
 
@@ -56,14 +57,6 @@ local function createVimModal()
   end
 
   return modal
-end
-
-local function findFirst(list, fn)
-  for _, item in ipairs(list) do
-    if fn(item) then return item end
-  end
-
-  return nil
 end
 
 function VimMode:new()
