@@ -73,6 +73,25 @@ function VimMode:new()
   return vim
 end
 
+-- Spoon API conformity
+
+-- Allows binding entering normal mode to a hot key
+--
+-- vim:bindHotKeys({ enter = { {'cmd', 'shift'}, 'v' } })
+function VimMode:bindHotKeys(keyTable)
+  if keyTable.enter then
+    local enter = keyTable.enter
+
+    hs.hotkey.bind(enter[1], enter[2], function()
+      self:enter()
+    end)
+  end
+
+  return self
+end
+
+---------------------------
+
 local function createVimModal()
   local modal = hs.hotkey.modal.new()
 
@@ -84,7 +103,6 @@ local function createVimModal()
 
   return modal
 end
-
 
 function VimMode:shouldShowAlertInNormalMode(showAlert)
   self.config.shouldShowAlertInNormalMode = showAlert
