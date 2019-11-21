@@ -9,6 +9,12 @@ local VimMode = {
 
 ---------------------------------------------
 
+vimLogger = hs.logger.new('vim', 'debug')
+
+-- Push ./vendor to the load path
+package.path = vimModeScriptPath .. "vendor/?/init.lua;" .. package.path
+package.cpath = vimModeScriptPath .. "vendor/?.so;" .. package.cpath
+
 local ax = require("hs._asm.axuielement")
 
 dofile(vimModeScriptPath .. "lib/utils/benchmark.lua")
@@ -45,8 +51,6 @@ local Yank = dofile(vimModeScriptPath .. "lib/operators/yank.lua")
 
 local createStateMachine = dofile(vimModeScriptPath .. "lib/state.lua")
 local findFirst = dofile(vimModeScriptPath .. "lib/utils/find_first.lua")
-
-vimLogger = hs.logger.new('vim', 'debug')
 
 function VimMode:new()
   local vim = {}
