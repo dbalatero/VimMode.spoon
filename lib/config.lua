@@ -5,6 +5,7 @@ function Config:new(options)
 
   -- defaults
   local config = {
+    shouldShowAlertInNormalMode = true,
     shouldDimScreenInNormalMode = true
   }
 

@@ -80,6 +80,11 @@ function Vim:new()
   return vim
 end
 
+function Vim:shouldShowAlertInNormalMode(showAlert)
+  self.config.shouldShowAlertInNormalMode = showAlert
+  return self
+end
+
 function Vim:shouldDimScreenInNormalMode(shouldDimScreen)
   self.config.shouldDimScreenInNormalMode = shouldDimScreen
   return self

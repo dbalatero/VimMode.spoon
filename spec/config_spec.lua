@@ -7,6 +7,7 @@ describe("Config", function()
 
       assert.are.same(
         {
+          shouldShowAlertInNormalMode = true,
           shouldDimScreenInNormalMode = true,
         },
         config
