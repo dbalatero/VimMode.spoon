@@ -82,9 +82,7 @@ vim = hs.loadSpoon('VimMode')
 -- You can choose any key binding you want here, see:
 --   https://www.hammerspoon.org/docs/hs.hotkey.html#bind
 
-hs.hotkey.bind({'ctrl'}, ';', function()
-  vim:enter()
-end)
+vim:bindHotKeys({ enter = {{'ctrl'}, ';'} })
 ```
 
 ## Binding jk to enter Vim Mode
