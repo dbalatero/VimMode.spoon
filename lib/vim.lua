@@ -1,3 +1,7 @@
+local VimMode = {}
+
+---------------------------------------------
+
 local ax = require("hs._asm.axuielement")
 
 dofile(vimModeScriptPath .. "lib/utils/benchmark.lua")
@@ -34,8 +38,6 @@ local Yank = dofile(vimModeScriptPath .. "lib/operators/yank.lua")
 
 local createStateMachine = dofile(vimModeScriptPath .. "lib/state.lua")
 
-local Vim = {}
-
 vimLogger = hs.logger.new('vim', 'debug')
 
 local function createVimModal()
@@ -58,7 +60,7 @@ local function findFirst(list, fn)
   return nil
 end
 
-function Vim:new()
+function VimMode:new()
   local vim = {}
 
   setmetatable(vim, self)
@@ -84,30 +86,30 @@ function Vim:new()
   return vim
 end
 
-function Vim:shouldShowAlertInNormalMode(showAlert)
+function VimMode:shouldShowAlertInNormalMode(showAlert)
   self.config.shouldShowAlertInNormalMode = showAlert
   return self
 end
 
-function Vim:shouldDimScreenInNormalMode(shouldDimScreen)
+function VimMode:shouldDimScreenInNormalMode(shouldDimScreen)
   self.config.shouldDimScreenInNormalMode = shouldDimScreen
   return self
 end
 
-function Vim:disableForApp(appName)
+function VimMode:disableForApp(appName)
   self.appWatcher:disableApp(appName)
 
   return self
 end
 
-function Vim:disable()
+function VimMode:disable()
   self.enabled = false
   self:disableSequence()
 
   return self
 end
 
-function Vim:enable()
+function VimMode:enable()
   self.enabled = true
   self:enableSequence()
   self:resetCommandState()
@@ -115,21 +117,21 @@ function Vim:enable()
   return self
 end
 
-function Vim:resetCommandState()
+function VimMode:resetCommandState()
   self.commandState = CommandState:new()
 end
 
-function Vim:operator(type)
+function VimMode:operator(type)
   return function()
     self.state:enterOperator(type:new())
   end
 end
 
-function Vim:cancel()
+function VimMode:cancel()
   self.state:enterNormal()
 end
 
-function Vim:operatorNeedingChar(type, optionalMotion)
+function VimMode:operatorNeedingChar(type, optionalMotion)
   return function()
     self:exitAllModals()
     vimLogger.i("waiting on char...")
@@ -157,21 +159,21 @@ function Vim:operatorNeedingChar(type, optionalMotion)
   end
 end
 
-function Vim:motion(type)
+function VimMode:motion(type)
   return function()
     self.state:enterMotion(type:new())
   end
 end
 
 -- commands prefixed with g
-function Vim:buildGModal()
+function VimMode:buildGModal()
   return createVimModal()
     :bind({}, 'ESCAPE', function() self:exit() end)
     :bind({}, 'g', nil, self:motion(FirstLine))
 end
 
 -- type is either 'motion' or 'operator'
-function Vim:bindMotionsToModal(modal, type)
+function VimMode:bindMotionsToModal(modal, type)
   return modal
     :bindWithRepeat({}, '0', function()
       -- we've already started adding a count here
@@ -194,14 +196,14 @@ function Vim:bindMotionsToModal(modal, type)
     :bind({}, 'g', function() self:enterModal('g') end)
 end
 
-function Vim:pushDigitTo(name, digit)
+function VimMode:pushDigitTo(name, digit)
   return function()
     self.commandState:pushCountDigit(name, digit)
     vimLogger.i("Count is now " .. self.commandState:getCount(name))
   end
 end
 
-function Vim:bindCountsToModal(modal, name)
+function VimMode:bindCountsToModal(modal, name)
   return modal
     :bindWithRepeat({}, '1', self:pushDigitTo(name, 1))
     :bindWithRepeat({}, '2', self:pushDigitTo(name, 2))
@@ -214,7 +216,7 @@ function Vim:bindCountsToModal(modal, name)
     :bindWithRepeat({}, '9', self:pushDigitTo(name, 9))
 end
 
-function Vim:buildOperatorPendingModal()
+function VimMode:buildOperatorPendingModal()
   local modal = self:bindMotionsToModal(createVimModal(), 'motion')
   modal = self:bindCountsToModal(modal, 'motion')
 
@@ -224,7 +226,7 @@ function Vim:buildOperatorPendingModal()
     :bind({}, 'd', self:motion(EntireLine)) -- dd
 end
 
-function Vim:buildNormalModeModal()
+function VimMode:buildNormalModeModal()
   local modal = self:bindMotionsToModal(createVimModal(), 'operator')
   modal = self:bindCountsToModal(modal, 'operator')
 
@@ -282,7 +284,7 @@ function Vim:buildNormalModeModal()
     end)
 end
 
-function Vim:enableKeySequence(key1, key2, modifiers)
+function VimMode:enableKeySequence(key1, key2, modifiers)
   modifiers = modifiers or {}
 
   local onSequencePressed = function()
@@ -297,21 +299,21 @@ function Vim:enableKeySequence(key1, key2, modifiers)
   return self
 end
 
-function Vim:disableSequence()
+function VimMode:disableSequence()
   if not self.sequence then return end
   self.sequence:disable()
 end
 
-function Vim:enableSequence()
+function VimMode:enableSequence()
   if not self.sequence then return end
   self.sequence:enable()
 end
 
-function Vim:exit()
+function VimMode:exit()
   self.state:enterInsert()
 end
 
-function Vim:setInsertMode()
+function VimMode:setInsertMode()
   self.mode = "insert"
 
   if self:shouldDimScreen() then ScreenDimmer.restoreScreen() end
@@ -319,7 +321,7 @@ function Vim:setInsertMode()
   return self
 end
 
-function Vim:setNormalMode()
+function VimMode:setNormalMode()
   self.mode = "normal"
 
   if self:shouldDimScreen() then ScreenDimmer.dimScreen() end
@@ -327,11 +329,11 @@ function Vim:setNormalMode()
   return self
 end
 
-function Vim:shouldDimScreen()
+function VimMode:shouldDimScreen()
   return not not self.config.shouldDimScreenInNormalMode
 end
 
-function Vim:enter()
+function VimMode:enter()
   if self.enabled then
     vimLogger.i("Entering Vim")
     self:showAlert()
@@ -339,19 +341,19 @@ function Vim:enter()
   end
 end
 
-function Vim:exitAllModals()
+function VimMode:exitAllModals()
   for _, modal in pairs(self.modals) do
     modal:exit()
   end
 end
 
-function Vim:enterModal(name)
+function VimMode:enterModal(name)
   vimLogger.i("Entering modal " .. name)
   self:exitAllModals()
   self.modals[name]:enter()
 end
 
-function Vim:fireCommandState()
+function VimMode:fireCommandState()
   local operator = self.commandState.operator
   local motion = self.commandState.motion
 
@@ -373,18 +375,18 @@ function Vim:fireCommandState()
   end
 end
 
-function Vim:showAlert()
+function VimMode:showAlert()
   if self.config.shouldShowAlertInNormalMode then
     self.alert:show(self.config)
   end
 end
 
-function Vim:hideAlert()
+function VimMode:hideAlert()
   self.alert:hide()
 end
 
-function Vim:setAlertFont(name)
+function VimMode:setAlertFont(name)
   self.config.alert.font = name
 end
 
-return Vim
+return VimMode
