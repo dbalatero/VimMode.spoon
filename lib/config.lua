@@ -5,7 +5,7 @@ function Config:new(options)
 
   -- defaults
   local config = {
-    shouldDimScreen = true
+    shouldDimScreenInNormalMode = true
   }
 
   setmetatable(config, self)

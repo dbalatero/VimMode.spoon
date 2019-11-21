@@ -7,7 +7,7 @@ describe("Config", function()
 
       assert.are.same(
         {
-          shouldDimScreen = true,
+          shouldDimScreenInNormalMode = true,
         },
         config
       )
@@ -17,9 +17,9 @@ describe("Config", function()
   describe("#setOptions", function()
     it("sets options", function()
       local config = Config:new()
-      config:setOptions({ shouldDimScreen = false })
+      config:setOptions({ shouldDimScreenInNormalMode = false })
 
-      assert.are.same(false, config.shouldDimScreen)
+      assert.are.same(false, config.shouldDimScreenInNormalMode)
     end)
   end)
 end)

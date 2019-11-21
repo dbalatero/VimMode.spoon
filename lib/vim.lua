@@ -81,7 +81,7 @@ function Vim:new()
 end
 
 function Vim:shouldDimScreenInNormalMode(shouldDimScreen)
-  self.config.shouldDimScreen = shouldDimScreen
+  self.config.shouldDimScreenInNormalMode = shouldDimScreen
   return self
 end
 
@@ -286,7 +286,7 @@ function Vim:setNormalMode()
 end
 
 function Vim:shouldDimScreen()
-  return not not self.config.shouldDimScreen
+  return not not self.config.shouldDimScreenInNormalMode
 end
 
 function Vim:enter()
