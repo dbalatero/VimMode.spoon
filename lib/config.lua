@@ -5,6 +5,9 @@ function Config:new(options)
 
   -- defaults
   local config = {
+    alert = {
+      font = "Courier New"
+    },
     shouldShowAlertInNormalMode = true,
     shouldDimScreenInNormalMode = true
   }

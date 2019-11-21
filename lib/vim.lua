@@ -3,6 +3,7 @@ local ax = require("hs._asm.axuielement")
 dofile(vimModeScriptPath .. "lib/utils/benchmark.lua")
 
 local AccessibilityStrategy = dofile(vimModeScriptPath .. "lib/strategies/accessibility_strategy.lua")
+local Alert = dofile(vimModeScriptPath .. "lib/alert.lua")
 local AppWatcher = dofile(vimModeScriptPath .. "lib/app_watcher.lua")
 local CommandState = dofile(vimModeScriptPath .. "lib/command_state.lua")
 local Config = dofile(vimModeScriptPath .. "lib/config.lua")
@@ -63,6 +64,7 @@ function Vim:new()
 
   vim:resetCommandState()
 
+  vim.alert = Alert:new()
   vim.config = Config:new()
   vim.enabled = true
   vim.mode = 'insert'
@@ -297,6 +299,7 @@ end
 function Vim:enter()
   if self.enabled then
     vimLogger.i("Entering Vim")
+    self:showAlert()
     self.state:enterNormal()
   end
 end
@@ -333,6 +336,20 @@ function Vim:fireCommandState()
   else
     return motion.getModeForTransition()
   end
+end
+
+function Vim:showAlert()
+  if self.config.shouldShowAlertInNormalMode then
+    self.alert:show(self.config)
+  end
+end
+
+function Vim:hideAlert()
+  self.alert:hide()
+end
+
+function Vim:setAlertFont(name)
+  self.config.alert.font = name
 end
 
 return Vim

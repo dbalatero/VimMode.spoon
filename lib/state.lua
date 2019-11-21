@@ -26,6 +26,7 @@ local function createStateMachine(vim)
         vim:setInsertMode()
         vim:exitAllModals()
         vim:enableSequence()
+        vim:hideAlert()
       end,
       onenterOperator = function(_, _, _, _, operator)
         vim.commandState.operator = operator

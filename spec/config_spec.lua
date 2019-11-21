@@ -5,13 +5,8 @@ describe("Config", function()
     it("has them", function()
       local config = Config:new()
 
-      assert.are.same(
-        {
-          shouldShowAlertInNormalMode = true,
-          shouldDimScreenInNormalMode = true,
-        },
-        config
-      )
+      assert.are.equals(true, config.shouldShowAlertInNormalMode)
+      assert.are.equals("Courier New", config.alert.font)
     end)
   end)
 
