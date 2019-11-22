@@ -192,8 +192,13 @@ end
 -- commands prefixed with g
 function VimMode:buildGModal()
   return createVimModal()
-    :bind({}, 'ESCAPE', function() self:exit() end)
+    :bind({}, 'escape', nil, function() self:exit() end)
     :bind({}, 'g', nil, self:motion(FirstLine))
+end
+
+function VimMode:buildVisualModeModal()
+  return createVimModal()
+    :bind({}, 'escape', "hi", function() self:exit() end)
 end
 
 -- type is either 'motion' or 'operator'
@@ -245,7 +250,7 @@ function VimMode:buildOperatorPendingModal()
   modal = self:bindCountsToModal(modal, 'motion')
 
   return modal
-    :bind({}, 'ESCAPE', function() self:cancel() end)
+    :bind({}, 'escape', nil, function() self:cancel() end)
     :bind({}, 'c', self:motion(EntireLine)) -- cc
     :bind({}, 'd', self:motion(EntireLine)) -- dd
 end
