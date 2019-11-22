@@ -71,6 +71,7 @@ function VimMode:new()
   vim.modals = {
     normal = vim:buildNormalModeModal(),
     operatorPending = vim:buildOperatorPendingModal(),
+    visual = vim:buildVisualModeModal(),
     g = vim:buildGModal()
   }
 
@@ -94,6 +95,10 @@ function VimMode:bindHotKeys(keyTable)
   end
 
   return self
+end
+
+function VimMode:isMode(name)
+  return self.mode == name
 end
 
 ---------------------------
@@ -265,6 +270,9 @@ function VimMode:buildNormalModeModal()
     :bind({}, 'd', nil, self:operator(Delete))
     :bind({}, 'y', nil, self:operator(Yank))
     :bind({}, 'r', nil, self:operatorNeedingChar(Replace, Right))
+    :bind({}, 'v', nil, function()
+      self.state:enterVisual()
+    end)
     :bind({}, '/', function()
       hs.eventtap.keyStroke({'cmd'}, 'f', 0)
       self:exit()
@@ -344,6 +352,7 @@ function VimMode:enableSequence()
 end
 
 function VimMode:exit()
+  vimLogger.i("calling it")
   self.state:enterInsert()
 end
 
@@ -359,6 +368,12 @@ function VimMode:setNormalMode()
   self.mode = "normal"
 
   if self:shouldDimScreen() then ScreenDimmer.dimScreen() end
+
+  return self
+end
+
+function VimMode:setVisualMode()
+  self.mode = 'visual'
 
   return self
 end
@@ -402,11 +417,20 @@ function VimMode:fireCommandState()
 
   strategy:fire()
 
+  local transition
+
   if operator then
-    return operator.getModeForTransition()
+    transition = operator.getModeForTransition()
   else
-    return motion.getModeForTransition()
+    transition = motion.getModeForTransition()
   end
+
+  return {
+    mode = self.mode,
+    transition = transition,
+    hadMotion = not not motion,
+    hadOperator = not not operator
+  }
 end
 
 function VimMode:showAlert()

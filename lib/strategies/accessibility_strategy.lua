@@ -49,14 +49,28 @@ function AccessibilityStrategy:getNextBuffer()
     return buffer
   else
     local direction = 'right'
+    local currentRange = buffer:getSelectionRange()
 
-    if start < buffer:getSelectionRange().location then
+    if start < currentRange.location then
       direction = 'left'
     end
 
-    local location = (direction == 'left' and start) or finish
+    local length = 0
+    local location
 
-    return AccessibilityBuffer:new():setSelectionRange(location, 0)
+    if self.vim.isMode('visual') then
+      length = currentRange.length + finish - start
+
+      if direction == 'left' then
+        location = start
+      else
+        location = currentRange.location
+      end
+    else
+      location = (direction == 'left' and start) or finish
+    end
+
+    return AccessibilityBuffer:new():setSelectionRange(location, length)
   end
 end
 
