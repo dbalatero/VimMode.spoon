@@ -101,14 +101,20 @@ function AccessibilityBuffer:isValid()
 end
 
 function AccessibilityBuffer:getCurrentLineNumber()
-  return self:getCurrentElement():insertionPointLineNumber() + 1
-end
+  local axLineNumber = self:getCurrentElement():lineForIndexWithParameter(
+    self:getCaretPosition()
+  )
+
+  return axLineNumber + 1
+ end
 
 function AccessibilityBuffer:getCurrentLineRange()
   return self:getRangeForLineNumber(self:getCurrentLineNumber())
 end
 
 function AccessibilityBuffer:getRangeForLineNumber(lineNumber)
+  vimLogger.i("Getting range for line number " .. inspect(lineNumber))
+
   local range = self
     :getCurrentElement()
     :rangeForLineWithParameter(lineNumber - 1)
