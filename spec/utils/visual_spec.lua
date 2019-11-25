@@ -101,5 +101,19 @@ describe("visual utils", function()
         getNewRange(currentRange, motionRange, caretPosition)
       )
     end)
+
+    it("can cancel out a linewise movement", function()
+      local currentRange = { start = 28, finish = 62 }
+      local motionRange = { start = 28, finish = 62 }
+      local caretPosition = 28
+
+      assert.are.same(
+        {
+          caretPosition = 62,
+          range = { start = 62, finish = 62 }
+        },
+        getNewRange(currentRange, motionRange, caretPosition)
+      )
+    end)
   end)
 end)
