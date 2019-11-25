@@ -67,6 +67,7 @@ function VimMode:new()
   vim.mode = 'insert'
   vim.state = createStateMachine(vim)
   vim.sequence = nil
+  vim.visualCaretPosition = nil
 
   vim.modals = {
     normal = vim:buildNormalModeModal(),
@@ -374,6 +375,7 @@ end
 
 function VimMode:setVisualMode()
   self.mode = 'visual'
+  self.visualCaretPosition = nil
 
   return self
 end
