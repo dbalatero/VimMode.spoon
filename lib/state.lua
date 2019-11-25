@@ -23,9 +23,9 @@ local function createStateMachine(vim)
     },
     callbacks = {
       onenterNormal = function()
+        vim:collapseSelection()
         vim:resetCommandState()
         vim:setNormalMode()
-
         vim:enterModal('normal')
       end,
       onenterInsert = function()
@@ -52,8 +52,11 @@ local function createStateMachine(vim)
         local result = vim:fireCommandState()
 
         if result.mode == "visual" then
-          if result.hadOperator then self:enterNormal()
-          else self:enterVisual() end
+          if result.hadOperator then
+            self:enterNormal()
+          else
+            self:enterVisual()
+          end
         else
           if result.transition == "normal" then self:enterNormal()
           else self:enterInsert() end

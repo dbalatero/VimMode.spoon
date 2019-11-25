@@ -122,6 +122,10 @@ function AccessibilityStrategy:getSelection()
   return Selection:new(range.loc, range.length)
 end
 
+function AccessibilityStrategy:setSelection(location, length)
+  return self:setSelectionRange(Selection:new(location, length))
+end
+
 function AccessibilityStrategy:setSelectionRange(selection)
   self:getCurrentElement():setSelectedTextRange(selection)
 end

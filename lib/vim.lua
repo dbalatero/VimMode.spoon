@@ -26,6 +26,7 @@ local CommandState = dofile(vimModeScriptPath .. "lib/command_state.lua")
 local Config = dofile(vimModeScriptPath .. "lib/config.lua")
 local KeySequence = dofile(vimModeScriptPath .. "lib/key_sequence.lua")
 local KeyboardStrategy = dofile(vimModeScriptPath .. "lib/strategies/keyboard_strategy.lua")
+local RestrictedModal = dofile(vimModeScriptPath .. "lib/restricted_modal.lua")
 local ScreenDimmer = dofile(vimModeScriptPath .. "lib/screen_dimmer.lua")
 local WaitForChar = dofile(vimModeScriptPath .. "lib/wait_for_char.lua")
 
@@ -211,10 +212,13 @@ function VimMode:visualOperator(type)
 end
 
 function VimMode:buildVisualModeModal()
-  local modal = self:bindMotionsToModal(createVimModal())
+  local modal = self:bindMotionsToModal(RestrictedModal:new())
 
   return modal
-    :bind({}, 'escape', nil, function() self:exit() end)
+    :bind({}, 'escape', nil, function()
+      self.state:enterNormal()
+      self.visualCaretPosition = nil
+    end)
     :bind({}, 'c', self:visualOperator(Delete))
     :bind({}, 'd', self:visualOperator(Delete))
     :bind({}, 'd', self:visualOperator(Delete))
@@ -420,6 +424,15 @@ function VimMode:enterModal(name)
   vimLogger.i("Entering modal " .. name)
   self:exitAllModals()
   self.modals[name]:enter()
+end
+
+function VimMode:collapseSelection()
+  if not self.visualCaretPosition then return end
+
+  local strategy = AccessibilityStrategy:new(self)
+  if not strategy:isValid() then return end
+
+  strategy:setSelection(self.visualCaretPosition, 0)
 end
 
 function VimMode:fireCommandState()

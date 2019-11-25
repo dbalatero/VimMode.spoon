@@ -15,6 +15,10 @@ function stringUtils.isWhitespace(char)
   return char == " "
 end
 
+function stringUtils.isNonAlphanumeric(str)
+  return not not str:match("%W")
+end
+
 function stringUtils.isPrintableChar(char)
   return not stringUtils.isPunctuation(char) and
     not stringUtils.isWhitespace(char)
