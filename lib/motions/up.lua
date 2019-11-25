@@ -11,7 +11,7 @@ function Up.getRange(_, buffer)
 
   return {
     start = start,
-    finish = buffer:getCursorPosition(),
+    finish = buffer:getCaretPosition(),
     mode = 'exclusive',
     direction = 'linewise'
   }

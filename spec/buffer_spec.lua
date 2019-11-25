@@ -116,18 +116,4 @@ describe("Buffer", function()
       )
     end)
   end)
-
-  describe("#nextChar", function()
-    it("returns the next char after the cursor", function()
-      local buffer = Buffer:new()
-
-      buffer:setValue(text)
-      buffer:setSelectionRange(1, 0)
-
-      assert.are.equals(
-        "d",
-        buffer:nextChar()
-      )
-    end)
-  end)
 end)

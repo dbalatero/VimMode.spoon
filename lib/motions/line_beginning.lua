@@ -7,7 +7,7 @@ function LineBeginning.getRange(_, buffer)
 
   return {
     start = lineRange.location,
-    finish = buffer:getCursorPosition(),
+    finish = buffer:getCaretPosition(),
     mode = 'exclusive',
     direction = 'characterwise'
   }

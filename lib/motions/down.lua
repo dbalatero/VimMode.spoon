@@ -10,7 +10,7 @@ function Down.getRange(_, buffer)
   local finish = buffer:getPositionForLineAndColumn(lineNum + 1, column)
 
   return {
-    start = buffer:getCursorPosition(),
+    start = buffer:getCaretPosition(),
     finish = finish,
     mode = 'exclusive',
     direction = 'linewise'

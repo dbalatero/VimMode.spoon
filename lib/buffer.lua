@@ -69,17 +69,8 @@ function Buffer:setSelectionRangeFromSelection(selection)
   return self
 end
 
-function Buffer:nextChar()
-  local nextPosition = self:getCursorPosition() + 1
-  local contents = string.sub(self:getValue(), nextPosition, nextPosition)
-
-  if contents == "" then return nil end
-
-  return contents
-end
-
 function Buffer:getCurrentLineNumber()
-  local cursorPosition = self:getCursorPosition()
+  local cursorPosition = self:getCaretPosition()
   if cursorPosition == 0 then return 1 end
 
   local lines = self:getLines()
@@ -166,7 +157,7 @@ end
 
 function Buffer:getCurrentColumn()
   local start = self:getCurrentLineRange().location
-  local currentPosition = self:getCursorPosition()
+  local currentPosition = self:getCaretPosition()
 
   return currentPosition - start + 1
 end
@@ -189,10 +180,6 @@ function Buffer:getRangeForLineNumber(lineNumber)
   local length = #lines[lineNumber]
 
   return Selection:new(start, length)
-end
-
-function Buffer:getCursorPosition()
-  return self:getSelectionRange():positionEnd()
 end
 
 function Buffer:isOnLastLine()
