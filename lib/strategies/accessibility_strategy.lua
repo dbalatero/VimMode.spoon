@@ -28,6 +28,9 @@ function AccessibilityStrategy:getNextBuffer()
   local operator = self.vim.commandState.operator
   local motion = self.vim.commandState.motion
 
+  if operator then vimLogger.i("Operator = " .. operator.name) end
+  if motion then vimLogger.i("motion = " .. motion.name) end
+
   local buffer = AccessibilityBuffer:new()
 
   -- set the caret position if we are in visual mode

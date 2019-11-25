@@ -31,6 +31,7 @@ local WaitForChar = dofile(vimModeScriptPath .. "lib/wait_for_char.lua")
 
 local BackWord = dofile(vimModeScriptPath .. "lib/motions/back_word.lua")
 local BigWord = dofile(vimModeScriptPath .. "lib/motions/big_word.lua")
+local CurrentSelection = dofile(vimModeScriptPath .. "lib/motions/current_selection.lua")
 local EndOfWord = dofile(vimModeScriptPath .. "lib/motions/end_of_word.lua")
 local EntireLine = dofile(vimModeScriptPath .. "lib/motions/entire_line.lua")
 local FirstLine = dofile(vimModeScriptPath .. "lib/motions/first_line.lua")
@@ -202,9 +203,24 @@ function VimMode:buildGModal()
     :bind({}, 'g', nil, self:motion(FirstLine))
 end
 
+function VimMode:visualOperator(type)
+  return function()
+    self:operator(type:new())()
+    self:motion(CurrentSelection:new())()
+  end
+end
+
 function VimMode:buildVisualModeModal()
-  return createVimModal()
-    :bind({}, 'escape', "hi", function() self:exit() end)
+  local modal = self:bindMotionsToModal(createVimModal())
+
+  return modal
+    :bind({}, 'escape', nil, function() self:exit() end)
+    :bind({}, 'c', self:visualOperator(Delete))
+    :bind({}, 'd', self:visualOperator(Delete))
+    :bind({}, 'd', self:visualOperator(Delete))
+    :bind({}, 'r', nil, self:operatorNeedingChar(Replace, CurrentSelection))
+    :bind({}, 'x', self:visualOperator(Delete))
+    :bind({}, 'y', self:visualOperator(Yank))
 end
 
 -- type is either 'motion' or 'operator'

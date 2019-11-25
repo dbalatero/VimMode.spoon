@@ -11,6 +11,7 @@ local function createStateMachine(vim)
       { name = 'enterMotion', from = 'operator-pending', to = 'entered-motion' },
       { name = 'enterMotion', from = 'visual-mode', to = 'entered-motion' },
       { name = 'enterVisual', from = 'normal-mode', to = 'visual-mode' },
+      { name = 'enterOperator', from = 'visual-mode', to = 'operator-pending' },
       { name = 'fire', from = 'entered-motion', to = 'firing' },
       { name = 'fire', from = 'visual-mode', to = 'firing' },
       { name = 'enterNormal', from = 'firing', to = 'normal-mode' },
@@ -37,6 +38,7 @@ local function createStateMachine(vim)
       onenterVisual = function()
         vimLogger.i("Visual mode")
         vim:setVisualMode()
+        vim:enterModal('visual')
       end,
       onenterOperator = function(_, _, _, _, operator)
         vim.commandState.operator = operator
