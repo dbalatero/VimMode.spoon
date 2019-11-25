@@ -105,6 +105,8 @@ function AccessibilityBuffer:getCurrentLineNumber()
     self:getCaretPosition()
   )
 
+  if not axLineNumber then return 1 end
+
   return axLineNumber + 1
  end
 
