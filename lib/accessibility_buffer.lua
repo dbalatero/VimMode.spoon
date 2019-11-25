@@ -115,8 +115,6 @@ function AccessibilityBuffer:getCurrentLineRange()
 end
 
 function AccessibilityBuffer:getRangeForLineNumber(lineNumber)
-  vimLogger.i("Getting range for line number " .. inspect(lineNumber))
-
   local range = self
     :getCurrentElement()
     :rangeForLineWithParameter(lineNumber - 1)
