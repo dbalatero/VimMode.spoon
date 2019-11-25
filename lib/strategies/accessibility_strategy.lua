@@ -2,6 +2,7 @@ local ax = require("hs._asm.axuielement")
 local Strategy = dofile(vimModeScriptPath .. "lib/strategy.lua")
 local AccessibilityBuffer = dofile(vimModeScriptPath .. "lib/accessibility_buffer.lua")
 local Selection = dofile(vimModeScriptPath .. "lib/selection.lua")
+local visualUtils = dofile(vimModeScriptPath .. "lib/utils/visual.lua")
 
 local AccessibilityStrategy = Strategy:new()
 
@@ -27,7 +28,17 @@ function AccessibilityStrategy:getNextBuffer()
   local operator = self.vim.commandState.operator
   local motion = self.vim.commandState.motion
 
+  if operator then vimLogger.i("Operator = " .. operator.name) end
+  if motion then vimLogger.i("motion = " .. motion.name) end
+
   local buffer = AccessibilityBuffer:new()
+
+  -- set the caret position if we are in visual mode
+  if self.vim:isMode('visual') then
+    vimLogger.i('setting caret = ' .. inspect(self.vim.visualCaretPosition))
+    buffer:setCaretPosition(self.vim.visualCaretPosition)
+  end
+
   local range = motion:getRange(buffer)
 
   -- just cancel if the motion doesn't decide to do anything
@@ -39,24 +50,56 @@ function AccessibilityStrategy:getNextBuffer()
   if operator then
     if range.mode == 'exclusive' then finish = finish - 1 end
 
-    local buffer = operator:getModifiedBuffer(buffer, start, finish)
+    local newBuffer = operator:getModifiedBuffer(buffer, start, finish)
 
     if range.direction == 'linewise' then
       -- reset the cursor to the beginning of the line
-      buffer:resetToBeginningOfLineForIndex()
+      newBuffer:resetToBeginningOfLineForIndex()
     end
 
-    return buffer
+    return newBuffer
   else
-    local direction = 'right'
+    local currentRange = buffer:getSelectionRange()
 
-    if start < buffer:getSelectionRange().location then
-      direction = 'left'
+    local location
+    local length = 0
+
+    if self.vim:isMode('visual') then
+      vimLogger.i("Handling visual mode")
+
+      local currentCharRange = currentRange:getCharRange()
+      local caretPosition = buffer:getCaretPosition()
+
+      vimLogger.i("currentCharRange = " .. inspect(currentCharRange))
+      vimLogger.i("motionRange = " .. inspect(range))
+      vimLogger.i("caretPosition = " .. inspect(caretPosition))
+
+      local result = visualUtils.getNewRange(
+        currentCharRange,
+        range,
+        caretPosition
+      )
+
+      vimLogger.i("result = " .. inspect(result))
+
+      local newRange = result.range
+
+      location = newRange.start
+      length = newRange.finish - newRange.start
+
+      -- update the caret position
+      self.vim.visualCaretPosition = result.caretPosition
+    else
+      local direction = 'right'
+
+      if start < currentRange:positionEnd() then
+        direction = 'left'
+      end
+
+      location = (direction == 'left' and start) or finish
     end
 
-    local location = (direction == 'left' and start) or finish
-
-    return AccessibilityBuffer:new():setSelectionRange(location, 0)
+    return AccessibilityBuffer:new():setSelectionRange(location, length)
   end
 end
 

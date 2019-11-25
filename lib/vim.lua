@@ -31,6 +31,7 @@ local WaitForChar = dofile(vimModeScriptPath .. "lib/wait_for_char.lua")
 
 local BackWord = dofile(vimModeScriptPath .. "lib/motions/back_word.lua")
 local BigWord = dofile(vimModeScriptPath .. "lib/motions/big_word.lua")
+local CurrentSelection = dofile(vimModeScriptPath .. "lib/motions/current_selection.lua")
 local EndOfWord = dofile(vimModeScriptPath .. "lib/motions/end_of_word.lua")
 local EntireLine = dofile(vimModeScriptPath .. "lib/motions/entire_line.lua")
 local FirstLine = dofile(vimModeScriptPath .. "lib/motions/first_line.lua")
@@ -67,10 +68,12 @@ function VimMode:new()
   vim.mode = 'insert'
   vim.state = createStateMachine(vim)
   vim.sequence = nil
+  vim.visualCaretPosition = nil
 
   vim.modals = {
     normal = vim:buildNormalModeModal(),
     operatorPending = vim:buildOperatorPendingModal(),
+    visual = vim:buildVisualModeModal(),
     g = vim:buildGModal()
   }
 
@@ -94,6 +97,10 @@ function VimMode:bindHotKeys(keyTable)
   end
 
   return self
+end
+
+function VimMode:isMode(name)
+  return self.mode == name
 end
 
 ---------------------------
@@ -192,8 +199,28 @@ end
 -- commands prefixed with g
 function VimMode:buildGModal()
   return createVimModal()
-    :bind({}, 'ESCAPE', function() self:exit() end)
+    :bind({}, 'escape', nil, function() self:exit() end)
     :bind({}, 'g', nil, self:motion(FirstLine))
+end
+
+function VimMode:visualOperator(type)
+  return function()
+    self:operator(type:new())()
+    self:motion(CurrentSelection:new())()
+  end
+end
+
+function VimMode:buildVisualModeModal()
+  local modal = self:bindMotionsToModal(createVimModal())
+
+  return modal
+    :bind({}, 'escape', nil, function() self:exit() end)
+    :bind({}, 'c', self:visualOperator(Delete))
+    :bind({}, 'd', self:visualOperator(Delete))
+    :bind({}, 'd', self:visualOperator(Delete))
+    :bind({}, 'r', nil, self:operatorNeedingChar(Replace, CurrentSelection))
+    :bind({}, 'x', self:visualOperator(Delete))
+    :bind({}, 'y', self:visualOperator(Yank))
 end
 
 -- type is either 'motion' or 'operator'
@@ -245,7 +272,7 @@ function VimMode:buildOperatorPendingModal()
   modal = self:bindCountsToModal(modal, 'motion')
 
   return modal
-    :bind({}, 'ESCAPE', function() self:cancel() end)
+    :bind({}, 'escape', nil, function() self:cancel() end)
     :bind({}, 'c', self:motion(EntireLine)) -- cc
     :bind({}, 'd', self:motion(EntireLine)) -- dd
 end
@@ -260,6 +287,9 @@ function VimMode:buildNormalModeModal()
     :bind({}, 'd', nil, self:operator(Delete))
     :bind({}, 'y', nil, self:operator(Yank))
     :bind({}, 'r', nil, self:operatorNeedingChar(Replace, Right))
+    :bind({}, 'v', nil, function()
+      self.state:enterVisual()
+    end)
     :bind({}, '/', function()
       hs.eventtap.keyStroke({'cmd'}, 'f', 0)
       self:exit()
@@ -339,6 +369,7 @@ function VimMode:enableSequence()
 end
 
 function VimMode:exit()
+  vimLogger.i("calling it")
   self.state:enterInsert()
 end
 
@@ -354,6 +385,15 @@ function VimMode:setNormalMode()
   self.mode = "normal"
 
   if self:shouldDimScreen() then ScreenDimmer.dimScreen() end
+
+  return self
+end
+
+function VimMode:setVisualMode()
+  if self.mode ~= 'visual' then
+    self.mode = 'visual'
+    self.visualCaretPosition = nil
+  end
 
   return self
 end
@@ -397,11 +437,20 @@ function VimMode:fireCommandState()
 
   strategy:fire()
 
+  local transition
+
   if operator then
-    return operator.getModeForTransition()
+    transition = operator.getModeForTransition()
   else
-    return motion.getModeForTransition()
+    transition = motion.getModeForTransition()
   end
+
+  return {
+    mode = self.mode,
+    transition = transition,
+    hadMotion = not not motion,
+    hadOperator = not not operator
+  }
 end
 
 function VimMode:showAlert()

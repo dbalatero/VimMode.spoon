@@ -12,7 +12,7 @@ function KeySequence:new(options)
   sequence.key1 = options.key1
   sequence.key2 = options.key2
   sequence.modifiers = options.modifiers or {}
-  sequence.maxDelayBetweenKeys = 200
+  sequence.maxDelayBetweenKeys = 120 -- in ms
   sequence.waitingForSecondPress = false
   sequence.tap = nil
   sequence.onSequencePressed = function() end

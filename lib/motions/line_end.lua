@@ -13,7 +13,7 @@ function LineEnd.getRange(_, buffer)
   end
 
   local range = {
-    start = buffer:getCursorPosition(),
+    start = buffer:getCaretPosition(),
     finish = finish,
     -- the vim manual says this is an inclusive motion, but I swear
     -- it *behaves* like an exclusive motion, so I'm keeping it this way

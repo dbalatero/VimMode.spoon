@@ -21,7 +21,7 @@ local BigWord = Motion:new{ name = 'big_word' }
 -- 4. The last non- <newline> in the edit buffer
 
 function BigWord.getRange(_, buffer)
-  local start = buffer:getSelectionRange():positionEnd()
+  local start = buffer:getCaretPosition()
 
   local range = {
     start = start,

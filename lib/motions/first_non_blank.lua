@@ -4,7 +4,7 @@ local stringUtils = dofile(vimModeScriptPath .. "lib/utils/string_utils.lua")
 local FirstNonBlank = Motion:new{ name = 'first_non_blank' }
 
 function FirstNonBlank.getRange(_, buffer)
-  local start = buffer:getSelectionRange():positionEnd()
+  local start = buffer:getCaretPosition()
   local bufferLength = buffer:getLength()
   local contents = buffer:getValue()
 

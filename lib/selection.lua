@@ -20,4 +20,11 @@ function Selection:positionEnd()
   return self.location + self.length
 end
 
+function Selection:getCharRange()
+  return {
+    start = self.location,
+    finish = self:positionEnd()
+  }
+end
+
 return Selection

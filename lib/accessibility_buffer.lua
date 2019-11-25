@@ -60,9 +60,11 @@ function AccessibilityBuffer:getCurrentLineNumber()
 end
 
 function AccessibilityBuffer:getLineCount()
-  return self
+  local lineNumber = self
     :getCurrentElement()
-    :lineForIndexWithParameter(self:lastValueIndex()) + 1
+    :lineForIndexWithParameter(self:lastValueIndex()) or 0
+
+  return lineNumber + 1
 end
 
 function AccessibilityBuffer:setSelectionRange(location, length)
@@ -101,8 +103,14 @@ function AccessibilityBuffer:isValid()
 end
 
 function AccessibilityBuffer:getCurrentLineNumber()
-  return self:getCurrentElement():insertionPointLineNumber() + 1
-end
+  local axLineNumber = self:getCurrentElement():lineForIndexWithParameter(
+    self:getCaretPosition()
+  )
+
+  if not axLineNumber then return 1 end
+
+  return axLineNumber + 1
+ end
 
 function AccessibilityBuffer:getCurrentLineRange()
   return self:getRangeForLineNumber(self:getCurrentLineNumber())
@@ -112,6 +120,8 @@ function AccessibilityBuffer:getRangeForLineNumber(lineNumber)
   local range = self
     :getCurrentElement()
     :rangeForLineWithParameter(lineNumber - 1)
+
+  if not range then return Selection:new(0, 0) end
 
   return Selection:new(range.loc, range.len)
 end
