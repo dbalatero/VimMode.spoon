@@ -20,7 +20,7 @@ local isPrintableChar = stringUtils.isPrintableChar
 
 -- TODO handle more edge cases for :help word
 function Word.getRange(_, buffer)
-  local start = buffer:getSelectionRange():positionEnd()
+  local start = buffer:getCaretPosition()
 
   local range = {
     start = start,

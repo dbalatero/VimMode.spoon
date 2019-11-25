@@ -12,6 +12,7 @@ function Buffer:new()
   buffer.value = self.value or nil
   buffer.selection = nil
   buffer.lines = nil
+  buffer.caretPosition = nil
 
   return buffer
 end
@@ -42,6 +43,20 @@ end
 
 function Buffer:getSelectionRange()
   return self.selection
+end
+
+function Buffer:setCaretPosition(caretPosition)
+  self.caretPosition = caretPosition
+
+  return self
+end
+
+function Buffer:getCaretPosition()
+  if not self.caretPosition then
+    return self:getSelectionRange():positionEnd()
+  else
+    return self.caretPosition
+  end
 end
 
 function Buffer:setSelectionRange(location, length)

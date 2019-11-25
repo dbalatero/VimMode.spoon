@@ -56,7 +56,7 @@ local parser = machine.create({
 })
 
 function EndOfWord.getRange(_, buffer)
-  local start = buffer:getSelectionRange():positionEnd()
+  local start = buffer:getCaretPosition()
 
   local range = {
     start = start,

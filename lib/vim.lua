@@ -374,8 +374,10 @@ function VimMode:setNormalMode()
 end
 
 function VimMode:setVisualMode()
-  self.mode = 'visual'
-  self.visualCaretPosition = nil
+  if self.mode ~= 'visual' then
+    self.mode = 'visual'
+    self.visualCaretPosition = nil
+  end
 
   return self
 end
