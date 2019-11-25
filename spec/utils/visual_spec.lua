@@ -14,7 +14,7 @@ describe("visual utils", function()
           caretPosition = 0,
           range = { start = 0, finish = 8 }
         },
-        getNewRange(currentRange, motionRange, caretPosition)
+        getNewRange(currentRange, motionRange, caretPosition, "pause")
       )
     end)
 
@@ -83,6 +83,20 @@ describe("visual utils", function()
         {
           caretPosition = 16,
           range = { start = 16, finish = 33 }
+        },
+        getNewRange(currentRange, motionRange, caretPosition)
+      )
+    end)
+
+    it("can handle a beginning of line movement", function()
+      local currentRange = { start = 16, finish = 33 }
+      local motionRange = { start = 0, finish = 33 }
+      local caretPosition = 16
+
+      assert.are.same(
+        {
+          caretPosition = 0,
+          range = { start = 0, finish = 33 }
         },
         getNewRange(currentRange, motionRange, caretPosition)
       )

@@ -8,8 +8,12 @@ visualUtils.getNewRange = function (currentRange, motionRange, caretPosition)
   local noSelection = currentRange.start == currentRange.finish
 
   local caretOn = (caretPosition < currentRange.finish and "left") or "right"
-  local motionDirection =
-    (caretPosition < motionRange.finish and "right") or "left"
+  local motionDirection = "right"
+
+  if currentRange.finish == motionRange.finish or
+     currentRange.start == motionRange.finish then
+    motionDirection = "left"
+  end
 
   if noSelection then
     return {
