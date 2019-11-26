@@ -36,6 +36,9 @@ local function createVimModal(vim)
     return function() vim:enterOperator(type:new()) end
   end
 
+  local fireMotion = function(type) motion(type)() end
+  local fireOperator = function(type) operator(type)() end
+
   local operatorNeedingChar = function(type, optionalMotion)
     return function()
       vim:exitAllModals()
@@ -66,8 +69,8 @@ local function createVimModal(vim)
 
   local visualOperator = function(type)
     return function()
-      operator(type:new())()
-      motion(CurrentSelection:new())()
+      fireOperator(type)
+      fireMotion(CurrentSelection)
     end
   end
 
@@ -96,7 +99,7 @@ local function createVimModal(vim)
         if vim.commandState:getCount(type) then
           pushDigitTo(type, 0)()
         else
-          motion(LineBeginning)()
+          fireMotion(LineBeginning)
         end
       end)
       :bindWithRepeat({'shift'}, '4', motion(LineEnd)) -- $
@@ -181,29 +184,29 @@ local function createVimModal(vim)
       hs.eventtap.keyStroke({}, 'up', 0)
     end)
     :bind({'shift'}, 'a', function()
-      motion(LineEnd)()
+      fireMotion(LineEnd)
       vim:exit()
     end)
     :bind({'shift'}, 'c', function()
-      operator(Change)()
-      motion(LineEnd)()
+      fireOperator(Change)
+      fireMotion(LineEnd)
     end)
     :bind({'shift'}, 'd', function()
-      operator(Delete)()
-      motion(LineEnd)()
+      fireOperator(Delete)
+      fireMotion(LineEnd)
     end)
     :bind({'shift'}, 'i', function()
-      motion(LineBeginning)()
-      motion(FirstNonBlank)()
+      fireMotion(LineBeginning)
+      fireMotion(FirstNonBlank)
       vim:exit()
     end)
     :bindWithRepeat({}, 'x', function()
-      operator(Delete)()
-      motion(Right)()
+      fireOperator(Delete)
+      fireMotion(Right)
     end)
     :bindWithRepeat({}, 's', function()
-      operator(Change)()
-      motion(Right)()
+      fireOperator(Change)
+      fireMotion(Right)
     end)
 
     :withContext('operatorPending')
