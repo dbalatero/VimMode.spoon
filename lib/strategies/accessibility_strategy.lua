@@ -52,7 +52,7 @@ function AccessibilityStrategy:fire()
     self:setSelection(start, length)
     operator:modifySelection(buffer, start, finish)
 
-    hs.timer.doAfter(10 / 1000, function()
+    hs.timer.doAfter(100 / 1000, function()
       if range.direction == 'linewise' then
         local newBuffer = AccessibilityBuffer
           :new()
