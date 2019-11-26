@@ -138,8 +138,8 @@ local function createVimModal(vim)
   -- Operator pending
   modal
     :withContext('operatorPending')
-    :bindMotionsToModal(modal, 'motion')
-    :bindCountsToModal(modal, 'motion')
+    :bindMotionsToModal('motion')
+    :bindCountsToModal('motion')
     :bind({}, 'escape', function() vim:cancel() end)
     :bind({}, 'c', motion(EntireLine)) -- cc
     :bind({}, 'd', motion(EntireLine)) -- dd
@@ -147,15 +147,15 @@ local function createVimModal(vim)
   -- Normal mode
   modal
     :withContext('normal')
-    :bindMotionsToModal(modal, 'operator')
-    :bindCountsToModal(modal, 'operator')
+    :bindMotionsToModal('operator')
+    :bindCountsToModal('operator')
     :bind({}, 'i', function() vim:exit() end)
     :bind({}, 'c', operator(Change))
     :bind({}, 'd', operator(Delete))
     :bind({}, 'y', operator(Yank))
     :bind({}, 'r', operatorNeedingChar(Replace, Right))
     :bind({}, 'v', function()
-      self.state:enterVisual()
+      vim.state:enterVisual()
     end)
     :bind({}, '/', function()
       hs.eventtap.keyStroke({'cmd'}, 'f', 0)
@@ -209,6 +209,7 @@ local function createVimModal(vim)
       fireMotion(Right)
     end)
 
+  modal
     :withContext('operatorPending')
       :bind({}, 'escape', function() vim:exit() end)
       :bindWithRepeat({}, 'b', motion(BackWord))
