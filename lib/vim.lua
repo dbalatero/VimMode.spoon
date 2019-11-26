@@ -24,6 +24,7 @@ local Alert = dofile(vimModeScriptPath .. "lib/alert.lua")
 local AppWatcher = dofile(vimModeScriptPath .. "lib/app_watcher.lua")
 local CommandState = dofile(vimModeScriptPath .. "lib/command_state.lua")
 local Config = dofile(vimModeScriptPath .. "lib/config.lua")
+local ContextualModal = dofile(vimModeScriptPath .. "lib/contextual_modal.lua")
 local KeySequence = dofile(vimModeScriptPath .. "lib/key_sequence.lua")
 local KeyboardStrategy = dofile(vimModeScriptPath .. "lib/strategies/keyboard_strategy.lua")
 local RestrictedModal = dofile(vimModeScriptPath .. "lib/restricted_modal.lua")
@@ -70,13 +71,7 @@ function VimMode:new()
   vim.state = createStateMachine(vim)
   vim.sequence = nil
   vim.visualCaretPosition = nil
-
-  vim.modals = {
-    normal = vim:buildNormalModeModal(),
-    operatorPending = vim:buildOperatorPendingModal(),
-    visual = vim:buildVisualModeModal(),
-    g = vim:buildGModal()
-  }
+  vim.modal = vim:buildModal()
 
   vim.appWatcher = AppWatcher:new(vim):start()
 
@@ -197,13 +192,6 @@ function VimMode:motion(type)
   end
 end
 
--- commands prefixed with g
-function VimMode:buildGModal()
-  return createVimModal()
-    :bind({}, 'escape', nil, function() self:exit() end)
-    :bind({}, 'g', nil, self:motion(FirstLine))
-end
-
 function VimMode:visualOperator(type)
   return function()
     self:operator(type:new())()
@@ -211,87 +199,44 @@ function VimMode:visualOperator(type)
   end
 end
 
-function VimMode:buildVisualModeModal()
-  local modal = self:bindMotionsToModal(RestrictedModal:new())
+function VimMode:buildModal()
+  local modal = ContextualModal:new()
 
-  return modal
-    :bind({}, 'escape', nil, function()
+  -- g prefixes
+  modal
+    :withContext('g')
+    :bind({}, 'escape', function() self:exit() end)
+    :bind({}, 'g', self:motion(FirstLine))
+
+  -- Visual mode
+  modal = self:bindMotionsToModal(modal:withContext('visual'))
+    :bind({}, 'escape', function()
       self.state:enterNormal()
       self.visualCaretPosition = nil
     end)
     :bind({}, 'c', self:visualOperator(Delete))
     :bind({}, 'd', self:visualOperator(Delete))
-    :bind({}, 'd', self:visualOperator(Delete))
     :bind({}, 'r', nil, self:operatorNeedingChar(Replace, CurrentSelection))
     :bind({}, 'x', self:visualOperator(Delete))
     :bind({}, 'y', self:visualOperator(Yank))
-end
 
--- type is either 'motion' or 'operator'
-function VimMode:bindMotionsToModal(modal, type)
-  return modal
-    :bindWithRepeat({}, '0', function()
-      -- we've already started adding a count here
-      if self.commandState:getCount(type) then
-        self:pushDigitTo(type, 0)()
-      else
-        self:motion(LineBeginning)()
-      end
-    end)
-    :bindWithRepeat({'shift'}, '4', self:motion(LineEnd)) -- $
-    :bindWithRepeat({}, 'b', self:motion(BackWord))
-    :bindWithRepeat({}, 'e', self:motion(EndOfWord))
-    :bindWithRepeat({}, 'h', self:motion(Left))
-    :bindWithRepeat({}, 'j', self:motion(Down))
-    :bindWithRepeat({}, 'k', self:motion(Up))
-    :bindWithRepeat({}, 'l', self:motion(Right))
-    :bindWithRepeat({}, 'w', self:motion(Word))
-    :bindWithRepeat({'shift'}, 'w', self:motion(BigWord))
-    :bindWithRepeat({'shift'}, 'g', self:motion(LastLine))
-    :bind({}, 'g', function() self:enterModal('g') end)
-end
-
-function VimMode:pushDigitTo(name, digit)
-  return function()
-    self.commandState:pushCountDigit(name, digit)
-    vimLogger.i("Count is now " .. self.commandState:getCount(name))
-  end
-end
-
-function VimMode:bindCountsToModal(modal, name)
-  return modal
-    :bindWithRepeat({}, '1', self:pushDigitTo(name, 1))
-    :bindWithRepeat({}, '2', self:pushDigitTo(name, 2))
-    :bindWithRepeat({}, '3', self:pushDigitTo(name, 3))
-    :bindWithRepeat({}, '4', self:pushDigitTo(name, 4))
-    :bindWithRepeat({}, '5', self:pushDigitTo(name, 5))
-    :bindWithRepeat({}, '6', self:pushDigitTo(name, 6))
-    :bindWithRepeat({}, '7', self:pushDigitTo(name, 7))
-    :bindWithRepeat({}, '8', self:pushDigitTo(name, 8))
-    :bindWithRepeat({}, '9', self:pushDigitTo(name, 9))
-end
-
-function VimMode:buildOperatorPendingModal()
-  local modal = self:bindMotionsToModal(createVimModal(), 'motion')
+  -- Operator pending
+  modal = self:bindMotionsToModal(modal, 'motion')
   modal = self:bindCountsToModal(modal, 'motion')
-
-  return modal
-    :bind({}, 'escape', nil, function() self:cancel() end)
+    :bind({}, 'escape', function() self:cancel() end)
     :bind({}, 'c', self:motion(EntireLine)) -- cc
     :bind({}, 'd', self:motion(EntireLine)) -- dd
-end
 
-function VimMode:buildNormalModeModal()
-  local modal = self:bindMotionsToModal(createVimModal(), 'operator')
+  -- Normal mode
+  modal = modal:withContext('normal')
+  modal = self:bindMotionsToModal(modal, 'operator')
   modal = self:bindCountsToModal(modal, 'operator')
-
-  return modal
     :bind({}, 'i', function() self:exit() end)
-    :bind({}, 'c', nil, self:operator(Change))
-    :bind({}, 'd', nil, self:operator(Delete))
-    :bind({}, 'y', nil, self:operator(Yank))
-    :bind({}, 'r', nil, self:operatorNeedingChar(Replace, Right))
-    :bind({}, 'v', nil, function()
+    :bind({}, 'c', self:operator(Change))
+    :bind({}, 'd', self:operator(Delete))
+    :bind({}, 'y', self:operator(Yank))
+    :bind({}, 'r', self:operatorNeedingChar(Replace, Right))
+    :bind({}, 'v', function()
       self.state:enterVisual()
     end)
     :bind({}, '/', function()
@@ -345,6 +290,57 @@ function VimMode:buildNormalModeModal()
       self:operator(Change)()
       self:motion(Right)()
     end)
+
+    :withContext('operatorPending')
+      :bind({}, 'escape', function() self:exit() end)
+      :bindWithRepeat({}, 'b', self:motion(BackWord))
+      :bindWithRepeat({}, 'w', self:motion(Word))
+
+  return modal
+end
+
+-- type is either 'motion' or 'operator'
+function VimMode:bindMotionsToModal(modal, type)
+  return modal
+    :bindWithRepeat({}, '0', function()
+      -- we've already started adding a count here
+      if self.commandState:getCount(type) then
+        self:pushDigitTo(type, 0)()
+      else
+        self:motion(LineBeginning)()
+      end
+    end)
+    :bindWithRepeat({'shift'}, '4', self:motion(LineEnd)) -- $
+    :bindWithRepeat({}, 'b', self:motion(BackWord))
+    :bindWithRepeat({}, 'e', self:motion(EndOfWord))
+    :bindWithRepeat({}, 'h', self:motion(Left))
+    :bindWithRepeat({}, 'j', self:motion(Down))
+    :bindWithRepeat({}, 'k', self:motion(Up))
+    :bindWithRepeat({}, 'l', self:motion(Right))
+    :bindWithRepeat({}, 'w', self:motion(Word))
+    :bindWithRepeat({'shift'}, 'w', self:motion(BigWord))
+    :bindWithRepeat({'shift'}, 'g', self:motion(LastLine))
+    :bind({}, 'g', function() self:enterModal('g') end)
+end
+
+function VimMode:pushDigitTo(name, digit)
+  return function()
+    self.commandState:pushCountDigit(name, digit)
+    vimLogger.i("Count is now " .. self.commandState:getCount(name))
+  end
+end
+
+function VimMode:bindCountsToModal(modal, name)
+  return modal
+    :bindWithRepeat({}, '1', self:pushDigitTo(name, 1))
+    :bindWithRepeat({}, '2', self:pushDigitTo(name, 2))
+    :bindWithRepeat({}, '3', self:pushDigitTo(name, 3))
+    :bindWithRepeat({}, '4', self:pushDigitTo(name, 4))
+    :bindWithRepeat({}, '5', self:pushDigitTo(name, 5))
+    :bindWithRepeat({}, '6', self:pushDigitTo(name, 6))
+    :bindWithRepeat({}, '7', self:pushDigitTo(name, 7))
+    :bindWithRepeat({}, '8', self:pushDigitTo(name, 8))
+    :bindWithRepeat({}, '9', self:pushDigitTo(name, 9))
 end
 
 function VimMode:enableKeySequence(key1, key2, modifiers)
@@ -394,7 +390,7 @@ function VimMode:setNormalMode()
 end
 
 function VimMode:setVisualMode()
-  if self.mode ~= 'visual' then
+  if not self:isMode('visual') then
     self.mode = 'visual'
     self.visualCaretPosition = nil
   end
@@ -415,15 +411,12 @@ function VimMode:enter()
 end
 
 function VimMode:exitAllModals()
-  for _, modal in pairs(self.modals) do
-    modal:exit()
-  end
+  self.modal:exit()
 end
 
 function VimMode:enterModal(name)
   vimLogger.i("Entering modal " .. name)
-  self:exitAllModals()
-  self.modals[name]:enter()
+  self.modal:enterContext(name)
 end
 
 function VimMode:collapseSelection()

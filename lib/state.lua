@@ -30,6 +30,7 @@ local function createStateMachine(vim)
       end,
       onenterInsert = function()
         vimLogger.i("Exiting Vim")
+        vim.visualCaretPosition = nil
         vim:setInsertMode()
         vim:exitAllModals()
         vim:enableSequence()
@@ -41,8 +42,8 @@ local function createStateMachine(vim)
         vim:enterModal('visual')
       end,
       onenterOperator = function(_, _, _, _, operator)
-        vim.commandState.operator = operator
         vim:enterModal('operatorPending')
+        vim.commandState.operator = operator
       end,
       onenterMotion = function(self, _, _, _, motion)
         vim.commandState.motion = motion
