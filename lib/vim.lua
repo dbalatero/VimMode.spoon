@@ -203,13 +203,15 @@ function VimMode:buildModal()
   local modal = ContextualModal:new()
 
   -- g prefixes
-  modal
-    :withContext('g')
+  modal:withContext('g')
     :bind({}, 'escape', function() self:exit() end)
     :bind({}, 'g', self:motion(FirstLine))
 
   -- Visual mode
-  modal = self:bindMotionsToModal(modal:withContext('visual'))
+  modal:withContext('visual')
+  self:bindMotionsToModal(modal)
+
+  modal
     :bind({}, 'escape', function()
       self.state:enterNormal()
       self.visualCaretPosition = nil
@@ -221,16 +223,21 @@ function VimMode:buildModal()
     :bind({}, 'y', self:visualOperator(Yank))
 
   -- Operator pending
-  modal = self:bindMotionsToModal(modal, 'motion')
-  modal = self:bindCountsToModal(modal, 'motion')
+  modal:withContext('operatorPending')
+  self:bindMotionsToModal(modal, 'motion')
+  self:bindCountsToModal(modal, 'motion')
+
+  modal
     :bind({}, 'escape', function() self:cancel() end)
     :bind({}, 'c', self:motion(EntireLine)) -- cc
     :bind({}, 'd', self:motion(EntireLine)) -- dd
 
   -- Normal mode
-  modal = modal:withContext('normal')
-  modal = self:bindMotionsToModal(modal, 'operator')
-  modal = self:bindCountsToModal(modal, 'operator')
+  modal:withContext('normal')
+  self:bindMotionsToModal(modal, 'operator')
+  self:bindCountsToModal(modal, 'operator')
+
+  modal
     :bind({}, 'i', function() self:exit() end)
     :bind({}, 'c', self:operator(Change))
     :bind({}, 'd', self:operator(Delete))

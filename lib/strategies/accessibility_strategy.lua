@@ -166,6 +166,8 @@ function AccessibilityStrategy:enableLiveApplicationPatches()
   local axApp = self:getCurrentApplication()
 
   if axApp then
+    vimLogger.i("Patching " .. inspect(axApp))
+
     -- Electron apps require this attribute to be set or else you cannot
     -- read the accessibility tree
     axApp:setAttributeValue('AXManualAccessibility', true)
