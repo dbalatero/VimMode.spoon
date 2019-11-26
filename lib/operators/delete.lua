@@ -17,6 +17,10 @@ function Delete.getModifiedBuffer(_, buffer, rangeStart, rangeFinish)
   return buffer:createNew(contents, rangeStart, 0)
 end
 
+function Delete.modifySelection()
+  hs.eventtap.keyStroke({}, 'delete', 0)
+end
+
 function Delete.getKeys()
   return {
     {

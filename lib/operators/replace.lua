@@ -2,6 +2,19 @@ local Operator = dofile(vimModeScriptPath .. "lib/operator.lua")
 local times = dofile(vimModeScriptPath .. "lib/utils/times.lua")
 local Replace = Operator:new{name = 'replace'}
 
+function Replace:modifySelection(_, rangeStart, rangeFinish)
+  local numChars = rangeFinish - rangeStart
+  local replaceChar = self:getExtraChar()
+  local replacement = ""
+
+  times(numChars, function()
+    replacement = replacement .. replaceChar
+  end)
+
+  hs.eventtap.keyStroke({}, 'delete', 50)
+  hs.eventtap.keyStrokes(replacement)
+end
+
 function Replace:getModifiedBuffer(buffer, rangeStart, rangeFinish)
   local value = buffer:getValue()
   local replaceChar = self:getExtraChar()

@@ -21,16 +21,8 @@ function AccessibilityStrategy:new(vim)
 end
 
 function AccessibilityStrategy:fire()
-  self:getNextBuffer()
-end
-
-function AccessibilityStrategy:getNextBuffer()
   local operator = self.vim.commandState.operator
   local motion = self.vim.commandState.motion
-
-  if operator then vimLogger.i("Operator = " .. operator.name) end
-  if motion then vimLogger.i("motion = " .. motion.name) end
-
   local buffer = AccessibilityBuffer:new()
 
   -- set the caret position if we are in visual mode
@@ -41,7 +33,8 @@ function AccessibilityStrategy:getNextBuffer()
 
   local range = motion:getRange(buffer)
 
-  -- just cancel if the motion doesn't decide to do anything
+  -- just cancel if the motion decides there isn't anything
+  -- to operate on (end of buffer, etc)
   if not range then return nil end
 
   local start = range.start
@@ -50,14 +43,25 @@ function AccessibilityStrategy:getNextBuffer()
   if operator then
     if range.mode == 'exclusive' then finish = finish - 1 end
 
-    local newBuffer = operator:getModifiedBuffer(buffer, start, finish)
-
-    if range.direction == 'linewise' then
-      -- reset the cursor to the beginning of the line
-      newBuffer:resetToBeginningOfLineForIndex()
+    if finish + 1 >= buffer:getLength() then
+      finish = buffer:getLength() - 1
     end
 
-    return newBuffer
+    local length = finish - start + 1
+
+    self:setSelection(start, length)
+    operator:modifySelection(buffer, start, finish)
+
+    hs.timer.doAfter(10 / 1000, function()
+      if range.direction == 'linewise' then
+        local newBuffer = AccessibilityBuffer
+          :new()
+          :setSelectionRange(start, 0)
+
+        -- reset the cursor to the beginning of the line
+        newBuffer:resetToBeginningOfLineForIndex()
+      end
+    end)
   else
     local currentRange = buffer:getSelectionRange()
 
@@ -99,7 +103,7 @@ function AccessibilityStrategy:getNextBuffer()
       location = (direction == 'left' and start) or finish
     end
 
-    return AccessibilityBuffer:new():setSelectionRange(location, length)
+    AccessibilityBuffer:new():setSelectionRange(location, length)
   end
 end
 
