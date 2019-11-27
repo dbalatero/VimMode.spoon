@@ -27,8 +27,8 @@ local Config = dofile(vimModeScriptPath .. "lib/config.lua")
 local KeySequence = dofile(vimModeScriptPath .. "lib/key_sequence.lua")
 local KeyboardStrategy = dofile(vimModeScriptPath .. "lib/strategies/keyboard_strategy.lua")
 local ScreenDimmer = dofile(vimModeScriptPath .. "lib/screen_dimmer.lua")
-local createVimModal = dofile(vimModeScriptPath .. "lib/modal.lua")
 
+local createVimModal = dofile(vimModeScriptPath .. "lib/modal.lua")
 local createStateMachine = dofile(vimModeScriptPath .. "lib/state.lua")
 local findFirst = dofile(vimModeScriptPath .. "lib/utils/find_first.lua")
 
