@@ -16,41 +16,41 @@ This is my first Lua library, so things might be a little weird :)
 
 ### Motions
 
-- [ ] `shift + a` - jump to end of line
-- [ ] `shift + g` - jump to last line of input
-- [ ] `shift + i` - jump to beginning of line
-- [ ] `0` - beginning of line
-- [ ] `$` - end of line
-- [ ] `b` - back by word
+- [x] `shift + a` - jump to end of line
+- [x] `shift + g` - jump to last line of input
+- [x] `shift + i` - jump to beginning of line
+- [x] `0` - beginning of line
+- [x] `$` - end of line
+- [x] `b` - back by word
 - [ ] `f<char>` - jump to next instance of `<char>` - requires context we don't have
 - [ ] `F<char>` - jump to prev instance of `<char>` - requires context we don't have
 - [ ] `t<char>` - jump to before next instance of `<char>` - requires context we don't have
 - [ ] `T<char>` - jump to before prev instance of `<char>` - requires context we don't have
-- [ ] `w` fwd by word
-- [ ] `hjkl` - arrow keys
+- [x] `w` fwd by word
+- [x] `hjkl` - arrow keys
 
 ### Operators
 
-- [ ] `shift + c` - delete to end of line, exit normal mode
-- [ ] `shift + d` delete to end of line
-- [ ] `c` - delete and exit normal mode
-- [ ] `d` - delete
-- [ ] `cc` - delete line and enter insert mode
-- [ ] `dd` - delete line
-- [ ] `r<char>` to replace - currently broken
-- [ ] `x` to delete char under cursor
+- [x] `shift + c` - delete to end of line, exit normal mode
+- [x] `shift + d` delete to end of line
+- [x] `c` - delete and exit normal mode
+- [x] `d` - delete
+- [x] `cc` - delete line and enter insert mode
+- [x] `dd` - delete line
+- [x] `r<char>` to replace - currently broken
+- [x] `x` to delete char under cursor
 
 ### Other
 
-- [ ] `i` to go back to insert mode
-- [ ] `o` - add new line below, exit normal mode
-- [ ] `shift + o` - add new line above, exit normal mode
-- [ ] `p` to paste
+- [x] `i` to go back to insert mode
+- [x] `o` - add new line below, exit normal mode
+- [x] `shift + o` - add new line above, exit normal mode
+- [x] `p` to paste
 - [ ] `s` to delete under cursor, exit normal mode
 - [ ] `u` to undo
-- [ ] `y` to yank to clipboard
-- [ ] `/` to trigger `cmd+f` search
-- [ ] visual mode with `v`
+- [x] `y` to yank to clipboard
+- [x] `/` to trigger `cmd+f` search (when `cmd+f` is supported in app)
+- [x] visual mode with `v`
 - [ ] support prefixing commands with numbers to repeat them (e.g. `2dw`)
 
 ## Usage
