@@ -36,8 +36,13 @@ local function createVimModal(vim)
     return function() vim:enterOperator(type:new()) end
   end
 
-  local fireMotion = function(type) motion(type)() end
-  local fireOperator = function(type) operator(type)() end
+  local fireMotion = function(type)
+    motion(type)()
+  end
+
+  local fireOperator = function(type)
+    operator(type)()
+  end
 
   local operatorNeedingChar = function(type, optionalMotion)
     return function()
@@ -211,6 +216,7 @@ local function createVimModal(vim)
       fireMotion(Right)
     end)
     :bindWithRepeat({}, 's', function()
+      vimLogger.i("in here")
       fireOperator(Change)
       fireMotion(Right)
     end)

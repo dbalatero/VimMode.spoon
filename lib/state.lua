@@ -31,6 +31,7 @@ local function createStateMachine(vim)
       onenterInsert = function()
         vimLogger.i("Exiting Vim")
         vim.visualCaretPosition = nil
+        vim:resetCommandState()
         vim:setInsertMode()
         vim:exitAllModals()
         vim:enableSequence()
@@ -63,6 +64,9 @@ local function createStateMachine(vim)
           else self:enterInsert() end
         end
       end,
+      onstatechange = function(_, event, from, to)
+        vimLogger.i("Firing: " .. event .. " from: " .. from .. "to: " .. to)
+      end
     }
   })
 end

@@ -1,5 +1,6 @@
 local Registry = dofile(vimModeScriptPath .. "lib/contextual_modal/registry.lua")
 local tableUtils = dofile(vimModeScriptPath .. "lib/utils/table.lua")
+local inspect = hs.inspect.inspect
 
 local ContextualModal = {}
 
@@ -20,11 +21,26 @@ function ContextualModal:new()
   setmetatable(wrapper, self)
   self.__index = self
 
+  wrapper.modal.entered = function()
+    vimLogger.i("entering modal context is " .. inspect(wrapper.activeContext))
+  end
+
+  wrapper.modal.exited = function()
+    vimLogger.i("exited modal context is " .. inspect(wrapper.activeContext))
+  end
+
   return wrapper
 end
 
 function ContextualModal:handlePress(mods, key, eventType)
   return function()
+    vimLogger.i(
+      "Handling a press of ",
+      inspect(mods),
+      key,
+      eventType
+    )
+
     local handler = self.registry:getHandler(
       self.activeContext,
       mods,
@@ -57,6 +73,8 @@ function ContextualModal:registerBinding(mods, key)
 end
 
 function ContextualModal:bind(mods, key, pressedfn, releasedfn, repeatfn)
+  vimLogger.i("Binding ", inspect(mods), key, self.bindingContext)
+
   self.registry:registerHandler(
     self.bindingContext,
     mods,
@@ -68,6 +86,8 @@ function ContextualModal:bind(mods, key, pressedfn, releasedfn, repeatfn)
 
   -- only bind once for this modal
   if not self:hasBinding(mods, key) then
+    vimLogger.i("First time binding ", inspect(mods), key)
+
     self:registerBinding(mods, key)
 
     self.modal:bind(
@@ -100,8 +120,9 @@ function ContextualModal:enterContext(contextKey)
 end
 
 function ContextualModal:exit()
-  self.modal:exit()
+  vimLogger.i("Exiting modal context")
   self.activeContext = nil
+  self.modal:exit()
 
   return self
 end

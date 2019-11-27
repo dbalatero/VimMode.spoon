@@ -96,6 +96,7 @@ end
 function VimMode:disable()
   self.enabled = false
   self:disableSequence()
+  self:resetCommandState()
 
   return self
 end
