@@ -146,11 +146,7 @@ function AccessibilityStrategy:setValue(value)
 end
 
 function AccessibilityStrategy:isValid()
-  if not self:getCurrentElement() then return false end
-  if not self:getSelection() then return false end
-  if not self:isInTextField() then return false end
-
-  return true
+  return AccessibilityBuffer:new():isValid()
 end
 
 function AccessibilityStrategy.getCurrentApplication()
