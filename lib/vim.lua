@@ -261,6 +261,8 @@ end
 
 function VimMode:setAlertFont(name)
   self.config.alert.font = name
+
+  return self
 end
 
 return VimMode
