@@ -25,6 +25,9 @@ function KeyboardStrategy:fireMovement()
   -- select the movement
   local motion = self.vim.commandState.motion
   local operator = self.vim.commandState.operator
+  local visualMode = self.vim:isMode('visual')
+
+  if not motion then return true end
 
   local movements = motion.getMovements()
   if not movements then return false end
@@ -32,7 +35,9 @@ function KeyboardStrategy:fireMovement()
   for _, movement in ipairs(movements) do
     local modifiers = movement.modifiers
 
-    if operator and movement.selection then
+    local isSelection = visualMode or (operator and movement.selection)
+
+    if isSelection then
       modifiers = { "shift", table.unpack(modifiers) }
     end
 

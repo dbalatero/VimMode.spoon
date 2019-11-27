@@ -223,7 +223,7 @@ function VimMode:fireCommandState()
   local motion = self.commandState.motion
 
   local strategies = {
-    -- AccessibilityStrategy:new(self),
+    AccessibilityStrategy:new(self),
     KeyboardStrategy:new(self)
   }
 

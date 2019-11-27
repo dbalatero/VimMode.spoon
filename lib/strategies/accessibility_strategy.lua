@@ -5,6 +5,7 @@ local Selection = dofile(vimModeScriptPath .. "lib/selection.lua")
 local visualUtils = dofile(vimModeScriptPath .. "lib/utils/visual.lua")
 
 local AccessibilityStrategy = Strategy:new()
+local patchedApps = {}
 
 function AccessibilityStrategy:new(vim)
   local strategy = {
@@ -166,7 +167,17 @@ function AccessibilityStrategy:isInTextField()
   return role == "AXTextField" or role == "AXTextArea"
 end
 
+function AccessibilityStrategy:getAppKey()
+  local currentApp = hs.application.frontmostApplication()
+  return currentApp:name() .. currentApp:pid()
+end
+
 function AccessibilityStrategy:enableLiveApplicationPatches()
+  local key = self:getAppKey()
+
+  -- Return early, we already hot patched this one.
+  if patchedApps[key] then return end
+
   local axApp = self:getCurrentApplication()
 
   if axApp then
@@ -178,6 +189,8 @@ function AccessibilityStrategy:enableLiveApplicationPatches()
 
     -- Chromium needs this flag to turn on accessibility in the browser
     axApp:setAttributeValue('AXEnhancedUserInterface', true)
+
+    patchedApps[key] = true
   end
 end
 
