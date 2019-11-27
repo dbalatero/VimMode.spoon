@@ -21,7 +21,8 @@ function Down.getMovements()
   return {
     {
       modifiers = {},
-      key = 'down'
+      key = 'down',
+      selection = true
     }
   }
 end

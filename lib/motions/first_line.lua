@@ -17,15 +17,13 @@ function FirstLine.getMovements()
   return {
     {
       modifiers = {'cmd'},
-      key = 'right' -- reset to end of line
+      key = 'up',
+      selection = true
     },
     {
       modifiers = {'cmd'},
-      key = 'up'
-    },
-    {
-      modifiers = {'cmd'},
-      key = 'left'
+      key = 'left',
+      selection = true
     }
   }
 end

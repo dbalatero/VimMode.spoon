@@ -17,7 +17,8 @@ function Right.getMovements()
   return {
     {
       modifiers = {},
-      key = 'right'
+      key = 'right',
+      selection = true
     }
   }
 end

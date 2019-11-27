@@ -196,6 +196,10 @@ function VimMode:enter()
   end
 end
 
+function VimMode:canUseAdvancedMode()
+  return AccessibilityBuffer:new():isValid()
+end
+
 function VimMode:exitAllModals()
   self.modal:exit()
 end
@@ -219,7 +223,7 @@ function VimMode:fireCommandState()
   local motion = self.commandState.motion
 
   local strategies = {
-    AccessibilityStrategy:new(self),
+    -- AccessibilityStrategy:new(self),
     KeyboardStrategy:new(self)
   }
 

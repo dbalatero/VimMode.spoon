@@ -67,6 +67,12 @@ local function createVimModal(vim)
     end
   end
 
+  local advancedModeOnly = function(fn)
+    return function()
+      if vim:canUseAdvancedMode() then fn() end
+    end
+  end
+
   local visualOperator = function(type)
     return function()
       fireOperator(type)
@@ -195,11 +201,11 @@ local function createVimModal(vim)
       fireOperator(Delete)
       fireMotion(LineEnd)
     end)
-    :bind({'shift'}, 'i', function()
+    :bind({'shift'}, 'i', advancedModeOnly(function()
       fireMotion(LineBeginning)
       fireMotion(FirstNonBlank)
       vim:exit()
-    end)
+    end))
     :bindWithRepeat({}, 'x', function()
       fireOperator(Delete)
       fireMotion(Right)

@@ -30,7 +30,8 @@ function LineEnd.getMovements()
   return {
     {
       modifiers = { 'cmd' },
-      key = 'right'
+      key = 'right',
+      selection = true
     }
   }
 end

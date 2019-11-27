@@ -97,7 +97,8 @@ function BackWord.getMovements()
   return {
     {
       modifiers = { ' alt' },
-      key = 'left'
+      key = 'left',
+      selection = true
     }
   }
 end

@@ -59,7 +59,8 @@ function BigWord.getMovements()
   return {
     {
       modifiers = { 'alt' },
-      key = 'right'
+      key = 'right',
+      selection = true
     }
   }
 end

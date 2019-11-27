@@ -20,8 +20,17 @@ function EntireLine.getRange(_, buffer)
 end
 
 function EntireLine.getMovements()
-  -- TODO
-  return {}
+  return {
+    {
+      modifiers = { 'cmd' },
+      key = 'left'
+    },
+    {
+      modifiers = { 'cmd' },
+      key = 'right',
+      selection = true
+    }
+  }
 end
 
 return EntireLine

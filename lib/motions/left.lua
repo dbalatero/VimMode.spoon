@@ -17,7 +17,8 @@ function Left.getMovements()
   return {
     {
       modifiers = {},
-      key = 'left'
+      key = 'left',
+      selection = true
     }
   }
 end

@@ -14,8 +14,11 @@ function KeyboardStrategy:new(vim)
 end
 
 function KeyboardStrategy:fire()
-  self:fireMovement()
-  self:fireOperator()
+  local result = self:fireMovement()
+
+  -- If the movement is canceled or impossible with the KB strategy, don't do
+  -- the operator.
+  if result then self:fireOperator() end
 end
 
 function KeyboardStrategy:fireMovement()
@@ -23,15 +26,20 @@ function KeyboardStrategy:fireMovement()
   local motion = self.vim.commandState.motion
   local operator = self.vim.commandState.operator
 
-  for _, movement in ipairs(motion.getMovements()) do
+  local movements = motion.getMovements()
+  if not movements then return false end
+
+  for _, movement in ipairs(movements) do
     local modifiers = movement.modifiers
 
-    if operator then
+    if operator and movement.selection then
       modifiers = { "shift", table.unpack(modifiers) }
     end
 
     hs.eventtap.keyStroke(modifiers, movement.key, 0)
   end
+
+  return true
 end
 
 function KeyboardStrategy:fireOperator()

@@ -21,7 +21,8 @@ function Up.getMovements()
   return {
     {
       modifiers = {},
-      key = 'up'
+      key = 'up',
+      selection = true
     }
   }
 end

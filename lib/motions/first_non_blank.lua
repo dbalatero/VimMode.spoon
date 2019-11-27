@@ -29,9 +29,8 @@ function FirstNonBlank.getRange(_, buffer)
   return range
 end
 
--- TODO not possible without context
 function FirstNonBlank.getMovements()
-  return {}
+  return nil
 end
 
 return FirstNonBlank
