@@ -4,6 +4,20 @@ local Selection = dofile(vimModeScriptPath .. "lib/selection.lua")
 
 local AccessibilityBuffer = Buffer:new()
 
+-- Some apps have a partial implementation of the OS X Accessibility API,
+-- but do not actually play ball very well.
+local bannedApps = {
+  -- Slack always returns a selection range of:
+  --   { loc = 0, len = 0 }
+  --
+  -- no matter where the cursor is in the text field.
+  --
+  -- This might be hackable in a future PR by getting clever with the AX APIs
+  -- that let us get the current line's range, and selecting text to the end of
+  -- the line to see where we are in the line.
+  Slack = true
+}
+
 function AccessibilityBuffer:new()
   local buffer = {}
 
@@ -94,7 +108,14 @@ function AccessibilityBuffer:setValue(value)
   return self
 end
 
+function AccessibilityBuffer:isBannedApp()
+  local currentApp = hs.application.frontmostApplication()
+
+  return not not bannedApps[currentApp:name()]
+end
+
 function AccessibilityBuffer:isValid()
+  if self:isBannedApp() then return false end
   if not self:getCurrentElement() then return false end
   if not self:getSelectionRange() then return false end
   if not self:isInTextField() then return false end
