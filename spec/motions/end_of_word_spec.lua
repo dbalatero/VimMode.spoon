@@ -70,7 +70,8 @@ describe("EndOfWord", function()
         {
           {
             modifiers = { 'alt' },
-            key = 'right'
+            key = 'right',
+            selection = true
           }
         },
         endOfWord:getMovements()

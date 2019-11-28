@@ -142,7 +142,8 @@ describe("Word", function()
         {
           {
             modifiers = { 'alt' },
-            key = 'right'
+            key = 'right',
+            selection = true
           }
         },
         word:getMovements()

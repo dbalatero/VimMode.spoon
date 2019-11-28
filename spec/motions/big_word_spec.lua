@@ -53,7 +53,8 @@ describe("BigWord", function()
         {
           {
             modifiers = { 'alt' },
-            key = 'right'
+            key = 'right',
+            selection = true
           }
         },
         bigWord:getMovements()
