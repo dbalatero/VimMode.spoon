@@ -69,7 +69,7 @@ the motions and/or operators that are supported.
 * To enter normal mode, hit whichever key you bind to it (see below for key bind instructions)
 * To exit normal mode, press `i` and you're back to a normal OS X input.
 
-[[##]] Manual Installation
+## Manual Installation
 
 Install [Hammerspoon](http://www.hammerspoon.org/go/)
 
