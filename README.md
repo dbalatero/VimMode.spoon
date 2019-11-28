@@ -92,6 +92,7 @@ vim = hs.loadSpoon('VimMode')
 
 vim:bindHotKeys({ enter = {{'ctrl'}, ';'} })
 ```
+```
 
 ## Binding jk to enter Vim Mode
 
@@ -105,6 +106,13 @@ This sequence only watches for simple characters - it can't handle uppercase
 (`enterWithSequence('JK')`) or any other modifier keys (ctrl, shift). This is
 meant to handle the popularity of people binding `jj`, `jk`, or `kj` to
 entering normal mode in Vim.
+
+The sequence also times out - if you type a `j` and wait < 1sec, it will type
+the `j` for you.
+
+If you have a sequence of `jk` and you go to type `ja` it will immediately
+pass through the `ja` keys without any latency either. I wanted this to work
+close to `inoremap jk <esc>`.
 
 ## Disabling vim mode for certain apps
 
