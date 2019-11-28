@@ -64,6 +64,8 @@ the motions and/or operators that are supported.
 - [x] `/` to trigger `cmd+f` search (when `cmd+f` is supported in app)
 - [x] visual mode with `v`
 - [ ] support prefixing commands with numbers to repeat them (e.g. `2dw`)
+- [ ] `^d` - page down
+- [ ] `^u` - page down
 
 ## Usage
 
