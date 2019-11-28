@@ -8,12 +8,30 @@ local ContextualModal = {}
 -- context you happen to be in.
 --
 -- Swapping between multiple modals is too slow, so having a single modal
--- that has context layers helps with key latency and lets us buffer keystrokes.
+-- that has context layers helps with key latency and lets us buffer keystrokes
+-- correctly.
+--
+-- To bind keys to a new context layer, use the withContext helper to change
+-- the binding context:
+--
+-- local modal = ContextualModal:new()
+--
+-- modal
+--   :withContext("foo")
+--   :bind({}, 'e', function() print("foo e") end)
+--
+-- modal
+--   :withContext("bar")
+--   :bind({}, 'e', function() print("bar e") end)
+--
+-- modal:enterContext("foo") -- pressing 'e' prints 'foo e'
+-- modal:enterContext("bar") -- pressing 'e' prints 'bar e'
 function ContextualModal:new()
   local wrapper = {
     activeContext = nil,
     bindingContext = nil,
     bindings = {},
+    entered = false,
     modal = hs.hotkey.modal.new(),
     registry = Registry:new()
   }
@@ -21,26 +39,11 @@ function ContextualModal:new()
   setmetatable(wrapper, self)
   self.__index = self
 
-  wrapper.modal.entered = function()
-    vimLogger.i("entering modal context is " .. inspect(wrapper.activeContext))
-  end
-
-  wrapper.modal.exited = function()
-    vimLogger.i("exited modal context is " .. inspect(wrapper.activeContext))
-  end
-
   return wrapper
 end
 
 function ContextualModal:handlePress(mods, key, eventType)
   return function()
-    vimLogger.i(
-      "Handling a press of ",
-      inspect(mods),
-      key,
-      eventType
-    )
-
     local handler = self.registry:getHandler(
       self.activeContext,
       mods,
@@ -73,8 +76,6 @@ function ContextualModal:registerBinding(mods, key)
 end
 
 function ContextualModal:bind(mods, key, pressedfn, releasedfn, repeatfn)
-  vimLogger.i("Binding ", inspect(mods), key, self.bindingContext)
-
   self.registry:registerHandler(
     self.bindingContext,
     mods,
@@ -86,8 +87,6 @@ function ContextualModal:bind(mods, key, pressedfn, releasedfn, repeatfn)
 
   -- only bind once for this modal
   if not self:hasBinding(mods, key) then
-    vimLogger.i("First time binding ", inspect(mods), key)
-
     self:registerBinding(mods, key)
 
     self.modal:bind(
@@ -114,15 +113,22 @@ end
 
 function ContextualModal:enterContext(contextKey)
   self.activeContext = contextKey
-  self.modal:enter()
+
+  if not self.entered then
+    self.entered = true
+    self.modal:enter()
+  end
 
   return self
 end
 
 function ContextualModal:exit()
-  vimLogger.i("Exiting modal context")
   self.activeContext = nil
-  self.modal:exit()
+
+  if self.entered then
+    self.entered = false
+    self.modal:exit()
+  end
 
   return self
 end

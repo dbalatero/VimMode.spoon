@@ -44,10 +44,10 @@ function VimMode:new()
   vim.config = Config:new()
   vim.enabled = true
   vim.mode = 'insert'
+  vim.modal = createVimModal(vim)
   vim.state = createStateMachine(vim)
   vim.sequence = nil
   vim.visualCaretPosition = nil
-  vim.modal = createVimModal(vim)
 
   vim.appWatcher = AppWatcher:new(vim):start()
 
@@ -103,8 +103,8 @@ end
 
 function VimMode:enable()
   self.enabled = true
-  self:enableSequence()
   self:resetCommandState()
+  self:enableSequence()
 
   return self
 end
@@ -130,33 +130,35 @@ function VimMode:setVisualCaretPosition(position)
   return self
 end
 
-function VimMode:enableKeySequence(key1, key2, modifiers)
-  modifiers = modifiers or {}
-
-  local onSequencePressed = function()
+function VimMode:enterWithSequence(keys)
+  self.sequence = KeySequence:new(keys, function()
     self:enter()
-  end
+  end)
 
-  self.sequence = KeySequence
-    :new{ key1 = key1, key2 = key2, modifiers = modifiers }
-    :setOnSequencePressed(onSequencePressed)
-    :enable()
+  self.sequence:enable()
+
+  return self
+end
+
+function VimMode:enableKeySequence(key1, key2)
+  self:enterWithSequence(key1 .. key2)
 
   return self
 end
 
 function VimMode:disableSequence()
   if not self.sequence then return end
+
   self.sequence:disable()
 end
 
 function VimMode:enableSequence()
   if not self.sequence then return end
+
   self.sequence:enable()
 end
 
 function VimMode:exit()
-  vimLogger.i("calling it")
   self.state:enterInsert()
 end
 
@@ -191,10 +193,21 @@ end
 
 function VimMode:enter()
   if self.enabled then
-    vimLogger.i("Entering Vim")
     self:showAlert()
     self.state:enterNormal()
   end
+end
+
+-- If we try to exit from the ContextualModal synchronously, we end
+-- up in a bad state where the 'i' key just repeats forever.
+--
+-- If we can just chill for a couple ms this lets us exit the modal
+-- key handler and move back to the key sequence tap.
+--
+-- Ugh.
+function VimMode:exitAsync()
+  local seconds = 3 / 1000 -- converting ms -> secs
+  return hs.timer.doAfter(seconds, function() self:exit() end)
 end
 
 function VimMode:canUseAdvancedMode()
@@ -206,8 +219,9 @@ function VimMode:exitAllModals()
 end
 
 function VimMode:enterModal(name)
-  vimLogger.i("Entering modal " .. name)
   self.modal:enterContext(name)
+
+  return self
 end
 
 function VimMode:collapseSelection()

@@ -23,22 +23,21 @@ local function createStateMachine(vim)
     },
     callbacks = {
       onenterNormal = function()
-        vim:collapseSelection()
+        vim:disableSequence()
         vim:resetCommandState()
         vim:setNormalMode()
+        vim:collapseSelection()
         vim:enterModal('normal')
       end,
       onenterInsert = function()
-        vimLogger.i("Exiting Vim")
         vim.visualCaretPosition = nil
-        vim:resetCommandState()
-        vim:setInsertMode()
-        vim:exitAllModals()
-        vim:enableSequence()
         vim:hideAlert()
+        vim:exitAllModals()
+        vim:setInsertMode()
+        vim:resetCommandState()
+        vim:enableSequence()
       end,
       onenterVisual = function()
-        vimLogger.i("Visual mode")
         vim:setVisualMode()
         vim:enterModal('visual')
       end,
@@ -63,9 +62,6 @@ local function createStateMachine(vim)
           if result.transition == "normal" then self:enterNormal()
           else self:enterInsert() end
         end
-      end,
-      onstatechange = function(_, event, from, to)
-        vimLogger.i("Firing: " .. event .. " from: " .. from .. "to: " .. to)
       end
     }
   })

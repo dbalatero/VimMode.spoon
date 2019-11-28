@@ -24,6 +24,18 @@ function stringUtils.isPrintableChar(char)
     not stringUtils.isWhitespace(char)
 end
 
+function stringUtils.toChars(str)
+  local chars = {}
+  local current = 1
+
+  while current <= #str do
+    table.insert(chars, string.sub(str, current, current))
+    current = current + 1
+  end
+
+  return chars
+end
+
 function stringUtils.split(delimiter, text, includeDelimiter)
   local includeDelimiter = includeDelimiter or false
   local list = {}

@@ -26,8 +26,6 @@ local Replace = dofile(vimModeScriptPath .. "lib/operators/replace.lua")
 local Yank = dofile(vimModeScriptPath .. "lib/operators/yank.lua")
 
 local function createVimModal(vim)
-  local modal = ContextualModal:new()
-
   local motion = function(type)
     return function() vim:enterMotion(type:new()) end
   end
@@ -47,18 +45,14 @@ local function createVimModal(vim)
   local operatorNeedingChar = function(type, optionalMotion)
     return function()
       vim:exitAllModals()
-      vimLogger.i("waiting on char...")
 
       local waiter = WaitForChar:new{
         onCancel = function()
-          vimLogger.i("onCancel()")
           vim:cancel()
         end,
         onChar = function(character)
           local op = type:new()
           op:setExtraChar(character)
-
-          vimLogger.i("Got a character " .. character .. " for " .. op.name)
 
           vim:enterOperator(op)
 
@@ -88,6 +82,8 @@ local function createVimModal(vim)
   local pushDigitTo = function(name, digit)
     return function() vim:pushDigitTo(name, digit) end
   end
+
+  local modal = ContextualModal:new()
 
   -- reusable bindings
   modal.bindCountsToModal = function(mdl, name)
@@ -129,7 +125,7 @@ local function createVimModal(vim)
   -- g prefixes
   modal
     :withContext('g')
-    :bind({}, 'escape', function() vim:exit() end)
+    :bind({}, 'escape', function() vim:exitAsync() end)
     :bind({}, 'g', motion(FirstLine))
 
   -- Visual mode
@@ -158,9 +154,9 @@ local function createVimModal(vim)
   -- Normal mode
   modal
     :withContext('normal')
+    :bind({}, 'i', function() vim:exitAsync() end)
     :bindMotionsToModal('operator')
     :bindCountsToModal('operator')
-    :bind({}, 'i', function() vim:exit() end)
     :bind({}, 'c', operator(Change))
     :bind({}, 'd', operator(Delete))
     :bind({}, 'y', operator(Yank))
@@ -170,15 +166,15 @@ local function createVimModal(vim)
     end)
     :bind({}, '/', function()
       hs.eventtap.keyStroke({'cmd'}, 'f', 0)
-      vim:exit()
+      vim:exitAsync()
     end)
     :bind({}, 'p', function()
       hs.eventtap.keyStroke({'cmd'}, 'v', 0)
     end)
     :bind({}, 'o', function()
-      vim:exit()
       hs.eventtap.keyStroke({'cmd'}, 'right', 0)
       hs.eventtap.keyStroke({}, 'return', 0)
+      vim:exitAsync()
     end)
     :bind({}, 'u', function()
       -- undo
@@ -189,14 +185,14 @@ local function createVimModal(vim)
       hs.eventtap.keyStroke({'cmd','shift'}, 'z', 0)
     end)
     :bind({'shift'}, 'o', function()
-      vim:exit()
       hs.eventtap.keyStroke({'cmd'}, 'left', 0)
       hs.eventtap.keyStroke({}, 'return', 0)
       hs.eventtap.keyStroke({}, 'up', 0)
+      vim:exitAsync()
     end)
     :bind({'shift'}, 'a', function()
       fireMotion(LineEnd)
-      vim:exit()
+      vim:exitAsync()
     end)
     :bind({'shift'}, 'c', function()
       fireOperator(Change)
@@ -209,23 +205,16 @@ local function createVimModal(vim)
     :bind({'shift'}, 'i', advancedModeOnly(function()
       fireMotion(LineBeginning)
       fireMotion(FirstNonBlank)
-      vim:exit()
+      vim:exitAsync()
     end))
     :bindWithRepeat({}, 'x', function()
       fireOperator(Delete)
       fireMotion(Right)
     end)
     :bindWithRepeat({}, 's', function()
-      vimLogger.i("in here")
       fireOperator(Change)
       fireMotion(Right)
     end)
-
-  modal
-    :withContext('operatorPending')
-      :bind({}, 'escape', function() vim:exit() end)
-      :bindWithRepeat({}, 'b', motion(BackWord))
-      :bindWithRepeat({}, 'w', motion(Word))
 
   return modal
 end

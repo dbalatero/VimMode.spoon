@@ -1,102 +1,135 @@
--- Provides an object for binding specific key sequences
+local stringUtils = dofile(vimModeScriptPath .. "lib/utils/string_utils.lua")
 local KeySequence = {}
 
-function KeySequence:new(options)
-  options = options or {}
-
+function KeySequence:new(keys, onSequencePressed)
   local sequence = {}
 
   setmetatable(sequence, self)
   self.__index = self
 
-  sequence.key1 = options.key1
-  sequence.key2 = options.key2
-  sequence.modifiers = options.modifiers or {}
+  sequence.keys = stringUtils.toChars(keys)
   sequence.maxDelayBetweenKeys = 120 -- in ms
-  sequence.waitingForSecondPress = false
-  sequence.tap = nil
-  sequence.onSequencePressed = function() end
+  sequence.onSequencePressed = onSequencePressed
   sequence.enabled = false
-
-  sequence:initializeTap()
+  sequence.timer = nil
+  sequence.sequencePosition = 1
+  sequence.typedEvents = {}
+  sequence.alreadyTyped = ""
+  sequence:resetTap()
 
   return sequence
 end
 
-function KeySequence:initializeTap()
-  self.tap = hs.eventtap.new(
-    { hs.eventtap.event.types.keyDown },
-    function(event)
-      if not self.enabled then return end
-
-      local hasModifiers = event:getFlags():containExactly(self.modifiers)
-      local keyPressed = hs.keycodes.map[event:getKeyCode()]
-
-      if not self.waitingForSecondPress then
-        -- handle first key press
-        if hasModifiers and keyPressed == self.key1 then
-          self.waitingForSecondPress = true
-
-          -- cancel waiting for the key press after a given timeout
-          hs.timer.doAfter(self.maxDelayBetweenKeys / 1000, function()
-            if not self.waitingForSecondPress then return end
-
-            self.waitingForSecondPress = false
-
-            self.tap:stop()
-            hs.eventtap.keyStroke(self.modifiers, self.key1, 0)
-            self.tap:start()
-          end)
-
-          return true
-        end
-      else
-        -- handle second key press
-        self.waitingForSecondPress = false
-
-        if hasModifiers and keyPressed == self.key2 then
-          -- successful sequence!
-          self:disable()
-          self.onSequencePressed()
-
-          return true
-        else
-          -- Pass thru the first key as well as the second one if we aren't
-          -- typing the sequence.
-          local currentModifiers = event:getFlags()
-          local currentKey = event:getKeyCode()
-
-          return true, {
-            hs.eventtap.event.newKeyEvent(self.modifiers, self.key1, true),
-            hs.eventtap.event.newKeyEvent(self.modifiers, self.key1, false),
-            hs.eventtap.event.newKeyEvent(currentModifiers, currentKey, true),
-            hs.eventtap.event.newKeyEvent(currentModifiers, currentKey, false)
-          }
-        end
-      end
-
-      return false
-    end
-  )
-end
-
 function KeySequence:enable()
+  if self.enabled then return end
+
   self.enabled = true
+  self:reset()
   self.tap:start()
 
   return self
 end
 
 function KeySequence:disable()
+  if not self.enabled then return end
+
   self.enabled = false
+  self:reset()
   self.tap:stop()
 
   return self
 end
 
-function KeySequence:setOnSequencePressed(fn)
-  self.onSequencePressed = fn
+function KeySequence:resetTap()
+  self.tap = hs.eventtap.new(
+    { hs.eventtap.event.types.keyDown },
+    self:buildEventHandler()
+  )
+end
+
+function KeySequence:reset()
+  self:cancelTimer()
+  self:resetEvents()
+  self.sequencePosition = 1
+  self.alreadyTyped = ""
+end
+
+function KeySequence:resetEvents()
+  self.typedEvents = {}
   return self
+end
+
+function KeySequence:cancelTimer()
+  if self.timer then self.timer:stop() end
+end
+
+function KeySequence:startTimer(fn)
+  self.timer = hs.timer.doAfter(self.maxDelayBetweenKeys / 1000, fn)
+end
+
+function KeySequence:recordEvent(event)
+  local currentModifiers = event:getFlags()
+  local currentKey = event:getKeyCode()
+
+  table.insert(
+    self.typedEvents,
+    hs.eventtap.event.newKeyEvent(currentModifiers, currentKey, true)
+  )
+
+  table.insert(
+    self.typedEvents,
+    hs.eventtap.event.newKeyEvent(currentModifiers, currentKey, false)
+  )
+end
+
+function KeySequence:recordKey(key)
+  self.alreadyTyped = self.alreadyTyped .. key
+end
+
+function KeySequence:buildEventHandler()
+  return function(event)
+    if not self.enabled then return end
+
+    -- got another key, kill the abort timer
+    self:cancelTimer()
+
+    local position = self.sequencePosition
+    local keyPressed = hs.keycodes.map[event:getKeyCode()]
+    local keyToCompare = self.keys[position]
+
+    if keyPressed == keyToCompare and #event:getFlags() == 0 then
+      local typedFinalChar = position == #self.keys
+
+      if typedFinalChar then
+        self:disable()
+        self.onSequencePressed()
+      else
+        self.sequencePosition = position + 1
+        self:recordEvent(event)
+        self:recordKey(keyPressed)
+
+        self:startTimer(function()
+          self.tap:stop()
+          hs.eventtap.keyStrokes(self.alreadyTyped)
+          self.tap:start()
+
+          self:reset()
+        end)
+      end
+
+      return true
+    elseif self.sequencePosition > 1 then
+      -- Abort the sequence and pass through any keys we already typed
+      self:recordEvent(event)
+      local events = self.typedEvents
+
+      self:reset()
+
+      return true, events
+    end
+
+    return false
+  end
 end
 
 return KeySequence
