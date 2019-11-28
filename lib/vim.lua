@@ -32,6 +32,15 @@ local createVimModal = dofile(vimModeScriptPath .. "lib/modal.lua")
 local createStateMachine = dofile(vimModeScriptPath .. "lib/state.lua")
 local findFirst = dofile(vimModeScriptPath .. "lib/utils/find_first.lua")
 
+local function alertDeprecation(msg)
+  hs.alert.show(
+    "Deprecated: " .. msg,
+    {},
+    hs.screen.mainScreen(),
+    15
+  )
+end
+
 function VimMode:new()
   local vim = {}
 
@@ -141,6 +150,12 @@ function VimMode:enterWithSequence(keys)
 end
 
 function VimMode:enableKeySequence(key1, key2)
+  alertDeprecation(
+    "vim:enableKeySequence('" .. key1 .. "', '" .. key2 .. "')\n" ..
+      "Please use: vim:enterWithSequence('" .. key1 .. key2 .. "') to bind now.\n" ..
+      "In: ~/.hammerspoon/init.lua"
+  )
+
   self:enterWithSequence(key1 .. key2)
 
   return self
