@@ -19,10 +19,10 @@ the motions and/or operators that are supported.
 - [x] `I` - jump to beginning of line
 - [x] `0` - beginning of line
 - [x] `$` - end of line
-- [ ] `f<char>` - jump to next instance of `<char>` - requires context we don't have
-- [ ] `F<char>` - jump to prev instance of `<char>` - requires context we don't have
-- [ ] `t<char>` - jump to before next instance of `<char>` - requires context we don't have
-- [ ] `T<char>` - jump to before prev instance of `<char>` - requires context we don't have
+- [ ] `f<char>`
+- [ ] `F<char>`
+- [ ] `t<char>`
+- [ ] `T<char>`
 - [ ] `aw` - a word
 - [x] `b` - back by word
 - [ ] `B` - back by big word (`:h WORD`)
