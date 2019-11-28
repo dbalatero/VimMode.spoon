@@ -1,6 +1,5 @@
 local Registry = dofile(vimModeScriptPath .. "lib/contextual_modal/registry.lua")
 local tableUtils = dofile(vimModeScriptPath .. "lib/utils/table.lua")
-local inspect = hs.inspect.inspect
 
 local ContextualModal = {}
 

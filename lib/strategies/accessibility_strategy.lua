@@ -1,4 +1,6 @@
 local ax = require("hs._asm.axuielement")
+local inspect = hs.inspect.inspect
+
 local Strategy = dofile(vimModeScriptPath .. "lib/strategy.lua")
 local AccessibilityBuffer = dofile(vimModeScriptPath .. "lib/accessibility_buffer.lua")
 local Selection = dofile(vimModeScriptPath .. "lib/selection.lua")
