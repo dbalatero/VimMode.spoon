@@ -149,6 +149,7 @@ function VimMode:enterWithSequence(keys)
   return self
 end
 
+-- Deprecated in favor of :enterWithSequence('jk'), etc
 function VimMode:enableKeySequence(key1, key2)
   alertDeprecation(
     "vim:enableKeySequence('" .. key1 .. "', '" .. key2 .. "')\n" ..

@@ -59,13 +59,11 @@ This is my first Lua library, so things might be a little weird :)
 * The screen should slightly dim when you enter normal mode.
 * To exit normal mode, press `i` - business as usual.
 
-## Prerequisites
+## Manual Installation
 
-* Install [Hammerspoon](http://www.hammerspoon.org/go/)
+Install [Hammerspoon](http://www.hammerspoon.org/go/)
 
-## Installation
-
-Run this in your Terminal:
+Next, run this in your Terminal:
 
 ```
 mkdir -p ~/.hammerspoon/Spoons
@@ -90,15 +88,13 @@ vim:bindHotKeys({ enter = {{'ctrl'}, ';'} })
 ```lua
 vim = hs.loadSpoon('VimMode')
 
-vim:enableKeySequence('j', 'k')
+vim:enterWithSequence('jk')
 ```
 
-You can also use modifiers in this sequence:
-
-```lua
--- requires shift to be held down when you type jk
-vim:enableKeySequence('j', 'k', {'shift'})
-```
+This sequence only watches for simple characters - it can't handle uppercase
+(`enterWithSequence('JK')`) or any other modifier keys (ctrl, shift). This is
+meant to handle the popularity of people binding `jj`, `jk`, or `kj` to
+entering normal mode in Vim.
 
 ## Disabling vim mode for certain apps
 
