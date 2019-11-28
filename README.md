@@ -23,6 +23,7 @@ the motions and/or operators that are supported.
 - [ ] `F<char>` - jump to prev instance of `<char>` - requires context we don't have
 - [ ] `t<char>` - jump to before next instance of `<char>` - requires context we don't have
 - [ ] `T<char>` - jump to before prev instance of `<char>` - requires context we don't have
+- [ ] `aw` - a word
 - [x] `b` - back by word
 - [ ] `B` - back by big word (`:h WORD`)
 - [x] `e` - fwd to end of word
