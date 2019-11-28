@@ -10,24 +10,34 @@ My goal was to make this library fairly easy to drop in, even if you aren't
 currently running Hammerspoon. I welcome any PRs or additions to extend
 the motions and/or operators that are supported.
 
-This is my first Lua library, so things might be a little weird :)
-
-## Progress
+## Current Support / Planned Support
 
 ### Motions
 
-- [x] `shift + a` - jump to end of line
-- [x] `shift + g` - jump to last line of input
-- [x] `shift + i` - jump to beginning of line
+- [x] `A` - jump to end of line
+- [x] `G` - jump to last line of input
+- [x] `I` - jump to beginning of line
 - [x] `0` - beginning of line
 - [x] `$` - end of line
-- [x] `b` - back by word
 - [ ] `f<char>` - jump to next instance of `<char>` - requires context we don't have
 - [ ] `F<char>` - jump to prev instance of `<char>` - requires context we don't have
 - [ ] `t<char>` - jump to before next instance of `<char>` - requires context we don't have
 - [ ] `T<char>` - jump to before prev instance of `<char>` - requires context we don't have
-- [x] `w` fwd by word
+- [x] `b` - back by word
+- [ ] `B` - back by big word (`:h WORD`)
+- [x] `e` - fwd to end of word
+- [ ] `E` - fwd to end of big word (`:h WORD`)
+- [x] `gg` - top of buffer
 - [x] `hjkl` - arrow keys
+- [x] `w` fwd by word
+- [x] `W` fwd by big word (`:h WORD`)
+- [ ] `iw` - in word
+- [ ] `i'` - in single quotes
+- [ ] `i(` - in parens
+- [ ] `i{` - in braces
+- [ ] `i<` - in angle brackets
+- [ ] `i`` - in backticks
+- [ ] `i"` - in double quotes
 
 ### Operators
 
@@ -46,8 +56,9 @@ This is my first Lua library, so things might be a little weird :)
 - [x] `o` - add new line below, exit normal mode
 - [x] `shift + o` - add new line above, exit normal mode
 - [x] `p` to paste
-- [ ] `s` to delete under cursor, exit normal mode
-- [ ] `u` to undo
+- [x] `s` to delete under cursor, exit normal mode
+- [x] `^r` to redo
+- [x] `u` to undo
 - [x] `y` to yank to clipboard
 - [x] `/` to trigger `cmd+f` search (when `cmd+f` is supported in app)
 - [x] visual mode with `v`
@@ -55,11 +66,10 @@ This is my first Lua library, so things might be a little weird :)
 
 ## Usage
 
-* To enter normal mode, hit whichever key you bind to it (typically `jj`, `jk`, or `hyper`)
-* The screen should slightly dim when you enter normal mode.
-* To exit normal mode, press `i` - business as usual.
+* To enter normal mode, hit whichever key you bind to it (see below for key bind instructions)
+* To exit normal mode, press `i` and you're back to a normal OS X input.
 
-## Manual Installation
+[[##]] Manual Installation
 
 Install [Hammerspoon](http://www.hammerspoon.org/go/)
 
