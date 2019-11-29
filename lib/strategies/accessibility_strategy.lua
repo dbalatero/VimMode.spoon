@@ -37,7 +37,7 @@ function AccessibilityStrategy:fire()
     buffer:setCaretPosition(self.vim.visualCaretPosition)
   end
 
-  local range = motion:getRange(buffer)
+  local range = motion:getRange(buffer, operator)
 
   -- just cancel if the motion decides there isn't anything
   -- to operate on (end of buffer, etc)

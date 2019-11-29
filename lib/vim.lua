@@ -162,12 +162,6 @@ function VimMode:enableKeySequence(key1, key2)
   return self
 end
 
-function VimMode:currentOperatorName()
-  local operator = self.commandState.operator
-
-  return operator and operator.name
-end
-
 function VimMode:disableSequence()
   if not self.sequence then return end
 

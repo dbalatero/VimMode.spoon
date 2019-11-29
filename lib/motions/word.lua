@@ -1,4 +1,5 @@
 local Motion = dofile(vimModeScriptPath .. "lib/motion.lua")
+local EndOfWord = dofile(vimModeScriptPath .. "lib/motions/end_of_word.lua")
 local stringUtils = dofile(vimModeScriptPath .. "lib/utils/string_utils.lua")
 
 local Word = Motion:new{ name = 'word' }
@@ -19,7 +20,7 @@ local isPrintableChar = stringUtils.isPrintableChar
 --
 
 -- TODO handle more edge cases for :help word
-function Word.getRange(_, buffer)
+function Word.getRange(_, buffer, operator)
   local start = buffer:getCaretPosition()
 
   local range = {
@@ -39,6 +40,15 @@ function Word.getRange(_, buffer)
     range.finish + 1,
     range.finish + 1
   )
+
+  -- From :h word
+  --
+  -- Special case: "cw" and "cW" are treated like "ce" and "cE" if the
+  -- cursor is on a non-blank. This is because "cw" is interpreted as
+  -- change-word, and a word does not include the following white space.
+  if not isWhitespace(startingChar) and operator.name == 'change' then
+    return EndOfWord:new():getRange(buffer, operator)
+  end
 
   local startedOnPunctuation = isPunctuation(startingChar)
 

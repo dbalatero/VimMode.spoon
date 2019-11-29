@@ -116,13 +116,7 @@ local function createVimModal(vim)
       :bindWithRepeat({}, 'j', motion(Down))
       :bindWithRepeat({}, 'k', motion(Up))
       :bindWithRepeat({}, 'l', motion(Right))
-      :bindWithRepeat({}, 'w', function()
-        if vim:currentOperatorName() == 'change' then
-          fireMotion(EndOfWord)
-        else
-          fireMotion(Word)
-        end
-      end)
+      :bindWithRepeat({}, 'w', motion(Word))
       :bindWithRepeat({'shift'}, 'w', motion(BigWord))
       :bindWithRepeat({'shift'}, 'g', motion(LastLine))
       :bind({}, 'g', function() vim:enterModal('g') end)
