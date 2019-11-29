@@ -39,9 +39,9 @@ function Replace:getModifiedBuffer(buffer, rangeStart, rangeFinish)
   return buffer:createNew(contents, rangeStart, 0)
 end
 
--- TODO
-function Replace.getKeys()
-  return {}
+function Replace:getKeys()
+  -- TODO support in bootleg mode
+  return nil
 end
 
 return Replace

@@ -52,7 +52,7 @@ function KeyboardStrategy:fireOperator()
 
   if operator then
     -- fire the operator
-    for _, movement in pairs(operator.getKeys()) do
+    for _, movement in pairs(operator:getKeys()) do
       hs.eventtap.keyStroke(movement.modifiers, movement.key, 0)
     end
   end
