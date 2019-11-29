@@ -3,7 +3,7 @@ local times = dofile(vimModeScriptPath .. "lib/utils/times.lua")
 local Replace = Operator:new{name = 'replace'}
 
 function Replace:modifySelection(_, rangeStart, rangeFinish)
-  local numChars = rangeFinish - rangeStart
+  local numChars = rangeFinish - rangeStart + 1
   local replaceChar = self:getExtraChar()
   local replacement = ""
 

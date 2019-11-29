@@ -44,7 +44,7 @@ local function createVimModal(vim)
 
   local operatorNeedingChar = function(type, optionalMotion)
     return function()
-      vim:exitAllModals()
+      vim:exitModalAsync()
 
       local waiter = WaitForChar:new{
         onCancel = function()

@@ -226,6 +226,11 @@ function VimMode:exitAsync()
   return hs.timer.doAfter(seconds, function() self:exit() end)
 end
 
+function VimMode:exitModalAsync()
+  local seconds = 3 / 1000 -- converting ms -> secs
+  return hs.timer.doAfter(seconds, function() self:exitAllModals() end)
+end
+
 function VimMode:canUseAdvancedMode()
   return AccessibilityBuffer:new():isValid()
 end
