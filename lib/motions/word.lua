@@ -46,7 +46,7 @@ function Word.getRange(_, buffer, operator)
   -- Special case: "cw" and "cW" are treated like "ce" and "cE" if the
   -- cursor is on a non-blank. This is because "cw" is interpreted as
   -- change-word, and a word does not include the following white space.
-  if not isWhitespace(startingChar) and operator.name == 'change' then
+  if not isWhitespace(startingChar) and operator and operator.name == 'change' then
     return EndOfWord:new():getRange(buffer, operator)
   end
 
