@@ -26,7 +26,6 @@ local function createStateMachine(vim)
         vim:disableSequence()
         vim:resetCommandState()
         vim:setNormalMode()
-        vim:collapseSelection()
         vim:enterModal('normal')
         vimLogger.i("normal enter")
       end,

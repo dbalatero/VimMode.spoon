@@ -227,6 +227,7 @@ end
 
 function VimMode:enter()
   if self.enabled then
+    self:collapseSelection()
     self.state:enterNormal()
   end
 end
