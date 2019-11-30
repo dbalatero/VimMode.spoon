@@ -28,6 +28,7 @@ local KeyboardStrategy = dofile(vimModeScriptPath .. "lib/strategies/keyboard_st
 local ScreenDimmer = dofile(vimModeScriptPath .. "lib/screen_dimmer.lua")
 local StateIndicator = dofile(vimModeScriptPath .. "lib/state_indicator.lua")
 
+local createHotPatcher = dofile(vimModeScriptPath .. "lib/hot_patcher.lua")
 local createVimModal = dofile(vimModeScriptPath .. "lib/modal.lua")
 local createStateMachine = dofile(vimModeScriptPath .. "lib/state.lua")
 local findFirst = dofile(vimModeScriptPath .. "lib/utils/find_first.lua")
@@ -56,6 +57,9 @@ function VimMode:new()
   vim.state = createStateMachine(vim)
   vim.sequence = nil
   vim.visualCaretPosition = nil
+
+  vim.hotPatcher = createHotPatcher()
+  vim.hotPatcher:start()
 
   vim.appWatcher = AppWatcher:new(vim):start()
   vim.stateIndicator = StateIndicator:new(vim):update()

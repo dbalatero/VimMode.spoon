@@ -7,7 +7,6 @@ local Selection = dofile(vimModeScriptPath .. "lib/selection.lua")
 local visualUtils = dofile(vimModeScriptPath .. "lib/utils/visual.lua")
 
 local AccessibilityStrategy = Strategy:new()
-local patchedApps = {}
 
 function AccessibilityStrategy:new(vim)
   local strategy = {
@@ -17,8 +16,6 @@ function AccessibilityStrategy:new(vim)
 
   setmetatable(strategy, self)
   self.__index = self
-
-  strategy:enableLiveApplicationPatches()
 
   return strategy
 end
@@ -154,10 +151,6 @@ function AccessibilityStrategy:isValid()
   return AccessibilityBuffer:new():isValid()
 end
 
-function AccessibilityStrategy.getCurrentApplication()
-  return ax.applicationElement(hs.application.frontmostApplication())
-end
-
 function AccessibilityStrategy:getUIRole()
   return self:getCurrentElement():attributeValue("AXRole")
 end
@@ -166,33 +159,6 @@ function AccessibilityStrategy:isInTextField()
   local role = self:getUIRole()
 
   return role == "AXTextField" or role == "AXTextArea"
-end
-
-function AccessibilityStrategy:getAppKey()
-  local currentApp = hs.application.frontmostApplication()
-  return currentApp:name() .. currentApp:pid()
-end
-
-function AccessibilityStrategy:enableLiveApplicationPatches()
-  local key = self:getAppKey()
-
-  -- Return early, we already hot patched this one.
-  if patchedApps[key] then return end
-
-  local axApp = self:getCurrentApplication()
-
-  if axApp then
-    vimLogger.i("Patching " .. inspect(axApp))
-
-    -- Electron apps require this attribute to be set or else you cannot
-    -- read the accessibility tree
-    axApp:setAttributeValue('AXManualAccessibility', true)
-
-    -- Chromium needs this flag to turn on accessibility in the browser
-    axApp:setAttributeValue('AXEnhancedUserInterface', true)
-
-    patchedApps[key] = true
-  end
 end
 
 return AccessibilityStrategy
