@@ -18,14 +18,14 @@ function Delete.getModifiedBuffer(_, buffer, rangeStart, rangeFinish)
 end
 
 function Delete.modifySelection()
-  hs.eventtap.keyStroke({}, 'delete', 0)
+  hs.eventtap.keyStroke({'cmd'}, 'x', 0)
 end
 
 function Delete.getKeys()
   return {
     {
-      modifiers = {},
-      key = 'delete'
+      modifiers = {'cmd'},
+      key = 'x'
     }
   }
 end
