@@ -37,7 +37,7 @@ fields or anything in 1Password, as it can't read those fields!
 Run this command in Terminal:
 
 ```
-bash <(curl -s https://raw.githubusercontent.com/dbalatero/VimMode.spoon/master/bin/installer)
+bash <(curl -s https://raw.githubusercontent.com/dbalatero/VimMode.spoon/vim-mode-v2/bin/installer)
 ```
 
 then *read the post-install info* printed at the end and follow the instructions.
