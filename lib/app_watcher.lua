@@ -2,6 +2,8 @@ local AppWatcher = {}
 
 function AppWatcher:new(vim)
   local watcher = {
+    -- These are the default apps that we automatically turn off Vim mode
+    -- in when they become focused in the OS.
     disabled = {
       MacVim = true,
       iTerm = true,
