@@ -38,6 +38,7 @@ bash <(curl -s https://raw.githubusercontent.com/dbalatero/VimMode.spoon/master/
 
 then *read the post-install info* printed at the end and follow the instructions.
 
+* If you prefer, follow the [Manual Instructions](#manual-instructions) instead.
 * If you don't trust the script, please [audit it](https://github.com/dbalatero/VimMode.spoon/blob/master/bin/installer). It should be pretty straight-forward to read, and doesn't require root/sudo.
 * It is safe to run this script multiple times.
 * It will not break your existing Hammerspoon setup if you have one.
