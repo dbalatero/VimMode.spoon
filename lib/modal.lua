@@ -154,6 +154,7 @@ local function createVimModal(vim)
     :bind({}, 'escape', function() vim:cancel() end)
     :bind({}, 'c', motion(EntireLine)) -- cc
     :bind({}, 'd', motion(EntireLine)) -- dd
+    :bind({}, 'y', motion(EntireLine)) -- yy
 
   -- Normal mode
   modal
