@@ -3,12 +3,13 @@
 [![Build Status](https://travis-ci.com/dbalatero/VimMode.spoon.svg?branch=master)](https://travis-ci.com/dbalatero/VimMode.spoon)
 
 🚀 This library will add Vim motions and operators to all your input fields on
-OS X. Why should Emacs users have all the fun? Not all motions or operators
-are implemented, but I tried to at least hit the major ones I use day-to-day!
+OS X. Why should Emacs users have all the fun?
 
-My goal was to make this library fairly easy to drop in, even if you aren't
-currently running Hammerspoon. I welcome any PRs or additions to extend
-the motions and/or operators that are supported.
+Not all motions or operators are implemented, but you can open an issue if
+you're missing something.
+
+The plugin will not work with system inputs marked as secure, such as password
+fields or anything in 1Password, as it can't read those fields!
 
 ## Table of Contents
 
@@ -29,14 +30,34 @@ the motions and/or operators that are supported.
 
 ## Quick Installation
 
-Use the [quick installer](https://github.com/dbalatero/mac-vim-mode).
+Run this command in Terminal:
 
-It will not touch your existing Hammerspoon setup if you have one, only augment it.
+```
+bash <(curl -s https://raw.githubusercontent.com/dbalatero/VimMode.spoon/master/bin/installer)
+```
+
+If you don't trust the script, please [audit
+it](https://github.com/dbalatero/VimMode.spoon/blob/master/bin/installer). It should
+be pretty straight-forward to read, and doesn't require root/sudo.
+
+* It is safe to run this script multiple times.
+* It will not break your existing Hammerspoon setup if you have one.
+* It is progressive - it only sets up what is missing.
 
 ## Usage
 
+Once installed:
+
 * To enter normal mode, hit whichever key you bind to it (see below for key bind instructions)
 * To exit normal mode, press `i` and you're back to a normal OS X input.
+
+## Staying up to date
+
+To update the plugin, run:
+
+```
+cd ~/.hammerspoon/Spoons/VimMode.spoon && git pull
+```
 
 ## Current Support
 

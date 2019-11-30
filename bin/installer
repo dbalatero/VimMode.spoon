@@ -1,0 +1,265 @@
+#!/usr/bin/env bash
+
+CONFIG_DIR="$HOME/.hammerspoon"
+SPOONS_DIR="$CONFIG_DIR/Spoons"
+
+ask() {
+  print_question "$1"
+  read -r
+}
+
+print_question() {
+  printf "$(tput setaf 3)  [?] $1$(tput sgr0)"
+}
+
+get_answer() {
+  printf "%s" "$REPLY"
+}
+
+dotheader() {
+  echo
+  dotsay "@b@green[[$1]]"
+  echo
+}
+
+dotsay() {
+  local result=$(_colorized $@)
+  echo "$result"
+}
+
+saysuccess() {
+  printf "  "
+  dotsay "✅ @blue[[$1]]"
+}
+
+sayinfo() {
+  printf "  "
+  dotsay "+ @yellow[[$1]]"
+}
+
+_colorized() {
+   echo "$@" | sed -E \
+     -e 's/((@(red|green|yellow|blue|magenta|cyan|white|reset|b|u))+)[[]{2}(.*)[]]{2}/\1\4@reset/g' \
+     -e "s/@red/$(tput setaf 1)/g" \
+     -e "s/@green/$(tput setaf 2)/g" \
+     -e "s/@yellow/$(tput setaf 3)/g" \
+     -e "s/@blue/$(tput setaf 4)/g" \
+     -e "s/@magenta/$(tput setaf 5)/g" \
+     -e "s/@cyan/$(tput setaf 6)/g" \
+     -e "s/@white/$(tput setaf 7)/g" \
+     -e "s/@reset/$(tput sgr0)/g" \
+     -e "s/@b/$(tput bold)/g" \
+     -e "s/@u/$(tput sgr 0 1)/g"
+}
+
+function command_exists() {
+  local name=$1
+
+  command -v "$name" >/dev/null 2>&1
+}
+
+function warn_about_xcode_tools() {
+  dotsay "@b@yellow[[WARNING]]: If you don't have XCode tools \
+installed/enabled, you're going to have a bad time with this script, so do \
+that first."
+
+  echo
+  printf "Sleeping for 3 seconds then continuing with install"
+  sleep 1
+  printf "."
+  sleep 1
+  printf "."
+  sleep 1
+  printf "."
+  echo
+  echo
+}
+
+function check_for_brew() {
+  if ! command_exists brew; then
+    dotsay "@b@red[[Homebrew not found - please install it first]]"
+    exit 1
+  fi
+}
+
+function install_hammerspoon() {
+  if [ -d "/Applications/Hammerspoon.app" ]; then
+    saysuccess "Hammerspoon is already installed!"
+  else
+    sayinfo "Hammerspoon not found, installing..."
+    brew cask install hammerspoon
+  fi
+}
+
+function bootstrap_hammerspoon_directory() {
+  if [ ! -d "$CONFIG_DIR" ]; then
+    sayinfo "Creating $CONFIG_DIR directory"
+    mkdir -p $CONFIG_DIR
+  else
+    saysuccess "$CONFIG_DIR exists!"
+  fi
+}
+
+function bootstrap_spoons_dir() {
+  if [ ! -d "$SPOONS_DIR" ]; then
+    sayinfo "Creating $SPOONS_DIR"
+    mkdir -p $SPOONS_DIR
+
+    sayinfo "Adding a .gitignore file to $SPOONS_DIR for your dotfiles"
+    touch $SPOONS_DIR/.gitignore
+    cat << EOF | tee -a "$SPOONS_DIR/.gitignore" > /dev/null
+*
+!.gitignore
+!SpoonInstall.spoon
+EOF
+  else
+    saysuccess "$SPOONS_DIR already exists"
+  fi
+}
+
+function bootstrap_spoon_install() {
+  local url="https://github.com/Hammerspoon/Spoons/raw/master/Spoons/SpoonInstall.spoon.zip"
+  local destination=/tmp/SpoonInstall.spoon.zip
+  local spoons_dir=$HOME/.hammerspoon/Spoons
+
+  if [ ! -d "$SPOONS_DIR/SpoonInstall.spoon" ]; then
+    sayinfo "Installing SpoonInstall.spoon in $SPOONS_DIR"
+
+    wget -nv $url -O $destination
+    unzip -d $SPOONS_DIR $destination
+  else
+    saysuccess "SpoonInstall.spoon already setup"
+  fi
+}
+
+function bootstrap_vim_mode_spoon() {
+  local dir="$SPOONS_DIR/VimMode.spoon"
+
+  if [ -d "$dir" ]; then
+    saysuccess "VimMode.spoon is already installed!"
+  else
+    sayinfo "Cloning VimMode.spoon from Git"
+
+    git clone https://github.com/dbalatero/VimMode.spoon "$dir"
+    echo
+
+    ask "Do you want to use the beta v2 of VimMode.spoon (y/n) > "
+    local answer=$(get_answer)
+    echo
+
+    if [[ "$answer" == "y" ]]; then
+      sayinfo "Checking out vim-mode-v2 branch"
+      echo
+
+      local current_dir=$(pwd)
+      cd $dir && git checkout vim-mode-v2
+      cd $current_dir
+
+      echo
+      saysuccess "Switched to V2 beta!"
+    fi
+  fi
+}
+
+function bootstrap_init_lua() {
+  local init_file="$CONFIG_DIR/init.lua"
+
+  if [ ! -f "$init_file" ]; then
+    sayinfo "Setting up $init_file"
+    echo 'hs.loadSpoon("SpoonInstall")' > "$init_file"
+  else
+    saysuccess "$init_file exists!"
+  fi
+
+  if ! grep -q "VimMode" "$init_file"; then
+    sayinfo "Patching $init_file with Vim init code"
+
+    cat << EOF | tee -a "$init_file" > /dev/null
+
+--------------------------------
+-- START VIM CONFIG
+--------------------------------
+local VimMode = hs.loadSpoon("VimMode")
+local vim = VimMode:new()
+
+-- Configure apps you do *not* want Vim mode enabled in
+-- For example, you don't want this plugin overriding your control of Terminal
+-- vim
+vim
+  :disableForApp('Code')
+  :disableForApp('zoom.us')
+  :disableForApp('iTerm')
+  :disableForApp('iTerm2')
+  :disableForApp('Terminal')
+
+-- If you want the screen to dim (a la Flux) when you enter normal mode
+-- flip this to true.
+vim:shouldDimScreenInNormalMode(false)
+
+-- If you want to show an on-screen alert when you enter normal mode, set
+-- this to true
+vim:shouldShowAlertInNormalMode(true)
+
+-- You can configure your on-screen alert font
+vim:setAlertFont("Courier New")
+
+-- Enter normal mode by typing a key sequence
+vim:enterWithSequence('jk')
+
+-- if you want to bind a single key to entering vim, remove the
+-- :enterWithSequence('jk') line above and uncomment the bindHotKeys line
+-- below:
+--
+-- To customize the hot key you want, see the mods and key parameters at:
+--   https://www.hammerspoon.org/docs/hs.hotkey.html#bind
+--
+-- vim:bindHotKeys({ enter = { {'ctrl'}, ';' } })
+
+--------------------------------
+-- END VIM CONFIG
+--------------------------------
+EOF
+  else
+    saysuccess "VimMode init code already exists in $init_file"
+  fi
+}
+
+function restart_hammerspoon() {
+  killall Hammerspoon >/dev/null 2>&1
+  open -a Hammerspoon
+}
+
+check_for_brew
+warn_about_xcode_tools
+
+dotheader "Checking for Hammerspoon..."
+install_hammerspoon
+
+dotheader "Setting up Hammerspoon config directory..."
+bootstrap_hammerspoon_directory
+bootstrap_spoons_dir
+
+dotheader "Adding SpoonInstall.spoon if necessary for package management"
+bootstrap_spoon_install
+
+dotheader "Downloading VimMode.spoon"
+bootstrap_vim_mode_spoon
+
+dotheader "Setting up ~/.hammerspoon/init.lua"
+bootstrap_init_lua
+
+dotheader "Restarting Hammerspoon"
+restart_hammerspoon
+
+echo
+saysuccess "Install complete"
+echo
+dotsay "💁‍♂️ @b@yellow[[Important post-install info]]"
+echo
+dotsay "- To change your configuration settings, edit @b@blue[[~/.hammerspoon/init.lua]]"
+dotsay "- In the Mac menu bar, open Hammerspoon preferences and set:"
+printf "  "
+dotsay "  + @b@blue[[Enable Accessibility]]"
+printf "  "
+dotsay "  + @b@blue[[Launch Hammerspoon at login]]"
+echo
