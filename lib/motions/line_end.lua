@@ -29,8 +29,8 @@ end
 function LineEnd.getMovements()
   return {
     {
-      modifiers = { 'cmd' },
-      key = 'right',
+      modifiers = { 'ctrl' },
+      key = 'e',
       selection = true
     }
   }

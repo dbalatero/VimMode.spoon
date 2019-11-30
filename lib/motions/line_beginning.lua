@@ -16,8 +16,8 @@ end
 function LineBeginning.getMovements()
   return {
     {
-      modifiers = { 'cmd' },
-      key = 'left',
+      modifiers = { 'ctrl' },
+      key = 'a',
       selection = true
     }
   }

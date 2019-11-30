@@ -21,8 +21,8 @@ function FirstLine.getMovements()
       selection = true
     },
     {
-      modifiers = {'cmd'},
-      key = 'left',
+      modifiers = {'ctrl'},
+      key = 'a',
       selection = true
     }
   }

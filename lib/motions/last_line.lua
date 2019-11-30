@@ -20,14 +20,16 @@ function LastLine.getMovements()
       key = 'down',
       selection = true
     },
+    -- end of line
     {
-      modifiers = {'cmd'},
-      key = 'right',
+      modifiers = {'ctrl'},
+      key = 'e',
       selection = true
     },
+    -- reset it to beginning of line
     {
-      modifiers = {'cmd'},
-      key = 'left',
+      modifiers = {'ctrl'},
+      key = 'a',
       selection = true
     }
   }
