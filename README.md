@@ -12,8 +12,8 @@ the motions and/or operators that are supported.
 
 ## Table of Contents
 
-* [Usage](#usage)
 * [Quick Installation](#quick-installation)
+* [Usage](#usage)
 * [Current Support](#current-support)
   - [Flavors of VimMode](#flavors-of-vimmode)
   - [Motions](#motions)
@@ -27,16 +27,16 @@ the motions and/or operators that are supported.
   - [Enabling screen dim when you enter normal mode](#enabling-screen-dim-when-you-enter-normal-mode)
 * [Manual Installation](#manual-installation)
 
-## Usage
-
-* To enter normal mode, hit whichever key you bind to it (see below for key bind instructions)
-* To exit normal mode, press `i` and you're back to a normal OS X input.
-
 ## Quick Installation
 
 Use the [quick installer](https://github.com/dbalatero/mac-vim-mode).
 
 It will not touch your existing Hammerspoon setup if you have one, only augment it.
+
+## Usage
+
+* To enter normal mode, hit whichever key you bind to it (see below for key bind instructions)
+* To exit normal mode, press `i` and you're back to a normal OS X input.
 
 ## Current Support
 
