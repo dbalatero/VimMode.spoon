@@ -143,21 +143,15 @@ function bootstrap_vim_mode_spoon() {
     git clone https://github.com/dbalatero/VimMode.spoon "$dir"
     echo
 
-    ask "Do you want to use the beta v2 of VimMode.spoon (y/n) > "
-    local answer=$(get_answer)
+    sayinfo "Checking out vim-mode-v2 branch"
     echo
 
-    if [[ "$answer" == "y" ]]; then
-      sayinfo "Checking out vim-mode-v2 branch"
-      echo
+    local current_dir=$(pwd)
+    cd $dir && git checkout vim-mode-v2
+    cd $current_dir
 
-      local current_dir=$(pwd)
-      cd $dir && git checkout vim-mode-v2
-      cd $current_dir
-
-      echo
-      saysuccess "Switched to V2 beta!"
-    fi
+    echo
+    saysuccess "Cloned VimMode.spoon from Github"
   fi
 }
 
