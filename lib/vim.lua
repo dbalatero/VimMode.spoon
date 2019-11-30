@@ -263,12 +263,19 @@ function VimMode:enterModal(name)
 end
 
 function VimMode:collapseSelection()
-  if not self.visualCaretPosition then return end
-
   local strategy = AccessibilityStrategy:new(self)
   if not strategy:isValid() then return end
 
-  strategy:setSelection(self.visualCaretPosition, 0)
+  if self.visualCaretPosition then
+    strategy:setSelection(self.visualCaretPosition, 0)
+  else
+    local selection = strategy:getSelection()
+
+    -- Only collapse if we have a selection
+    if selection and selection:isSelected() then
+      strategy:setSelection(selection.location, 0)
+    end
+  end
 end
 
 function VimMode:fireCommandState()

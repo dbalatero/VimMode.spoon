@@ -126,7 +126,7 @@ function AccessibilityStrategy:getSelection()
 
   if not range then return nil end
 
-  return Selection:new(range.loc, range.length)
+  return Selection:new(range.loc, range.len)
 end
 
 function AccessibilityStrategy:setSelection(location, length)
