@@ -10,7 +10,30 @@ My goal was to make this library fairly easy to drop in, even if you aren't
 currently running Hammerspoon. I welcome any PRs or additions to extend
 the motions and/or operators that are supported.
 
-## Current Support / Planned Support
+## Table of Contents
+
+* [Usage](#usage)
+* [Quick Installation](#quick-installation)
+* [Current Support](#current-support)
+  - [Flavors of VimMode](#flavors-of-vimmode)
+  - [Motions](#motions)
+  - [Operators](#operators)
+  - [Other](#other)
+* [Configuration](#configuration)
+* [Manual Installation](#manual-installation)
+
+## Usage
+
+* To enter normal mode, hit whichever key you bind to it (see below for key bind instructions)
+* To exit normal mode, press `i` and you're back to a normal OS X input.
+
+## Quick Installation
+
+Use the [quick installer](https://github.com/dbalatero/mac-vim-mode).
+
+It will not touch your existing Hammerspoon setup if you have one, only augment it.
+
+## Current Support
 
 ### Flavors of VimMode.
 
@@ -96,43 +119,12 @@ Advanced Mode gives.
 - [ ] `^d` - page down
 - [ ] `^u` - page down
 
-## Usage
+## Configuration
 
-* To enter normal mode, hit whichever key you bind to it (see below for key bind instructions)
-* To exit normal mode, press `i` and you're back to a normal OS X input.
+Here are all the configuration options available for you. Add/edit your config
+in ~/.hammerspoon/init.lua`.
 
-## Quick Installation
-
-Use the [quick installer](https://github.com/dbalatero/mac-vim-mode).
-
-It will not touch your existing Hammerspoon setup if you have one, only augment it.
-
-## Manual Installation
-
-Install [Hammerspoon](http://www.hammerspoon.org/go/)
-
-Next, run this in your Terminal:
-
-```
-mkdir -p ~/.hammerspoon/Spoons
-git clone https://github.com/dbalatero/VimMode.spoon \
-  ~/.hammerspoon/Spoons/VimMode.spoon
-```
-
-Modify your `~/.hammerspoon/init.lua` file to contain the following:
-
-```lua
-vim = hs.loadSpoon('VimMode')
-
--- Basic key binding to ctrl+;
--- You can choose any key binding you want here, see:
---   https://www.hammerspoon.org/docs/hs.hotkey.html#bind
-
-vim:bindHotKeys({ enter = {{'ctrl'}, ';'} })
-```
-```
-
-## Binding jk to enter Vim Mode
+### Binding jk to enter Vim Mode
 
 ```lua
 vim = hs.loadSpoon('VimMode')
@@ -152,7 +144,17 @@ If you have a sequence of `jk` and you go to type `ja` it will immediately
 pass through the `ja` keys without any latency either. I wanted this to work
 close to `inoremap jk <esc>`.
 
-## Disabling vim mode for certain apps
+### Binding a single keystroke to enter Vim Mode
+
+```lua
+-- Basic key binding to ctrl+;
+-- You can choose any key binding you want here, see:
+--   https://www.hammerspoon.org/docs/hs.hotkey.html#bind
+
+vim:bindHotKeys({ enter = {{'ctrl'}, ';'} })
+```
+
+### Disabling vim mode for certain apps
 
 You probably want to disable this Vim mode in the terminal, or any actual
 instance of Vim. Calling `vim:disableForApp(...)` allows you to disable or
@@ -169,16 +171,37 @@ vim:disableForApp('MacVim')
 vim:disableForApp('Terminal')
 ```
 
-## Disabling on-screen alerts when you enter normal mode
+### Disabling the floating alert when you enter Vim mode(s)
 
 ```
 vim = hs.loadSpoon('VimMode')
 vim:shouldShowAlertInNormalMode(false)
 ```
 
-## Disabling screen dim when you enter normal mode
+### Enabling screen dim when you enter normal mode
+
+This turns on a Flux-style dim when you enter normal mode.
 
 ```
 vim = hs.loadSpoon('VimMode')
-vim:shouldDimScreenInNormalMode(false)
+vim:shouldDimScreenInNormalMode(true)
+```
+
+## Manual Installation
+
+Install [Hammerspoon](http://www.hammerspoon.org/go/)
+
+Next, run this in your Terminal:
+
+```
+mkdir -p ~/.hammerspoon/Spoons
+git clone https://github.com/dbalatero/VimMode.spoon \
+  ~/.hammerspoon/Spoons/VimMode.spoon
+```
+
+Modify your `~/.hammerspoon/init.lua` file to contain the following:
+
+```lua
+vim = hs.loadSpoon('VimMode')
+vim:enterWithSequence('jk')
 ```
