@@ -228,6 +228,12 @@ git clone https://github.com/dbalatero/VimMode.spoon \
 Modify your `~/.hammerspoon/init.lua` file to contain the following:
 
 ```lua
-vim = hs.loadSpoon('VimMode')
-vim:enterWithSequence('jk')
+local VimMode = hs.loadSpoon('VimMode')
+local vim = VimMode:new()
+
+vim
+  :disableForApp('Code')
+  :disableForApp('MacVim')
+  :disableForApp('zoom.us')
+  :enterWithSequence('jk')
 ```
