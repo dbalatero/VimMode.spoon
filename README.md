@@ -12,6 +12,35 @@ the motions and/or operators that are supported.
 
 ## Current Support / Planned Support
 
+### Flavors of VimMode.
+
+There are two flavors of Vim mode that we try to enable using feature detection.
+
+#### Advanced Mode
+
+Advanced mode gets turned on when we detect the accessibility features we need
+to make it work.  If the field you are focused in:
+
+* Supports the OS X accessibility API
+* Is not a rich field with images, embeds, etc
+* Is not a `contentEditable` rich field in the web browser, I'm not touching that with a 10-foot pole
+* Is not one of these applications that don't completely implement the Accessibility API:
+  * Slack.app (Electron)
+  * See [this file](https://github.com/dbalatero/VimMode.spoon/blob/ddce96de8f0edd0f9285e66fc76b4bdcc74916b4/lib/accessibility_buffer.lua#L9-L11) for reasons why these apps are broken and disabled out of the box.
+
+In advanced mode, we actually can read in the value of the focused field and
+modify cursor position/selection with theoretical perfect accuracy. In this
+mode, I strive to make sure all Vim motions are as accurate as the editor. I'm
+sure they are not, though, and would appreciate bug reports!
+
+#### Fallback mode
+
+In fallback mode, we just map Vim motions/operators to built-in text keyboard
+shortcuts in OS X, and fire them blindly. This works pretty well, and is how
+the original version of this plugin worked. There is some behavior that doesn't
+match Vim however, which we cannot emulate without having the context that
+Advanced Mode gives.
+
 ### Motions
 
 - [x] `A` - jump to end of line
