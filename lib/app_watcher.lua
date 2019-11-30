@@ -3,6 +3,7 @@ local AppWatcher = {}
 function AppWatcher:new(vim)
   local watcher = {
     disabled = {
+      MacVim = true,
       iTerm = true,
       iTerm2 = true,
       Terminal = true
