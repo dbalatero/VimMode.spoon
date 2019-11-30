@@ -10,6 +10,16 @@ axUtils.isTextField = function(element)
   return role == "AXTextField" or role == "AXTextArea"
 end
 
+axUtils.isRichTextField = function(element)
+  -- If the current element has any children typically it means there
+  -- are fancy-ass things in the input element like images, complex HTML,
+  -- etc.
+  --
+  -- from observation, plain text inputs/textareas do not seem to have
+  -- children.
+  return #element:children() > 0
+end
+
 -------------------------------------------------
 -- patching Accessibility APIs on a per-app basis
 -------------------------------------------------

@@ -121,6 +121,7 @@ function AccessibilityBuffer:isValid()
   if not self:getCurrentElement() then return false end
   if not self:getSelectionRange() then return false end
   if not self:isInTextField() then return false end
+  if self:isRichTextField() then return false end
 
   return true
 end
@@ -155,6 +156,10 @@ end
 
 function AccessibilityBuffer:isInTextField()
   return axUtils.isTextField(self:getCurrentElement())
+end
+
+function AccessibilityBuffer:isRichTextField()
+  return axUtils.isRichTextField(self:getCurrentElement())
 end
 
 function AccessibilityBuffer:enableLiveApplicationPatches()

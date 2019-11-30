@@ -176,6 +176,10 @@ function StateIndicator:getBoxText()
   local modeText = modes[self:getIndicatorMode()]
   local text = modeText
 
+  if not self.vim:canUseAdvancedMode() then
+    text = text .. "*"
+  end
+
   local fontName = self:getConfig().font or "Courier New Bold"
 
   return hs.styledtext.new(

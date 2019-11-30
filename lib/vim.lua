@@ -19,6 +19,7 @@ local ax = require("hs._asm.axuielement")
 
 dofile(vimModeScriptPath .. "lib/utils/benchmark.lua")
 
+local AccessibilityBuffer = dofile(vimModeScriptPath .. "lib/accessibility_buffer.lua")
 local AccessibilityStrategy = dofile(vimModeScriptPath .. "lib/strategies/accessibility_strategy.lua")
 local AppWatcher = dofile(vimModeScriptPath .. "lib/app_watcher.lua")
 local CommandState = dofile(vimModeScriptPath .. "lib/command_state.lua")
