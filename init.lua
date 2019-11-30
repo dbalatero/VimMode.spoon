@@ -195,6 +195,8 @@ function VimMode:disableForApp(disabledApp)
   end
 
   self.watchers[disabledApp] = watcher
+
+  return self
 end
 
 ---------- state
