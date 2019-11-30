@@ -20,13 +20,13 @@ local ax = require("hs._asm.axuielement")
 dofile(vimModeScriptPath .. "lib/utils/benchmark.lua")
 
 local AccessibilityStrategy = dofile(vimModeScriptPath .. "lib/strategies/accessibility_strategy.lua")
-local Alert = dofile(vimModeScriptPath .. "lib/alert.lua")
 local AppWatcher = dofile(vimModeScriptPath .. "lib/app_watcher.lua")
 local CommandState = dofile(vimModeScriptPath .. "lib/command_state.lua")
 local Config = dofile(vimModeScriptPath .. "lib/config.lua")
 local KeySequence = dofile(vimModeScriptPath .. "lib/key_sequence.lua")
 local KeyboardStrategy = dofile(vimModeScriptPath .. "lib/strategies/keyboard_strategy.lua")
 local ScreenDimmer = dofile(vimModeScriptPath .. "lib/screen_dimmer.lua")
+local StateIndicator = dofile(vimModeScriptPath .. "lib/state_indicator.lua")
 
 local createVimModal = dofile(vimModeScriptPath .. "lib/modal.lua")
 local createStateMachine = dofile(vimModeScriptPath .. "lib/state.lua")
@@ -49,7 +49,6 @@ function VimMode:new()
 
   vim:resetCommandState()
 
-  vim.alert = Alert:new()
   vim.config = Config:new()
   vim.enabled = true
   vim.mode = 'insert'
@@ -59,6 +58,7 @@ function VimMode:new()
   vim.visualCaretPosition = nil
 
   vim.appWatcher = AppWatcher:new(vim):start()
+  vim.stateIndicator = StateIndicator:new(vim):update()
 
   return vim
 end
@@ -102,6 +102,12 @@ function VimMode:disableForApp(appName)
   return self
 end
 
+function VimMode:updateStateIndicator()
+  self.stateIndicator:update()
+
+  return self
+end
+
 function VimMode:disable()
   self.enabled = false
   self:disableSequence()
@@ -114,6 +120,13 @@ function VimMode:enable()
   self.enabled = true
   self:resetCommandState()
   self:enableSequence()
+
+  return self
+end
+
+function VimMode:setPendingInput(value)
+  self.commandState:setPendingInput(value)
+  self:updateStateIndicator()
 
   return self
 end
@@ -209,7 +222,6 @@ end
 
 function VimMode:enter()
   if self.enabled then
-    self:showAlert()
     self.state:enterNormal()
   end
 end
@@ -283,16 +295,6 @@ function VimMode:fireCommandState()
     hadMotion = not not motion,
     hadOperator = not not operator
   }
-end
-
-function VimMode:showAlert()
-  if self.config.shouldShowAlertInNormalMode then
-    self.alert:show(self.config)
-  end
-end
-
-function VimMode:hideAlert()
-  self.alert:hide()
 end
 
 function VimMode:setAlertFont(name)

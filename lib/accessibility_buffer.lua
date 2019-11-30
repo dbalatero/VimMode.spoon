@@ -1,6 +1,8 @@
 local ax = require("hs._asm.axuielement")
+
 local Buffer = dofile(vimModeScriptPath .. "lib/buffer.lua")
 local Selection = dofile(vimModeScriptPath .. "lib/selection.lua")
+local axUtils = dofile(vimModeScriptPath .. "lib/utils/ax.lua")
 
 local AccessibilityBuffer = Buffer:new()
 
@@ -151,14 +153,8 @@ function AccessibilityBuffer.getCurrentApplication()
   return ax.applicationElement(hs.application.frontmostApplication())
 end
 
-function AccessibilityBuffer:getUIRole()
-  return self:getCurrentElement():attributeValue("AXRole")
-end
-
 function AccessibilityBuffer:isInTextField()
-  local role = self:getUIRole()
-
-  return role == "AXTextField" or role == "AXTextArea"
+  return axUtils.isTextField(self:getCurrentElement())
 end
 
 function AccessibilityBuffer:enableLiveApplicationPatches()

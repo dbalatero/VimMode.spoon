@@ -28,10 +28,10 @@ local function createStateMachine(vim)
         vim:setNormalMode()
         vim:collapseSelection()
         vim:enterModal('normal')
+        vimLogger.i("normal enter")
       end,
       onenterInsert = function()
         vim.visualCaretPosition = nil
-        vim:hideAlert()
         vim:exitAllModals()
         vim:setInsertMode()
         vim:resetCommandState()
@@ -62,6 +62,9 @@ local function createStateMachine(vim)
           if result.transition == "normal" then self:enterNormal()
           else self:enterInsert() end
         end
+      end,
+      onstatechange = function()
+        vim:updateStateIndicator()
       end
     }
   })
