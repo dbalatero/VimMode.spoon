@@ -8,7 +8,7 @@ function KeySequence:new(keys, onSequencePressed)
   self.__index = self
 
   sequence.keys = stringUtils.toChars(keys)
-  sequence.maxDelayBetweenKeys = 120 -- in ms
+  sequence.maxDelayBetweenKeys = 100 -- in ms
   sequence.onSequencePressed = onSequencePressed
   sequence.enabled = false
   sequence.timer = nil
