@@ -46,13 +46,17 @@ local function createVimModal(vim)
     return function()
       vim:exitModalAsync()
 
+      local op = type:new()
+      vim:setPendingInput(op.name)
+
       local waiter = WaitForChar:new{
         onCancel = function()
+          vim:setPendingInput(nil)
           vim:cancel()
         end,
         onChar = function(character)
-          local op = type:new()
           op:setExtraChar(character)
+          vim:setPendingInput(nil)
 
           vim:enterOperator(op)
 

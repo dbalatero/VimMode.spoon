@@ -7,7 +7,8 @@ function CommandState:new()
     motion = nil,
     motionTimes = nil,
     operator = nil,
-    operatorTimes = nil
+    operatorTimes = nil,
+    pendingInput = nil
   }
 
   setmetatable(state, self)
@@ -25,6 +26,16 @@ end
 
 function CommandState:getCount(type)
   return self[type .. "Times"]
+end
+
+function CommandState:getPendingInput()
+  return self.pendingInput
+end
+
+function CommandState:setPendingInput(value)
+  self.pendingInput = value
+
+  return self
 end
 
 function CommandState:pushCountDigit(type, digit)

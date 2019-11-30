@@ -124,6 +124,13 @@ function VimMode:enable()
   return self
 end
 
+function VimMode:setPendingInput(value)
+  self.commandState:setPendingInput(value)
+  self:updateStateIndicator()
+
+  return self
+end
+
 function VimMode:resetCommandState()
   self.commandState = CommandState:new()
 end

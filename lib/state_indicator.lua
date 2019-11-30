@@ -21,8 +21,11 @@ end
 local colors = {
   default = rgba(4, 135, 250, 0.95),
   normal = rgba(4, 135, 250, 0.95),
-  visual = rgba(210, 152, 97, 0.95)
+  visual = rgba(210, 152, 97, 0.95),
+  replace = rgba(219, 104, 107, 0.95)
 }
+
+colors["visual-replace"] = colors.replace
 
 local defaultWidth = 125
 local defaultHeight = 25
@@ -105,7 +108,7 @@ function StateIndicator:render()
   canvas:elementAttribute(elementIndexText, 'text', self:getBoxText())
 
   -- set the box color
-  local boxFillColor = colors[vim.mode] or colors.default
+  local boxFillColor = colors[self:getIndicatorMode()] or colors.default
   canvas:elementAttribute(elementIndexBox, 'fillColor', boxFillColor)
 
   -- move the canvas to the element
@@ -117,8 +120,25 @@ end
 local modes = {
   insert = "INSERT",
   normal = "NORMAL",
-  visual = "VISUAL"
+  visual = "VISUAL",
+  replace = "REPLACE",
+  ["visual-replace"] = "V-REPLACE"
 }
+
+function StateIndicator:getIndicatorMode()
+  local vim = self.vim
+  local state = vim.commandState
+
+  if state:getPendingInput() == 'replace' then
+    if vim:isMode('visual') then
+      return "visual-replace"
+    else
+      return "replace"
+    end
+  else
+    return vim.mode
+  end
+end
 
 function StateIndicator:getElementPosition(canvasWidth)
   local elementPosition = getFocusedElementPosition()
@@ -149,8 +169,7 @@ function StateIndicator:getElementPosition(canvasWidth)
 end
 
 function StateIndicator:getBoxText()
-  local vim = self.vim
-  local modeText = modes[vim.mode]
+  local modeText = modes[self:getIndicatorMode()]
   local text = modeText
 
   return hs.styledtext.new(
