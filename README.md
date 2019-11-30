@@ -20,6 +20,11 @@ the motions and/or operators that are supported.
   - [Operators](#operators)
   - [Other](#other)
 * [Configuration](#configuration)
+  - [Binding jk to enter normal mode](#binding-jk-to-enter-normal-mode)
+  - [Binding a single keystroke to enter normal mode](#binding-a-single-keystroke-to-enter-normal-mode)
+  - [Disabling vim mode for certain apps](#disabling-vim-mode-for-certain-apps)
+  - [Disabling the floating alert when you enter Vim mode(s)](#disabling-the-floating-alert-when-you-enter-vim-modes)
+  - [Enabling screen dim when you enter normal mode](#enabling-screen-dim-when-you-enter-normal-mode)
 * [Manual Installation](#manual-installation)
 
 ## Usage
@@ -124,7 +129,7 @@ Advanced Mode gives.
 Here are all the configuration options available for you. Add/edit your config
 in ~/.hammerspoon/init.lua`.
 
-### Binding jk to enter Vim Mode
+### Binding jk to enter normal mode
 
 ```lua
 vim = hs.loadSpoon('VimMode')
@@ -144,7 +149,7 @@ If you have a sequence of `jk` and you go to type `ja` it will immediately
 pass through the `ja` keys without any latency either. I wanted this to work
 close to `inoremap jk <esc>`.
 
-### Binding a single keystroke to enter Vim Mode
+### Binding a single keystroke to enter normal mode
 
 ```lua
 -- Basic key binding to ctrl+;
