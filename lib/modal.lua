@@ -2,6 +2,7 @@ local ContextualModal = dofile(vimModeScriptPath .. "lib/contextual_modal.lua")
 local WaitForChar = dofile(vimModeScriptPath .. "lib/wait_for_char.lua")
 
 -- motions
+local BackwardSearch = dofile(vimModeScriptPath .. "lib/motions/backward_search.lua")
 local BackWord = dofile(vimModeScriptPath .. "lib/motions/back_word.lua")
 local BigWord = dofile(vimModeScriptPath .. "lib/motions/big_word.lua")
 local CurrentSelection = dofile(vimModeScriptPath .. "lib/motions/current_selection.lua")
@@ -9,6 +10,7 @@ local EndOfWord = dofile(vimModeScriptPath .. "lib/motions/end_of_word.lua")
 local EntireLine = dofile(vimModeScriptPath .. "lib/motions/entire_line.lua")
 local FirstLine = dofile(vimModeScriptPath .. "lib/motions/first_line.lua")
 local FirstNonBlank = dofile(vimModeScriptPath .. "lib/motions/first_non_blank.lua")
+local ForwardSearch = dofile(vimModeScriptPath .. "lib/motions/forward_search.lua")
 local LastLine = dofile(vimModeScriptPath .. "lib/motions/last_line.lua")
 local LineBeginning = dofile(vimModeScriptPath .. "lib/motions/line_beginning.lua")
 local LineEnd = dofile(vimModeScriptPath .. "lib/motions/line_end.lua")
@@ -49,7 +51,7 @@ local function createVimModal(vim)
       local op = type:new()
       vim:setPendingInput(op.name)
 
-      local waiter = WaitForChar:new{
+      WaitForChar:new{
         onCancel = function()
           vim:setPendingInput(nil)
           vim:cancel()
@@ -63,6 +65,28 @@ local function createVimModal(vim)
           if optionalMotion then
             vim:enterMotion(optionalMotion:new())
           end
+        end
+      }:start()
+    end
+  end
+
+  local motionNeedingChar = function(type)
+    return function()
+      vim:exitModalAsync()
+
+      local motion = type:new()
+      vim:setPendingInput(motion.name)
+
+      local waiter = WaitForChar:new{
+        onCancel = function()
+          vim:setPendingInput(nil)
+          vim:cancel()
+        end,
+        onChar = function(character)
+          motion:setExtraChar(character)
+          vim:setPendingInput(nil)
+
+          vim:enterMotion(motion)
         end
       }
 
@@ -116,6 +140,8 @@ local function createVimModal(vim)
       :bindWithRepeat({'shift'}, '4', motion(LineEnd)) -- $
       :bindWithRepeat({}, 'b', motion(BackWord))
       :bindWithRepeat({}, 'e', motion(EndOfWord))
+      :bind({}, 'f', motionNeedingChar(ForwardSearch))
+      :bind({'shift'}, 'f', motionNeedingChar(BackwardSearch))
       :bindWithRepeat({}, 'h', motion(Left))
       :bindWithRepeat({}, 'j', motion(Down))
       :bindWithRepeat({}, 'k', motion(Up))
