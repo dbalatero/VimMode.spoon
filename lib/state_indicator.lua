@@ -140,6 +140,10 @@ function StateIndicator:getIndicatorMode()
   end
 end
 
+function StateIndicator:getConfig()
+  return self.vim.config.alert
+end
+
 function StateIndicator:getElementPosition(canvasWidth)
   local elementPosition = getFocusedElementPosition()
 
@@ -172,10 +176,12 @@ function StateIndicator:getBoxText()
   local modeText = modes[self:getIndicatorMode()]
   local text = modeText
 
+  local fontName = self:getConfig().font or "Courier New Bold"
+
   return hs.styledtext.new(
     text,
     {
-      font = { name = "Courier New Bold", size = 14 },
+      font = { name = fontName, size = 14 },
       color = { white = 1.0 }
     }
   )
