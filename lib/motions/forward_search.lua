@@ -19,7 +19,7 @@ function ForwardSearch:getRange(buffer)
   return {
     start = start,
     finish = nextOccurringIndex - 1,
-    mode = 'exclusive',
+    mode = 'inclusive',
     direction = 'characterwise'
   }
 end

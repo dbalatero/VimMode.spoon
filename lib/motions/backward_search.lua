@@ -11,7 +11,7 @@ function BackwardSearch:getRange(buffer)
   local prevOccurringIndex = stringUtils.findPrevIndex(
     buffer:getValue(),
     searchChar,
-    stringFinish - 1 -- start from the next char
+    stringFinish - 1 -- start from the prev char
   )
 
   if not prevOccurringIndex then return nil end
