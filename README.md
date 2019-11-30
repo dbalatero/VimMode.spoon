@@ -5,6 +5,9 @@
 🚀 This library will add Vim motions and operators to all your input fields on
 OS X. Why should Emacs users have all the fun?
 
+This uses Hammerspoon, but don't worry - the quick installer is a 1-line bash
+command to get everything setup.
+
 Not all motions or operators are implemented, but you can open an issue if
 you're missing something.
 
