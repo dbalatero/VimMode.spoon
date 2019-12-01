@@ -181,6 +181,11 @@ function StateIndicator:getBoxText()
     text = text .. "*"
   end
 
+  local enteredChars = self.vim.commandState:getCharsEntered()
+  if enteredChars ~= "" then
+    text = text .. " [" .. enteredChars .. "]"
+  end
+
   local fontName = self:getConfig().font or "Courier New Bold"
 
   return hs.styledtext.new(

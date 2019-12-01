@@ -4,6 +4,7 @@ local CommandState = {}
 
 function CommandState:new()
   local state = {
+    charsEntered = "",
     motion = nil,
     motionTimes = nil,
     operator = nil,
@@ -15,6 +16,20 @@ function CommandState:new()
   self.__index = self
 
   return state
+end
+
+function CommandState:getCharsEntered()
+  return self.charsEntered
+end
+
+function CommandState:pushChar(char)
+  if char then
+    self.charsEntered = self.charsEntered .. char
+  end
+
+  vimLogger.i("entered = " .. self.charsEntered)
+
+  return self
 end
 
 function CommandState:getRepeatTimes()
