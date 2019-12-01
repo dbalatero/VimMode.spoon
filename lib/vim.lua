@@ -245,12 +245,12 @@ end
 --
 -- Ugh.
 function VimMode:exitAsync()
-  local seconds = 3 / 1000 -- converting ms -> secs
+  local seconds = 5 / 1000 -- converting ms -> secs
   return hs.timer.doAfter(seconds, function() self:exit() end)
 end
 
 function VimMode:exitModalAsync()
-  local seconds = 3 / 1000 -- converting ms -> secs
+  local seconds = 5 / 1000 -- converting ms -> secs
   return hs.timer.doAfter(seconds, function() self:exitAllModals() end)
 end
 
@@ -282,6 +282,13 @@ function VimMode:collapseSelection()
       strategy:setSelection(selection.location, 0)
     end
   end
+end
+
+function VimMode:pushDigitTo(type, digit)
+  self.commandState:pushCountDigit(type, digit)
+  self:updateStateIndicator()
+  vimLogger.i(inspect(self.commandState))
+  return self
 end
 
 function VimMode:fireCommandState()
