@@ -142,17 +142,20 @@ function bootstrap_vim_mode_spoon() {
 
     git clone https://github.com/dbalatero/VimMode.spoon "$dir"
     echo
-
-    sayinfo "Checking out vim-mode-v2 branch"
-    echo
-
-    local current_dir=$(pwd)
-    cd $dir && git checkout vim-mode-v2
-    cd $current_dir
-
-    echo
-    saysuccess "Cloned VimMode.spoon from Github"
   fi
+
+  sayinfo "Checking out vim-mode-v2 branch"
+  echo
+
+  local current_dir=$(pwd)
+  cd $dir && git checkout vim-mode-v2 && git pull
+
+  sayinfo "Pulling latest changes"
+  echo
+  cd $dir && git pull origin vim-mode-v2
+  echo
+
+  cd $current_dir
 }
 
 function bootstrap_init_lua() {
