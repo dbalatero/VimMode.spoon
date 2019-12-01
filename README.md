@@ -1,5 +1,14 @@
 # VimMode.spoon
 
+🚨 🚨 🚨 🚨 🚨 🚨 🚨 🚨 🚨 🚨
+
+Development on this branch is paused, and all current work is going into the
+[vim-mode-v2](https://github.com/dbalatero/VimMode.spoon/tree/vim-mode-v2)
+branch.
+
+🚨 🚨 🚨 🚨 🚨 🚨 🚨 🚨 🚨 🚨
+
+
 🚀 This library will add Vim motions and operators to all your input fields on
 OS X. Why should Emacs users have all the fun? Not all motions or operators
 are implemented, but I tried to at least hit the major ones I use day-to-day!
