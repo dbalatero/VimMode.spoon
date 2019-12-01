@@ -40,8 +40,9 @@ local shiftMaps = {
   z = "Z",
 }
 
+-- Taken from https://wincent.com/wiki/Unicode_representations_of_modifier_keys
 local normalMaps = {
-  escape = "<esc>",
+  escape = "⎋",
   ["return"] = "⏎",
   left = "←",
   right = "→",
