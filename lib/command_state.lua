@@ -22,6 +22,11 @@ function CommandState:getCharsEntered()
   return self.charsEntered
 end
 
+function CommandState:resetCharsEntered()
+  self.charsEntered = ""
+  return self
+end
+
 function CommandState:pushChar(char)
   if char then
     self.charsEntered = self.charsEntered .. char

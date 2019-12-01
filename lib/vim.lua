@@ -298,6 +298,7 @@ function VimMode:fireCommandState()
   end)
 
   strategy:fire()
+  self.commandState:resetCharsEntered()
 
   local transition
 

@@ -182,7 +182,9 @@ function StateIndicator:getBoxText()
   end
 
   local enteredChars = self.vim.commandState:getCharsEntered()
-  if enteredChars ~= "" then
+
+  -- hide the visual mode 'v' indicator
+  if enteredChars ~= "" and enteredChars ~= "v" then
     text = text .. " [" .. enteredChars .. "]"
   end
 
