@@ -143,6 +143,7 @@ function bootstrap_vim_mode_spoon() {
     saysuccess "VimMode.spoon is already installed!"
   else
     sayinfo "Cloning VimMode.spoon from Git"
+    echo
 
     git clone https://github.com/dbalatero/VimMode.spoon "$dir" | indent
     echo
