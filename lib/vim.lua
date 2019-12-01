@@ -29,6 +29,7 @@ local KeyboardStrategy = dofile(vimModeScriptPath .. "lib/strategies/keyboard_st
 local ScreenDimmer = dofile(vimModeScriptPath .. "lib/screen_dimmer.lua")
 local StateIndicator = dofile(vimModeScriptPath .. "lib/state_indicator.lua")
 
+local createFocusWatcher = dofile(vimModeScriptPath .. "lib/focus_watcher.lua")
 local createHotPatcher = dofile(vimModeScriptPath .. "lib/hot_patcher.lua")
 local createVimModal = dofile(vimModeScriptPath .. "lib/modal.lua")
 local createStateMachine = dofile(vimModeScriptPath .. "lib/state.lua")
@@ -68,6 +69,7 @@ function VimMode:new()
   vim.hotPatcher:start()
 
   vim.appWatcher = AppWatcher:new(vim):start()
+  vim.focusWatcher = createFocusWatcher(vim)
   vim.stateIndicator = StateIndicator:new(vim):update()
 
   return vim
