@@ -154,6 +154,10 @@ local function createVimModal(vim)
       :bindWithRepeat({'shift'}, 'w', motion(BigWord))
       :bindWithRepeat({'shift'}, 'g', motion(LastLine))
       :bind({}, 'g', function() vim:enterModal('g') end)
+      :bindWithRepeat({}, 'up', motion(Up))
+      :bindWithRepeat({}, 'down', motion(Down))
+      :bindWithRepeat({}, 'left', motion(Left))
+      :bindWithRepeat({}, 'right', motion(Right))
   end
 
   -- g prefixes

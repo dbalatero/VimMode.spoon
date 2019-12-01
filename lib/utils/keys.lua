@@ -42,7 +42,15 @@ local shiftMaps = {
 
 local normalMaps = {
   escape = "<esc>",
-  ["return"] = "<CR>",
+  ["return"] = "⏎",
+  left = "←",
+  right = "→",
+  up = "⇡",
+  down = "↓",
+  cmd = "⌘",
+  alt = "⌥",
+  ctrl = "⌃",
+  shift = "⇧",
 }
 
 keyUtils.getRealChar = function(mods, key)
