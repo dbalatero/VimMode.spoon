@@ -37,6 +37,10 @@ sayinfo() {
   dotsay "+ @yellow[[$1]]"
 }
 
+indent() {
+  sed 's/^/    /'
+}
+
 _colorized() {
    echo "$@" | sed -E \
      -e 's/((@(red|green|yellow|blue|magenta|cyan|white|reset|b|u))+)[[]{2}(.*)[]]{2}/\1\4@reset/g' \
@@ -87,7 +91,7 @@ function install_hammerspoon() {
     saysuccess "Hammerspoon is already installed!"
   else
     sayinfo "Hammerspoon not found, installing..."
-    brew cask install hammerspoon
+    brew cask install hammerspoon | indent
   fi
 }
 
@@ -125,8 +129,8 @@ function bootstrap_spoon_install() {
   if [ ! -d "$SPOONS_DIR/SpoonInstall.spoon" ]; then
     sayinfo "Installing SpoonInstall.spoon in $SPOONS_DIR"
 
-    wget -nv $url -O $destination
-    unzip -d $SPOONS_DIR $destination
+    wget -nv $url -O $destination | indent
+    unzip -d $SPOONS_DIR $destination | indent
   else
     saysuccess "SpoonInstall.spoon already setup"
   fi
@@ -140,7 +144,7 @@ function bootstrap_vim_mode_spoon() {
   else
     sayinfo "Cloning VimMode.spoon from Git"
 
-    git clone https://github.com/dbalatero/VimMode.spoon "$dir"
+    git clone https://github.com/dbalatero/VimMode.spoon "$dir" | indent
     echo
   fi
 
@@ -148,11 +152,12 @@ function bootstrap_vim_mode_spoon() {
   echo
 
   local current_dir=$(pwd)
-  cd $dir && git checkout vim-mode-v2 && git pull
+  cd $dir && (git checkout vim-mode-v2 2>/dev/null | indent)
+  echo
 
   sayinfo "Pulling latest changes"
   echo
-  cd $dir && git pull origin vim-mode-v2
+  cd $dir && (git pull origin vim-mode-v2 2>/dev/null | indent)
   echo
 
   cd $current_dir
