@@ -252,9 +252,14 @@ function VimMode:exitAsync()
   return hs.timer.doAfter(seconds, function() self:exit() end)
 end
 
+-- Returns the context that we just exited
 function VimMode:exitModalAsync()
   local seconds = 5 / 1000 -- converting ms -> secs
-  return hs.timer.doAfter(seconds, function() self:exitAllModals() end)
+  local context = self.modal.activeContext
+
+  hs.timer.doAfter(seconds, function() self:exitAllModals() end)
+
+  return context
 end
 
 function VimMode:canUseAdvancedMode()

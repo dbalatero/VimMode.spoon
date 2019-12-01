@@ -101,10 +101,10 @@ Advanced Mode gives.
 - [x] `I` - jump to beginning of line
 - [x] `0` - beginning of line
 - [x] `$` - end of line
-- [ ] `f<char>`
-- [ ] `F<char>`
-- [ ] `t<char>`
-- [ ] `T<char>`
+- [x] `f<char>`
+- [x] `F<char>`
+- [x] `t<char>`
+- [x] `T<char>`
 - [ ] `aw` - a word
 - [x] `b` - back by word
 - [ ] `B` - back by big word (`:h WORD`)

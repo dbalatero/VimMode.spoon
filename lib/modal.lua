@@ -48,7 +48,7 @@ local function createVimModal(vim)
 
   local operatorNeedingChar = function(type, optionalMotion)
     return function()
-      vim:exitModalAsync()
+      local previousContext = vim:exitModalAsync()
 
       local op = type:new()
       vim:setPendingInput(op.name)
@@ -62,11 +62,13 @@ local function createVimModal(vim)
           op:setExtraChar(character)
           vim:setPendingInput(nil)
 
-          vim:enterOperator(op)
+          hs.timer.doAfter(5 / 1000, function()
+            vim:enterOperator(op)
 
-          if optionalMotion then
-            vim:enterMotion(optionalMotion:new())
-          end
+            if optionalMotion then
+              vim:enterMotion(optionalMotion:new())
+            end
+          end)
         end
       }:start()
     end
@@ -74,7 +76,7 @@ local function createVimModal(vim)
 
   local motionNeedingChar = function(type)
     return function()
-      vim:exitModalAsync()
+      local previousContext = vim:exitModalAsync()
 
       local motion = type:new()
       vim:setPendingInput(motion.name)
@@ -88,7 +90,8 @@ local function createVimModal(vim)
           motion:setExtraChar(character)
           vim:setPendingInput(nil)
 
-          vim:enterMotion(motion)
+          vim:enterModal(previousContext)
+          hs.timer.doAfter(5 / 1000, function() vim:enterMotion(motion) end)
         end
       }
 
