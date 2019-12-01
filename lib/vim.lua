@@ -33,6 +33,7 @@ local createHotPatcher = dofile(vimModeScriptPath .. "lib/hot_patcher.lua")
 local createVimModal = dofile(vimModeScriptPath .. "lib/modal.lua")
 local createStateMachine = dofile(vimModeScriptPath .. "lib/state.lua")
 local findFirst = dofile(vimModeScriptPath .. "lib/utils/find_first.lua")
+local keyUtils = dofile(vimModeScriptPath .. "lib/utils/keys.lua")
 
 local function alertDeprecation(msg)
   hs.alert.show(
@@ -54,7 +55,11 @@ function VimMode:new()
   vim.config = Config:new()
   vim.enabled = true
   vim.mode = 'insert'
-  vim.modal = createVimModal(vim)
+  vim.modal = createVimModal(vim):setOnBeforePress(function(mods, key)
+    local realKey = keyUtils.getRealChar(mods, key)
+    vim.commandState:pushChar(realKey)
+  end)
+
   vim.state = createStateMachine(vim)
   vim.sequence = nil
   vim.visualCaretPosition = nil

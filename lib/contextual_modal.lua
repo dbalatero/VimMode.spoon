@@ -32,6 +32,7 @@ function ContextualModal:new()
     bindings = {},
     entered = false,
     modal = hs.hotkey.modal.new(),
+    onBeforePress = function() end,
     registry = Registry:new()
   }
 
@@ -50,8 +51,16 @@ function ContextualModal:handlePress(mods, key, eventType)
       eventType
     )
 
-    if handler then handler() end
+    if handler then
+      self.onBeforePress(mods, key)
+      handler()
+    end
   end
+end
+
+function ContextualModal:setOnBeforePress(fn)
+  self.onBeforePress = fn
+  return self
 end
 
 function ContextualModal:hasBinding(mods, key)
