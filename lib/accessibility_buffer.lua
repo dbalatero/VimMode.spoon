@@ -57,6 +57,8 @@ function AccessibilityBuffer:getSelectionRange()
   if not self:getCurrentElement() then return nil end
 
   local range = self:getCurrentElement():attributeValue("AXSelectedTextRange")
+  if not range then return nil end
+
   self.selection = Selection:new(range.loc, range.len)
 
   return self.selection
