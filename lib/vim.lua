@@ -233,7 +233,10 @@ end
 function VimMode:enter()
   if self.enabled then
     self:collapseSelection()
-    self.state:enterNormal()
+
+    hs.timer.doAfter(3 / 1000, function()
+      self.state:enterNormal()
+    end)
   end
 end
 
@@ -245,13 +248,18 @@ end
 --
 -- Ugh.
 function VimMode:exitAsync()
-  local seconds = 3 / 1000 -- converting ms -> secs
+  local seconds = 5 / 1000 -- converting ms -> secs
   return hs.timer.doAfter(seconds, function() self:exit() end)
 end
 
+-- Returns the context that we just exited
 function VimMode:exitModalAsync()
-  local seconds = 3 / 1000 -- converting ms -> secs
-  return hs.timer.doAfter(seconds, function() self:exitAllModals() end)
+  local seconds = 5 / 1000 -- converting ms -> secs
+  local context = self.modal.activeContext
+
+  hs.timer.doAfter(seconds, function() self:exitAllModals() end)
+
+  return context
 end
 
 function VimMode:canUseAdvancedMode()
@@ -282,6 +290,13 @@ function VimMode:collapseSelection()
       strategy:setSelection(selection.location, 0)
     end
   end
+end
+
+function VimMode:pushDigitTo(type, digit)
+  self.commandState:pushCountDigit(type, digit)
+  self:updateStateIndicator()
+  vimLogger.i(inspect(self.commandState))
+  return self
 end
 
 function VimMode:fireCommandState()

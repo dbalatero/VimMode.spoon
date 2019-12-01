@@ -36,6 +36,36 @@ function stringUtils.toChars(str)
   return chars
 end
 
+function stringUtils.findPrevIndex(str, searchChar, startPos)
+  local length = string.len(str)
+  local position = math.min(startPos or length, length)
+
+  while position > 0 do
+    if string.sub(str, position, position) == searchChar then
+      return position
+    end
+
+    position = position - 1
+  end
+
+  return nil
+end
+
+function stringUtils.findNextIndex(str, searchChar, startPos)
+  local length = string.len(str)
+  local position = math.max(startPos or 1, 1)
+
+  while position <= length do
+    if string.sub(str, position, position) == searchChar then
+      return position
+    end
+
+    position = position + 1
+  end
+
+  return nil
+end
+
 function stringUtils.split(delimiter, text, includeDelimiter)
   local includeDelimiter = includeDelimiter or false
   local list = {}

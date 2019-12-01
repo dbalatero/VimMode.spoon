@@ -40,11 +40,27 @@ local shiftMaps = {
   z = "Z",
 }
 
+-- Taken from https://wincent.com/wiki/Unicode_representations_of_modifier_keys
 local normalMaps = {
-  escape = "<esc>",
-  ["return"] = "<CR>",
+  escape = "⎋",
+  ["return"] = "⏎",
+  left = "←",
+  right = "→",
+  up = "⇡",
+  down = "↓",
+  cmd = "⌘",
+  alt = "⌥",
+  ctrl = "⌃",
+  shift = "⇧",
 }
 
+-- Given a table of mods and a key pressed, convert it to a readable version
+--
+-- Examples:
+--
+--   getRealChar({'shift'}, '4') => "$"
+--   getRealChar({'shift'}, 'h') => "H"
+--   getRealChar({}, 'h') => "h"
 keyUtils.getRealChar = function(mods, key)
   local hasShift = fnutils.contains(mods, 'shift')
 

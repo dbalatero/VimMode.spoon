@@ -207,9 +207,7 @@ function StateIndicator:update()
       self.showing = true
     end
   elseif self.showing then
-    local fadeOutTimeMs = 300
-
-    self.canvas:hide(fadeOutTimeMs / 1000)
+    self.canvas:hide()
     self.showing = false
   end
 
