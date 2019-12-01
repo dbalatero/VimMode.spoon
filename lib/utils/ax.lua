@@ -48,7 +48,6 @@ axUtils.patchCurrentApplication = function()
   local axApp = ax.applicationElement(currentApp)
 
   if axApp then
-    vimLogger.i("Patching " .. inspect(currentApp:name()))
     patchChromiumWithAccessibilityFlag(axApp)
     patchElectronAppsWithAccessibilityFlag(axApp)
   end

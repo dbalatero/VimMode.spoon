@@ -23,13 +23,11 @@ function AppWatcher:new(vim)
 end
 
 function AppWatcher:disableVim()
-  vimLogger.i("AppWatcher is disabling Vim")
   self.vim:exit()
   self.vim:disable()
 end
 
 function AppWatcher:enableVim()
-  vimLogger.i("AppWatcher is enabling Vim")
   self.vim:enable()
 end
 
