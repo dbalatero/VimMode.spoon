@@ -18,7 +18,7 @@ local function createApplicationWatcher(application, vim)
   return observer
 end
 
--- When someone focuses out of a field, we want to exit Vim mode if necessary.
+-- When someone focuses out of a field, we want to exit Vim mode.
 local function createFocusWatcher(vim)
   createApplicationWatcher(hs.application.frontmostApplication(), vim)
 
