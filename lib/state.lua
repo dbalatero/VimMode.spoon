@@ -65,7 +65,7 @@ local function createStateMachine(vim)
           end
         else
           if result.transition == "normal" then self:enterNormal()
-          else self:enterInsert() end
+          else vim:exitAsync() end
         end
       end,
       onstatechange = function()
