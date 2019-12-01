@@ -6,17 +6,23 @@ local function createStateMachine(vim)
     events = {
       { name = 'enterNormal', from = 'insert-mode', to = 'normal-mode' },
       { name = 'enterNormal', from = 'visual-mode', to = 'normal-mode' },
+      { name = 'enterNormal', from = 'firing', to = 'normal-mode' },
+      { name = 'enterNormal', from = 'operator-pending', to = 'normal-mode' },
+
       { name = 'enterMotion', from = 'normal-mode', to = 'entered-motion' },
-      { name = 'enterOperator', from = 'normal-mode', to = 'operator-pending' },
       { name = 'enterMotion', from = 'operator-pending', to = 'entered-motion' },
       { name = 'enterMotion', from = 'visual-mode', to = 'entered-motion' },
-      { name = 'enterVisual', from = 'normal-mode', to = 'visual-mode' },
+
+      { name = 'enterOperator', from = 'normal-mode', to = 'operator-pending' },
       { name = 'enterOperator', from = 'visual-mode', to = 'operator-pending' },
+
+      { name = 'enterVisual', from = 'normal-mode', to = 'visual-mode' },
+      { name = 'enterVisual', from = 'firing', to = 'visual-mode' },
+
       { name = 'fire', from = 'entered-motion', to = 'firing' },
       { name = 'fire', from = 'visual-mode', to = 'firing' },
-      { name = 'enterNormal', from = 'firing', to = 'normal-mode' },
+
       { name = 'enterInsert', from = 'firing', to = 'insert-mode' },
-      { name = 'enterVisual', from = 'firing', to = 'visual-mode' },
       { name = 'enterInsert', from = 'normal-mode', to = 'insert-mode' },
       { name = 'enterInsert', from = 'operator-pending', to = 'insert-mode' },
       { name = 'enterInsert', from = 'visual-mode', to = 'insert-mode' },
