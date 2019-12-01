@@ -20,6 +20,7 @@ end
 
 local colors = {
   default = rgba(4, 135, 250, 0.95),
+  insert = rgba(50, 50, 50, 1),
   normal = rgba(4, 135, 250, 0.95),
   visual = rgba(210, 152, 97, 0.95),
   replace = rgba(219, 104, 107, 0.95)
@@ -100,7 +101,6 @@ function StateIndicator:render()
   local vim = self.vim
 
   if not vim.config.shouldShowAlertInNormalMode then return false end
-  if vim:isMode('insert') then return false end
 
   local canvas = self.canvas
 
@@ -114,7 +114,8 @@ function StateIndicator:render()
   -- move the canvas to the element
   canvas:topLeft(self:getElementPosition(defaultWidth))
 
-  return true
+  -- Fade out if we're in insert mode
+  return not vim:isMode('insert')
 end
 
 local modes = {
@@ -199,7 +200,9 @@ function StateIndicator:update()
       self.showing = true
     end
   elseif self.showing then
-    self.canvas:hide()
+    local fadeOutTimeMs = 300
+
+    self.canvas:hide(fadeOutTimeMs / 1000)
     self.showing = false
   end
 
