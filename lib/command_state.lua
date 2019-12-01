@@ -32,8 +32,6 @@ function CommandState:pushChar(char)
     self.charsEntered = self.charsEntered .. char
   end
 
-  vimLogger.i("entered = " .. self.charsEntered)
-
   return self
 end
 
