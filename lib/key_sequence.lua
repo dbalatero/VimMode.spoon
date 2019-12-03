@@ -86,6 +86,13 @@ function KeySequence:recordKey(key)
   self.alreadyTyped = self.alreadyTyped .. key
 end
 
+local function getTableSize(t)
+  local count = 0
+  for _, __ in pairs(t) do count = count + 1 end
+
+  return count
+end
+
 function KeySequence:buildEventHandler()
   return function(event)
     if not self.enabled then return end
@@ -97,7 +104,7 @@ function KeySequence:buildEventHandler()
     local keyPressed = hs.keycodes.map[event:getKeyCode()]
     local keyToCompare = self.keys[position]
 
-    if keyPressed == keyToCompare and #event:getFlags() == 0 then
+    if keyPressed == keyToCompare and getTableSize(event:getFlags()) == 0 then
       local typedFinalChar = position == #self.keys
 
       if typedFinalChar then
