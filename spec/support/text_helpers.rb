@@ -1,14 +1,19 @@
 # frozen_string_literal: true
 
 module TextHelpers
-  def send_normal_mode_keys(key_strokes)
-    send_os_keys('jk')
-    sleep 0.01
-
+  def fire(key_strokes)
     send_os_keys(key_strokes)
     sleep 0.01
+  end
 
-    send_os_keys('i')
+  def normal_mode
+    fire('jk')
+    sleep 0.01
+
+    yield
+    sleep 0.01
+  ensure
+    fire('i')
   end
 
   def open_and_focus_page!
@@ -70,8 +75,17 @@ module TextHelpers
   end
 
   def expect_to_have_selection_range(string)
-    range = get_range_from_string(string)
-    expect(get_selection_range).to eq(range)
+    expect(current_value_with_selection_range).to eq(string)
+  end
+
+  def current_value_with_selection_range
+    value = find_textarea.value.dup
+    range = get_selection_range
+
+    value.insert(range['start'], '|')
+    value.insert(range['finish'] + 1, '|') if range['start'] != range['finish']
+
+    value
   end
 
   def get_selection_range
@@ -122,18 +136,48 @@ module TextHelpers
     system(script)
   end
 
-  def send_os_keys(*keys)
-    Array(keys).each do |strokes|
-      cmd = [
-        'osascript <<EOF',
-        'tell application "System Events"',
-        '  keystroke "' + strokes + '"',
-        'end tell',
-        'EOF'
-      ].join("\n")
-
-      system(cmd)
+  class Keystroke
+    def initialize(strokes)
+      @strokes = strokes
     end
+
+    def to_applescript
+      "keystroke \"#{@strokes}\""
+    end
+  end
+
+  class Keycode
+    def initialize(code)
+      @code = code
+    end
+
+    def to_applescript
+      "key code #{@code}"
+    end
+  end
+
+  SPECIAL_CHARS = {
+    escape: Keycode.new(53)
+  }.freeze
+
+  def send_os_keys(*keys)
+    events = Array(keys).map do |stroke|
+      SPECIAL_CHARS[stroke] || Keystroke.new(stroke)
+    end
+
+    code = events
+           .map { |event| "    #{event.to_applescript}" }
+           .join("\n")
+
+    cmd = <<~CMD
+      osascript <<EOF
+        tell application "System Events"
+      #{code}
+        end tell
+      EOF
+    CMD
+
+    system(cmd)
   end
 end
 
