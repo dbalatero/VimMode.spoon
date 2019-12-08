@@ -3,7 +3,11 @@
 module TextHelpers
   def send_normal_mode_keys(key_strokes)
     send_os_keys('jk')
+    sleep 0.01
+
     send_os_keys(key_strokes)
+    sleep 0.01
+
     send_os_keys('i')
   end
 

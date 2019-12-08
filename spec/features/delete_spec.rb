@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'deletion', type: :request, js: true do
+RSpec.describe 'deletion', js: true do
   before { open_and_focus_page! }
 
   context 'words' do
