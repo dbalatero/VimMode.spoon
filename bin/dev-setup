@@ -4,15 +4,39 @@ function install_lua_package() {
   local package_name=$1
 
   if ! luarocks show "$package_name" 2>&1 >/dev/null; then
-    echo "===> $ luarocks install $package_name"
-    luarocks install $package_name
+    echo "===> $ luarocks install $@"
+    luarocks install $@
     echo
   else
     echo "===> $package_name already installed"
   fi
 }
 
+function brew_install() {
+  local package=$1
+
+  if brew list "$package" > /dev/null 2>&1; then
+    echo "+ $package already installed... skipping."
+  else
+    brew install $@
+  fi
+}
+
+function brew_cask_install() {
+  local package=$1
+
+  if brew cask list "$package" > /dev/null 2>&1; then
+    echo "+ $package already installed... skipping."
+  else
+    brew cask install $@
+  fi
+}
+
+brew_install selenium-server-standalone
+brew_cask_install chromedriver
+
 install_lua_package luacov-coveralls
 install_lua_package busted
 install_lua_package luacheck
 install_lua_package debugger
+install_lua_package luaselenium

@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <title>Test fixture with textarea</title>
+    <style type="text/css">
+      textarea {
+        font-family: "Courier New", monospace;
+        font-size: 20pt;
+        width: 1300px;
+        height: 1000px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <textarea id="area">Loaded</textarea>
+  </body>
+
+  <script type="text/javascript">
+    window.addEventListener('load', function() {
+      document.getElementById('area').focus();
+    });
+  </script>
+</html>
