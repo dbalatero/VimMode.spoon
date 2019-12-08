@@ -12,6 +12,9 @@ function install_lua_package() {
   fi
 }
 
+brew install selenium-server-standalone
+brew cask install chromedriver
+
 install_lua_package luacov-coveralls
 install_lua_package busted
 install_lua_package luacheck

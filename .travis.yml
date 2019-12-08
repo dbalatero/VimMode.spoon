@@ -1,6 +1,7 @@
 language: python
 
 sudo: false
+os: osx
 
 env:
   matrix:
