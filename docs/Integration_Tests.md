@@ -18,3 +18,4 @@ bundle exec rspec spec
 
 It will ask for permissions for `System Events.app`, you'll need to give them:
 
+![](https://user-images.githubusercontent.com/59429/70395829-c00cdf00-19b7-11ea-91c2-50cefe25b329.png)
