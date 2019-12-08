@@ -31,6 +31,7 @@ fields or anything in 1Password, as it can't read those fields!
   - [Disabling the floating alert when you enter Vim mode(s)](#disabling-the-floating-alert-when-you-enter-vim-modes)
   - [Enabling screen dim when you enter normal mode](#enabling-screen-dim-when-you-enter-normal-mode)
 * [Manual Installation](#manual-installation)
+* [Testing](#testing)
 
 ## Quick Installation
 
@@ -240,4 +241,26 @@ vim
   :disableForApp('MacVim')
   :disableForApp('zoom.us')
   :enterWithSequence('jk')
+```
+
+## Testing
+
+There are unit tests and integration tests!
+
+To run the unit tests:
+
+```
+cd VimMode.spoon
+
+bin/dev-setup
+busted spec
+```
+
+To run the integration tests, there is a bit of setup, which you can read
+about in the `docs/Integration_Tests.md` document. However, once you setup,
+it should just be:
+
+```
+killall "Google Chrome"
+bundle exec rspec spec
 ```
