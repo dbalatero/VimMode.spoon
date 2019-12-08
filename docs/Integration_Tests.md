@@ -18,4 +18,8 @@ bundle exec rspec spec
 
 It will ask for permissions for `System Events.app`, you'll need to give them:
 
-![](https://user-images.githubusercontent.com/59429/70395829-c00cdf00-19b7-11ea-91c2-50cefe25b329.png)
+![image](https://user-images.githubusercontent.com/59429/70395829-c00cdf00-19b7-11ea-91c2-50cefe25b329.png)
+
+It will also ask for permissions for `osascript` (via iTerm), you'll need to enable iTerm under accessibility here:
+
+![image](https://user-images.githubusercontent.com/59429/70395855-0a8e5b80-19b8-11ea-9343-5da0496cdf9b.png)
