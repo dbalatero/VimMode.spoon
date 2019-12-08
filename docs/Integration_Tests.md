@@ -26,3 +26,12 @@ It will also ask for permissions for `osascript` (via iTerm), you'll need to ena
 
 ![image](https://user-images.githubusercontent.com/59429/70395855-0a8e5b80-19b8-11ea-9343-5da0496cdf9b.png)
 
+You should now be able to run:
+
+```
+killall "Google Chrome"
+bundle exec rspec spec
+```
+
+You can't have another instance of Chrome running while you run the tests, or
+else the wrong Vim modes get entered, unfortunately :(
