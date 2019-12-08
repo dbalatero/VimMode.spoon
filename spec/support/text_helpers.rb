@@ -3,16 +3,17 @@
 module TextHelpers
   def fire(key_strokes)
     send_os_keys(key_strokes)
+    sleep 0.01
   end
 
   def normal_mode
-    send_os_keys('jk')
+    fire('jk')
     sleep 0.01
 
     yield
     sleep 0.01
   ensure
-    send_os_keys('i')
+    fire('i')
   end
 
   def open_and_focus_page!

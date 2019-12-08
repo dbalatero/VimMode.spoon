@@ -10,9 +10,22 @@ RSpec.describe 'visual mode', js: true do
       set_textarea_value_and_selection('|Thing word yeah')
 
       visual_mode do
-        send_os_keys 'w'
+        fire 'w'
 
         expect_textarea_to_have_value_and_selection('|Thing |word yeah')
+      end
+    end
+  end
+
+  context 'forward search' do
+    it 'should search all the way to the char inclusive' do
+      set_textarea_value_and_selection('|Thing word yeah')
+
+      visual_mode do
+        fire 'f'
+        fire 'g'
+
+        expect_textarea_to_have_value_and_selection('|Thing| word yeah')
       end
     end
   end
