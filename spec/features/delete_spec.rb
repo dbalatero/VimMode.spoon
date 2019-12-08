@@ -8,24 +8,32 @@ RSpec.describe 'deletion', js: true do
   context 'words' do
     it 'deletes a single word value' do
       set_textarea_value_and_selection('|Word')
-      send_normal_mode_keys('dw')
 
-      expect_textarea_to_have_value_and_selection('|')
+      normal_mode do
+        fire('dw')
+
+        expect_textarea_to_have_value_and_selection('|')
+      end
     end
 
     it 'deletes from the middle of a word' do
       set_textarea_value_and_selection('W|ord')
-      send_normal_mode_keys('dw')
 
-      expect_textarea_to_have_value_and_selection('W|')
+      normal_mode do
+        fire('dw')
+
+        expect_textarea_to_have_value_and_selection('W|')
+      end
     end
 
     it 'handles multiple words' do
       set_textarea_value_and_selection('|Word another')
 
-      send_normal_mode_keys('dw')
+      normal_mode do
+        fire('dw')
 
-      expect_textarea_to_have_value_and_selection('|another')
+        expect_textarea_to_have_value_and_selection('|another')
+      end
     end
   end
 end

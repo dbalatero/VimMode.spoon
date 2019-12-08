@@ -12,12 +12,14 @@ RSpec.describe 'linewise movements', js: true do
         My |line 2
       EOF
 
-      send_normal_mode_keys 'k'
+      normal_mode do
+        fire 'k'
 
-      expect_textarea_to_have_value_and_selection <<~EOF
-        My |line 1
-        My line 2
-      EOF
+        expect_textarea_to_have_value_and_selection <<~EOF
+          My |line 1
+          My line 2
+        EOF
+      end
     end
   end
 
@@ -28,12 +30,14 @@ RSpec.describe 'linewise movements', js: true do
         My line 2
       EOF
 
-      send_normal_mode_keys 'j'
+      normal_mode do
+        fire 'j'
 
-      expect_textarea_to_have_value_and_selection <<~EOF
-        My line 1
-        My |line 2
-      EOF
+        expect_textarea_to_have_value_and_selection <<~EOF
+          My line 1
+          My |line 2
+        EOF
+      end
     end
   end
 end

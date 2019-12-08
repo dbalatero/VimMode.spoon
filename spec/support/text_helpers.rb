@@ -1,13 +1,17 @@
 # frozen_string_literal: true
 
 module TextHelpers
-  def send_normal_mode_keys(key_strokes)
+  def fire(key_strokes)
+    send_os_keys(key_strokes)
+  end
+
+  def normal_mode
     send_os_keys('jk')
     sleep 0.01
 
-    send_os_keys(key_strokes)
+    yield
     sleep 0.01
-
+  ensure
     send_os_keys('i')
   end
 
