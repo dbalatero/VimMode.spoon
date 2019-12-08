@@ -12,7 +12,20 @@ RSpec.describe 'visual mode', js: true do
       visual_mode do
         fire 'w'
 
-        expect_textarea_to_have_value_and_selection('|Thing |word yeah')
+        expect_textarea_to_have_value_and_selection('|Thing w|ord yeah')
+      end
+    end
+  end
+
+  context 't-search' do
+    it 'should search all the way to before the char inclusive' do
+      set_textarea_value_and_selection('|Thing word yeah')
+
+      visual_mode do
+        fire 't'
+        fire 'g'
+
+        expect_textarea_to_have_value_and_selection('|Thin|g word yeah')
       end
     end
   end

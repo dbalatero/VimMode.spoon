@@ -91,8 +91,11 @@ function AccessibilityStrategy:fire()
 
       local newRange = result.range
 
+      local finish = newRange.finish
+      if range.mode == 'exclusive' then finish = finish - 1 end
+
       location = newRange.start
-      length = newRange.finish - newRange.start
+      length = newRange.finish - newRange.start + 1
 
       -- update the caret position
       self.vim.visualCaretPosition = result.caretPosition
