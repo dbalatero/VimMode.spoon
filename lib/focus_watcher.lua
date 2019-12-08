@@ -4,16 +4,28 @@ local registeredPids = {}
 
 local function createApplicationWatcher(application, vim)
   local pid = application:pid()
-  if registeredPids[pid] then return end
+  local observer
 
-  local observer = ax.observer.new(application:pid())
+  local creator = function ()
+    if registeredPids[pid] then return end
 
-  observer
-    :callback(function() vim:exit() end)
-    :addWatcher(ax.applicationElement(application), "AXFocusedUIElementChanged")
-    :start()
+    observer = ax.observer.new(application:pid())
 
-  registeredPids[pid] = observer
+    observer
+      :callback(function() vim:exit() end)
+      :addWatcher(
+        ax.applicationElement(application),
+        "AXFocusedUIElementChanged"
+      )
+      :start()
+
+    registeredPids[pid] = observer
+  end
+
+  if not pcall(creator) then
+    registeredPids[pid] = nil
+    vimLogger.d("Could not start watcher")
+  end
 
   return observer
 end
