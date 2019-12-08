@@ -9,14 +9,20 @@ RSpec.describe 'visual mode', js: true do
     it 'goes forward one word' do
       set_textarea_value_and_selection('|Thing word yeah')
 
-      enter_visual!
-      send_os_keys 'w'
+      visual_mode do
+        send_os_keys 'w'
 
-      expect_textarea_to_have_value_and_selection('|Thing |word yeah')
+        expect_textarea_to_have_value_and_selection('|Thing |word yeah')
+      end
     end
   end
 
-  def enter_visual!
-    send_os_keys('jk', 'v')
+  def visual_mode
+    send_os_keys('jk')
+    send_os_keys('v')
+    yield
+  ensure
+    send_os_keys(:escape)
+    send_os_keys('i')
   end
 end
