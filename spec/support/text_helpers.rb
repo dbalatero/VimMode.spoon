@@ -82,7 +82,7 @@ module TextHelpers
     range = get_selection_range
 
     value.insert(range['start'], '|')
-    value.insert(range['finish'], '|') if range['start'] != range['finish']
+    value.insert(range['finish'] + 1, '|') if range['start'] != range['finish']
 
     value
   end
