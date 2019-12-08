@@ -1,14 +1,12 @@
 language: python
 
 sudo: false
-os: osx
 
 env:
   matrix:
     - LUA="lua 5.3"
 
 before_install:
-  - brew install openssl
   - pip install hererocks
   - hererocks here -r^ --$LUA # Install latest LuaRocks version
                               # plus the Lua version for this build job
