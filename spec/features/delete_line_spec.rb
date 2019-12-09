@@ -3,11 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'delete word', js: true do
-  after do
-    page.execute_script "document.activeElement.blur()"
-    expect(page).to have_css('textarea:not(:focus)')
-  end
-
   context 'dd' do
     fallback_mode do
       it "deletes a line and stays on the line :(" do

@@ -20,7 +20,6 @@ module TextHelpers
   def open_and_focus_page!(mode: "advanced")
     path = File.expand_path(File.dirname(__FILE__) + '/../fixtures')
     visit "file://#{path}/textarea.html"
-    page.execute_script("window.location.reload()")
 
     expect(page).to have_css('textarea:focus')
 
