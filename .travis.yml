@@ -18,6 +18,7 @@ before_install:
 branches:
   only:
     - master
+    - vim-mode-v2
 
 install:
   - bin/dev-setup
