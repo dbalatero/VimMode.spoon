@@ -15,6 +15,10 @@ before_install:
   - export PATH=$PATH:$PWD/here/bin # Add directory with all installed binaries to PATH
   - eval `luarocks path --bin`
 
+branches:
+  only:
+  - master
+
 install:
   - bin/dev-setup
   - bundle install
