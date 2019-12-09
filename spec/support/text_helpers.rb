@@ -3,12 +3,12 @@
 module TextHelpers
   def fire(key_strokes)
     send_os_keys key_strokes
-    sleep 0.01
+    sleep 0.025
   end
 
   def normal_mode
     fire('jk')
-    sleep 0.01
+    sleep 0.1
 
     yield
     sleep 0.01

@@ -6,6 +6,7 @@ local function createHotPatcher()
 
   return hs.application.watcher.new(function(_, eventType)
     if eventType == hs.application.watcher.activated then
+      vimLogger.i("===> patching")
       axUtils.patchCurrentApplication()
     end
   end)

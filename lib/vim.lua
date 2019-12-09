@@ -339,4 +339,10 @@ function VimMode:setAlertFont(name)
   return self
 end
 
+function VimMode:disableHotPatcher()
+  self.hotPatcher:stop()
+
+  return self
+end
+
 return VimMode

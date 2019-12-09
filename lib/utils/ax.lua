@@ -24,7 +24,7 @@ end
 -- patching Accessibility APIs on a per-app basis
 -------------------------------------------------
 local function patchChromiumWithAccessibilityFlag(axApp)
-  -- Chromium needs this flag to turn on accessibility in the browser
+  -- Google Chrome needs this flag to turn on accessibility in the browser
   axApp:setAttributeValue('AXEnhancedUserInterface', true)
 end
 
