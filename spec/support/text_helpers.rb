@@ -203,7 +203,7 @@ end
 
 module ModeHelpers
   def fallback_mode(&block)
-    context "fallback mode" do
+    context "fallback mode", fallback: true do
       before { open_and_focus_page! mode: "fallback" }
 
       instance_exec(&block)
@@ -211,7 +211,7 @@ module ModeHelpers
   end
 
   def advanced_mode(&block)
-    context "advanced mode" do
+    context "advanced mode", advanced: true do
       before { open_and_focus_page! mode: "advanced" }
 
       instance_exec(&block)
