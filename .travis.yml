@@ -1,4 +1,4 @@
-language: python
+language: ruby
 os: osx
 sudo: true
 
@@ -7,19 +7,21 @@ env:
     - LUA="lua 5.3"
 
 before_install:
+  - brew install python pip
   - pip install hererocks
   - hererocks here -r^ --$LUA # Install latest LuaRocks version
                               # plus the Lua version for this build job
                               # into 'here' subdirectory
   - export PATH=$PATH:$PWD/here/bin # Add directory with all installed binaries to PATH
   - eval `luarocks path --bin`
-  - bin/dev-setup
 
 install:
-  - echo "Nothing to install"
+  - bin/dev-setup
+  - bundle install
 
 script:
   - busted -c
+  - bundle exec rake spec
 
 after_success:
   - luacov-coveralls -v
