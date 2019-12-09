@@ -261,6 +261,5 @@ about in the `docs/Integration_Tests.md` document. However, once you setup,
 it should just be:
 
 ```
-killall "Google Chrome"
 bundle exec rspec spec
 ```

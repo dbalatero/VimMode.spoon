@@ -29,9 +29,9 @@ It will also ask for permissions for `osascript` (via iTerm), you'll need to ena
 You should now be able to run:
 
 ```
-killall "Google Chrome"
 bundle exec rspec spec
 ```
 
 You can't have another instance of Chrome running while you run the tests, or
-else the wrong Vim modes get entered, unfortunately :(
+else the wrong Vim modes get entered, unfortunately. The rspec runner will kill
+Chrome for you. You'll can get your tabs back when you open Chrome back up.
