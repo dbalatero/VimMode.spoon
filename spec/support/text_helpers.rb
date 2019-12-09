@@ -192,6 +192,25 @@ module TextHelpers
   end
 end
 
+module ModeHelpers
+  def fallback_mode(&block)
+    context "fallback mode" do
+      before { open_and_focus_page! mode: "fallback" }
+
+      instance_exec(&block)
+    end
+  end
+
+  def advanced_mode(&block)
+    context "advanced mode" do
+      before { open_and_focus_page! mode: "advanced" }
+
+      instance_exec(&block)
+    end
+  end
+end
+
 RSpec.configure do |config|
   config.include TextHelpers
+  config.extend ModeHelpers
 end
