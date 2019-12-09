@@ -24,6 +24,7 @@ module TextHelpers
     expect(page).to have_css('textarea:focus')
 
     set_chrome_accessibility!(mode == "advanced")
+    sleep 0.1
   end
 
   def expect_textarea_change_in_normal_mode(from:, to:, &block)
