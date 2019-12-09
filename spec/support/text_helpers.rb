@@ -16,13 +16,22 @@ module TextHelpers
     fire('i')
   end
 
-  def open_and_focus_page!
+  def open_and_focus_page!(mode: "advanced")
     path = File.expand_path(File.dirname(__FILE__) + '/../fixtures')
 
     visit "file://#{path}/textarea.html"
     expect(page).to have_css('textarea:focus')
 
-    patch_chrome_for_accessibility!
+    set_chrome_accessibility!(mode == "advanced")
+  end
+
+  def expect_textarea_change_in_normal_mode(from:, to:, &block)
+    set_textarea_value_and_selection from
+
+    normal_mode do
+      yield
+      expect_textarea_to_have_value_and_selection to
+    end
   end
 
   def set_textarea_value_and_selection(value)
@@ -122,12 +131,14 @@ module TextHelpers
     end
   end
 
-  def patch_chrome_for_accessibility!
+  def set_chrome_accessibility!(value = true)
+    value = value ? 'true' : 'false'
+
     script = <<~CMD
       osascript <<EOF
         tell application "System Events"
           tell process "Google Chrome"
-            set value of attribute "AXEnhancedUserInterface" to true
+            set value of attribute "AXEnhancedUserInterface" to #{value}
           end tell
         end tell
       EOF

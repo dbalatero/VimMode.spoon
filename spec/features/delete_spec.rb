@@ -3,36 +3,45 @@
 require 'spec_helper'
 
 RSpec.describe 'deletion', js: true do
-  before { open_and_focus_page! }
+  context 'dw' do
+    context 'fallback mode' do
+      before { open_and_focus_page! mode: "fallback" }
 
-  context 'words' do
-    it 'deletes a single word value' do
-      set_textarea_value_and_selection('|Word')
+      it 'deletes a single word value' do
+        expect_textarea_change_in_normal_mode(from: '|Word', to: "|") do
+          fire('dw')
+        end
+      end
 
-      normal_mode do
-        fire('dw')
-
-        expect_textarea_to_have_value_and_selection('|')
+      it 'deletes from the middle of a word to the end' do
+        expect_textarea_change_in_normal_mode(from: "W|ord a", to: "W| a") do
+          fire('dw')
+        end
       end
     end
 
-    it 'deletes from the middle of a word' do
-      set_textarea_value_and_selection('W|ord')
+    context 'advanced mode' do
+      before { open_and_focus_page! mode: "advanced" }
 
-      normal_mode do
-        fire('dw')
-
-        expect_textarea_to_have_value_and_selection('W|')
+      it 'deletes a single word value' do
+        expect_textarea_change_in_normal_mode(from: '|Word', to: '|') do
+          fire('dw')
+        end
       end
-    end
 
-    it 'handles multiple words' do
-      set_textarea_value_and_selection('|Word another')
+      it 'deletes from the middle of a word' do
+        expect_textarea_change_in_normal_mode(from: 'W|ord', to: 'W|') do
+          fire('dw')
+        end
+      end
 
-      normal_mode do
-        fire('dw')
-
-        expect_textarea_to_have_value_and_selection('|another')
+      it 'handles multiple words' do
+        expect_textarea_change_in_normal_mode(
+          from: '|Word another',
+          to: '|another'
+        ) do
+          fire('dw')
+        end
       end
     end
   end
