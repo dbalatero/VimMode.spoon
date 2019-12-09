@@ -2,7 +2,7 @@
 
 module TextHelpers
   def fire(key_strokes)
-    send_os_keys(key_strokes)
+    send_os_keys key_strokes
     sleep 0.01
   end
 
@@ -14,12 +14,14 @@ module TextHelpers
     sleep 0.01
   ensure
     fire('i')
+    sleep 0.01
   end
 
   def open_and_focus_page!(mode: "advanced")
     path = File.expand_path(File.dirname(__FILE__) + '/../fixtures')
-
     visit "file://#{path}/textarea.html"
+    page.execute_script("window.location.reload()")
+
     expect(page).to have_css('textarea:focus')
 
     set_chrome_accessibility!(mode == "advanced")
@@ -30,6 +32,7 @@ module TextHelpers
 
     normal_mode do
       yield
+      sleep 0.1
       expect_textarea_to_have_value_and_selection to
     end
   end
@@ -39,8 +42,12 @@ module TextHelpers
     value = remove_range_chars(value)
 
     fill_in 'area', with: value
+
     page.execute_script("document.getElementById('area').focus()")
+    sleep 0.005
+
     set_selection_range(range['start'], range['finish'])
+    sleep 0.01
   end
 
   def expect_textarea_to_have_value_and_selection(range)
@@ -59,6 +66,8 @@ module TextHelpers
   def expect_textarea_to_have_value(text)
     textarea = find_textarea
     wait_for { textarea.value == text }
+
+    sleep 0.01
   rescue StandardError
     expect(textarea.value).to eq(text)
   end

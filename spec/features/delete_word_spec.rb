@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'deletion', js: true do
+RSpec.describe 'delete word', js: true do
   context 'dw' do
     fallback_mode do
       it 'deletes a single word value' do
@@ -40,8 +40,5 @@ RSpec.describe 'deletion', js: true do
         end
       end
     end
-  end
-
-  context 'dd' do
   end
 end
