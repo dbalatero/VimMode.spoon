@@ -2,12 +2,14 @@ language: ruby
 os: osx
 sudo: true
 
+rvm:
+  - 2.6.3
+
 env:
   matrix:
     - LUA="lua 5.3"
 
 before_install:
-  - brew install python pip
   - pip install hererocks
   - hererocks here -r^ --$LUA # Install latest LuaRocks version
                               # plus the Lua version for this build job
