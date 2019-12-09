@@ -149,10 +149,11 @@ function StateIndicator:getElementPosition(canvasWidth)
   local elementPosition = getFocusedElementPosition()
 
   if elementPosition then
+    local xOffset = 3 -- it is a pleasing offset
     local yOffset = 3 -- OS X adds a blue focused border, we want to clear it
 
     return {
-      x = elementPosition.x,
+      x = elementPosition.x + xOffset,
       y = elementPosition.y - defaultHeight - yOffset
     }
   else
