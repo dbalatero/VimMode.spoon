@@ -24,7 +24,11 @@ local function createApplicationWatcher(application, vim)
 
   if not pcall(creator) then
     registeredPids[pid] = nil
-    vimLogger.d("Could not start watcher")
+
+    vimLogger.d(
+      "Could not start watcher for PID: " .. pid ..
+        " and name: " .. application:name()
+    )
   end
 
   return observer
