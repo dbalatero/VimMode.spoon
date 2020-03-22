@@ -49,7 +49,7 @@ function AppWatcher:disableApp(name)
   -- disable it proactively if needed
   local currentApplication = hs.application.frontmostApplication()
 
-  if currentApplication:name() == name then
+  if currentApplication and currentApplication:name() == name then
     self:disableVim()
   end
 
@@ -59,7 +59,7 @@ end
 function AppWatcher:createWatcher()
   -- build the watcher
   self.watcher =
-    hs.application.watcher.new(function(applicationName, eventType)
+    hs.application.watcher.new(function(applicationName, eventType, application)
       -- App is not disabled, so we can ignore this
       if not self.disabled[applicationName] then return end
 
