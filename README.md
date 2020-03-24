@@ -158,7 +158,8 @@ in ~/.hammerspoon/init.lua`.
 ### Binding jk to enter normal mode
 
 ```lua
-vim = hs.loadSpoon('VimMode')
+local VimMode = hs.loadSpoon('VimMode')
+local vim = VimMode:new()
 
 vim:enterWithSequence('jk')
 ```
@@ -192,7 +193,8 @@ instance of Vim. Calling `vim:disableForApp(...)` allows you to disable or
 enable Vim mode depending on which window is in focus.
 
 ```
-vim = hs.loadSpoon('VimMode')
+local VimMode = hs.loadSpoon('VimMode')
+local vim = VimMode:new()
 
 -- sometimes you need to check Activity Monitor to get the app's
 -- real name
@@ -205,7 +207,9 @@ vim:disableForApp('Terminal')
 ### Disabling the floating alert when you enter Vim mode(s)
 
 ```
-vim = hs.loadSpoon('VimMode')
+local VimMode = hs.loadSpoon('VimMode')
+local vim = VimMode:new()
+
 vim:shouldShowAlertInNormalMode(false)
 ```
 
@@ -214,7 +218,9 @@ vim:shouldShowAlertInNormalMode(false)
 This turns on a Flux-style dim when you enter normal mode.
 
 ```
-vim = hs.loadSpoon('VimMode')
+local VimMode = hs.loadSpoon('VimMode')
+local vim = VimMode:new()
+
 vim:shouldDimScreenInNormalMode(true)
 ```
 
