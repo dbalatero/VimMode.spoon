@@ -13,6 +13,10 @@ function Replace:modifySelection(_, rangeStart, rangeFinish)
 
   hs.eventtap.keyStroke({}, 'delete', 50)
   hs.eventtap.keyStrokes(replacement)
+
+  times(numChars, function()
+    hs.eventtap.keyStroke({}, 'left', 0)
+  end)
 end
 
 function Replace:getModifiedBuffer(buffer, rangeStart, rangeFinish)
