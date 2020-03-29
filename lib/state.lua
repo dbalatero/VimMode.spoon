@@ -1,9 +1,13 @@
 local machine = dofile(vimModeScriptPath .. 'lib/utils/statemachine.lua')
+local Nvim = dofile(vimModeScriptPath .. "lib/nvim/index.lua")
 
-local function createStateMachine(vim)
+local function createStateMachine(state)
   return machine.create({
     initial = 'insert-mode',
     events = {
+      { name = 'disable', from = 'insert-mode', to = 'disabled' },
+      { name = 'enable', from = 'enabled', to = 'insert-mode' },
+
       { name = 'enterNormal', from = 'insert-mode', to = 'normal-mode' },
       { name = 'enterNormal', from = 'visual-mode', to = 'normal-mode' },
       { name = 'enterNormal', from = 'firing', to = 'normal-mode' },
@@ -29,50 +33,66 @@ local function createStateMachine(vim)
     },
     callbacks = {
       onenterNormal = function()
-        vim:disableSequence()
-        vim:resetCommandState()
-        vim:setNormalMode()
-        vim:enterModal('normal')
+        state:setMode("normal")
         vimLogger.i("normal enter")
       end,
       onenterInsert = function()
-        vim.visualCaretPosition = nil
-        vim:exitAllModals()
-        vim:setInsertMode()
-        vim:resetCommandState()
-        vim:enableSequence()
+        state:setMode("insert")
+        vimLogger.i("insert enter")
       end,
       onenterVisual = function()
-        vim:setVisualMode()
-        vim:enterModal('visual')
+        state:setMode("visual")
+        vimLogger.i("visual enter")
       end,
       onenterOperator = function(_, _, _, _, operator)
-        vim:enterModal('operatorPending')
-        vim.commandState.operator = operator
+        vimLogger.i("operating pending enter")
       end,
       onenterMotion = function(self, _, _, _, motion)
-        vim.commandState.motion = motion
-        self:fire()
+        vimLogger.i("motion entered, should fire")
       end,
       onfire = function(self)
-        local result = vim:fireCommandState()
-
-        if result.mode == "visual" then
-          if result.hadOperator then
-            self:enterNormal()
-          else
-            self:enterVisual()
-          end
-        else
-          if result.transition == "normal" then self:enterNormal()
-          else vim:exitAsync() end
-        end
       end,
       onstatechange = function()
-        vim:updateStateIndicator()
+        -- vim:updateStateIndicator()
       end
     }
   })
 end
 
-return createStateMachine
+local State = {}
+
+function State:new()
+  local state = {}
+
+  setmetatable(state, self)
+  self.__index = self
+
+  state.editor = Nvim.Editor:new()
+  state.machine = createStateMachine(state)
+  state.mode = "insert"
+
+  return state
+end
+
+function State:enterNormalMode()
+  self.machine:enterNormal()
+end
+
+function State:isDisabled()
+  return self.machine:is('disabled')
+end
+
+function State:getMode()
+  return self.mode
+end
+
+function State:setMode(mode)
+  self.mode = mode
+  return self
+end
+
+function State:is(state)
+  return self.machine:is(state)
+end
+
+return State
