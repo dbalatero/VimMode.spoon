@@ -1,5 +1,6 @@
 local machine = dofile(vimModeScriptPath .. 'lib/utils/statemachine.lua')
 local Nvim = dofile(vimModeScriptPath .. "lib/nvim/index.lua")
+local UI = dofile(vimModeScriptPath .. "lib/ui/index.lua")
 
 local function createStateMachine(state)
   return machine.create({
@@ -71,11 +72,63 @@ function State:new()
   state.machine = createStateMachine(state)
   state.mode = "insert"
 
+  state.currentElement = nil
+  state.tap = state:buildNormalTap()
+
   return state
 end
 
 function State:enterNormalMode()
   self.machine:enterNormal()
+  self.currentElement = UI.TextField.fromCurrentElement()
+
+  -- hack it in
+  local buffer = self.editor:getMainBuffer()
+
+  -- init the buffer
+  buffer:setLines(self.currentElement:getLines())
+  buffer:setCursorPosition(
+    self.currentElement:getLineNumber(),
+    self.currentElement:getColumnNumber()
+  )
+
+  local function handleNotification(notification)
+    local line, column = buffer:getCursorPosition()
+
+    if notification.type == "changedLines" then
+      self.currentElement:setLines(
+        notification.firstLineIndex,
+        notification.linesChanged
+      )
+    end
+
+    -- always reset cursor
+    self.currentElement:setCursorPosition(line, column)
+  end
+
+  self.editor:sendKeys('w', handleNotification)
+  vimLogger.i("lines after: " .. inspect(buffer:getLines()))
+end
+
+function State:buildNormalTap()
+  return hs.eventtap.new(
+    { hs.eventtap.event.types.keyDown },
+    self:buildEventHandler()
+  )
+end
+
+function State:buildEventHandler()
+  return function(event)
+    local keyPressed = hs.keycodes.map[event:getKeyCode()]
+    local flags = event:getFlags()
+
+    local exiting = keyPressed == "c" and flags.containExactly({'ctrl'})
+
+    if exiting then
+    end
+
+    return true, { event }
+  end
 end
 
 function State:isDisabled()
