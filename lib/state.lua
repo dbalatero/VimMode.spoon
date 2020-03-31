@@ -73,12 +73,14 @@ function State:new()
   state.mode = "insert"
 
   state.currentElement = nil
+  state.notificationHandler = state:buildNotificationHandler()
   state.tap = state:buildNormalTap()
 
   return state
 end
 
 function State:enterNormalMode()
+  self.tap:start()
   self.machine:enterNormal()
   self.currentElement = UI.TextField.fromCurrentElement()
 
@@ -91,23 +93,6 @@ function State:enterNormalMode()
     self.currentElement:getLineNumber(),
     self.currentElement:getColumnNumber()
   )
-
-  local function handleNotification(notification)
-    local line, column = buffer:getCursorPosition()
-
-    if notification.type == "changedLines" then
-      self.currentElement:setLines(
-        notification.firstLineIndex,
-        notification.linesChanged
-      )
-    end
-
-    -- always reset cursor
-    self.currentElement:setCursorPosition(line, column)
-  end
-
-  self.editor:sendKeys('w', handleNotification)
-  vimLogger.i("lines after: " .. inspect(buffer:getLines()))
 end
 
 function State:buildNormalTap()
@@ -117,17 +102,48 @@ function State:buildNormalTap()
   )
 end
 
+function State:buildNotificationHandler()
+  return function(notification)
+    local buffer = self.editor:getMainBuffer()
+    local line, column = buffer:getCursorPosition()
+
+    if notification.type == "changedLines" then
+      vimLogger.i("changed lines: " .. inspect(changedLines))
+
+      self.currentElement:setLines(
+        notification.firstLineIndex,
+        notification.linesChanged
+      )
+    end
+
+    -- always reset cursor + mode
+    self.currentElement:setCursorPosition(line, column)
+    self.mode = self.editor:getMode()
+
+    vimLogger.i("new pos: (" .. line .. ", " .. column .. ")")
+    vimLogger.i("mode: " .. self.mode)
+
+    if self.mode == "insert" then
+      self.tap:stop()
+      self.machine:enterInsert()
+    end
+  end
+end
+
 function State:buildEventHandler()
   return function(event)
     local keyPressed = hs.keycodes.map[event:getKeyCode()]
     local flags = event:getFlags()
 
-    local exiting = keyPressed == "c" and flags.containExactly({'ctrl'})
-
-    if exiting then
+    if keyPressed:len() > 1 then
+      vimLogger.i("got special key: " .. keyPressed)
+      return true
+    else
+      vimLogger.i("key: " .. keyPressed .. ", flags: " .. inspect(flags))
+      self.editor:sendKeys(keyPressed, self.notificationHandler)
     end
 
-    return true, { event }
+    return true
   end
 end
 

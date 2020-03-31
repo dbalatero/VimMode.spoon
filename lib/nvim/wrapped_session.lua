@@ -66,7 +66,7 @@ function WrappedSession:close(...)
 end
 
 function WrappedSession:_nextMessage()
-  local timeout = 0
+  local timeout = 50
   return self.session:next_message(timeout)
 end
 
