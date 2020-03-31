@@ -9,6 +9,10 @@ local AccessibilityBuffer = Buffer:new()
 -- Some apps have a partial implementation of the OS X Accessibility API,
 -- but do not actually play ball very well.
 local bannedApps = {
+  -- we should probably always use the fallback mode in VS Code, if someone
+  -- hasn't disabled it
+  Code = true,
+
   -- Slack always returns a selection range of:
   --   { loc = 0, len = 0 }
   --
