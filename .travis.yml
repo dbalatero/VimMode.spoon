@@ -1,6 +1,9 @@
-language: python
+language: ruby
+os: osx
+sudo: true
 
-sudo: false
+rvm:
+  - 2.6.3
 
 env:
   matrix:
@@ -13,13 +16,19 @@ before_install:
                               # into 'here' subdirectory
   - export PATH=$PATH:$PWD/here/bin # Add directory with all installed binaries to PATH
   - eval `luarocks path --bin`
-  - bin/dev-setup
+
+branches:
+  only:
+    - master
+    - vim-mode-v2
 
 install:
-  - echo "Nothing to install"
+  - bin/dev-setup
+  - bundle install
 
 script:
   - busted -c
+  - bundle exec rake spec
 
 after_success:
   - luacov-coveralls -v
