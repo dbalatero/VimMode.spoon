@@ -13,6 +13,9 @@ local bannedApps = {
   -- hasn't disabled it
   Code = true,
 
+  -- Notion's cells do not play well with advanced mode
+  Notion = true,
+
   -- Slack always returns a selection range of:
   --   { loc = 0, len = 0 }
   --
