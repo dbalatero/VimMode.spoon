@@ -1,14 +1,14 @@
 local stringUtils = dofile(vimModeScriptPath .. "lib/utils/string_utils.lua")
 local KeySequence = {}
 
-function KeySequence:new(keys, onSequencePressed)
+function KeySequence:new(keys, maxDelayBetweenKeysMilliseconds, onSequencePressed)
   local sequence = {}
 
   setmetatable(sequence, self)
   self.__index = self
 
   sequence.keys = stringUtils.toChars(keys)
-  sequence.maxDelayBetweenKeys = 100 -- in ms
+  sequence.maxDelayBetweenKeysMilliseconds = maxDelayBetweenKeysMilliseconds or 140
   sequence.onSequencePressed = onSequencePressed
   sequence.enabled = false
   sequence.timer = nil
@@ -64,7 +64,7 @@ function KeySequence:cancelTimer()
 end
 
 function KeySequence:startTimer(fn)
-  self.timer = hs.timer.doAfter(self.maxDelayBetweenKeys / 1000, fn)
+  self.timer = hs.timer.doAfter(self.maxDelayBetweenKeysMilliseconds / 1000, fn)
 end
 
 function KeySequence:recordEvent(event)
