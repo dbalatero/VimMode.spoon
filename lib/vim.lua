@@ -72,6 +72,8 @@ function VimMode:new()
   vim.focusWatcher = createFocusWatcher(vim)
   vim.stateIndicator = StateIndicator:new(vim):update()
 
+  vim.enterKeyBind = nil
+
   return vim
 end
 
@@ -84,7 +86,7 @@ function VimMode:bindHotKeys(keyTable)
   if keyTable.enter then
     local enter = keyTable.enter
 
-    hs.hotkey.bind(enter[1], enter[2], function()
+    self.enterKeyBind = hs.hotkey.bind(enter[1], enter[2], function()
       self:enter()
     end)
   end
@@ -123,15 +125,18 @@ end
 function VimMode:disable()
   self.enabled = false
   self:disableSequence()
+  self:disableEnterBind()
   self:resetCommandState()
 
   return self
 end
 
 function VimMode:enable()
-  self.enabled = true
   self:resetCommandState()
   self:enableSequence()
+  self:enableEnterBind()
+
+  self.enabled = true
 
   return self
 end
@@ -187,6 +192,18 @@ function VimMode:enableKeySequence(key1, key2)
   self:enterWithSequence(key1 .. key2)
 
   return self
+end
+
+function VimMode:disableEnterBind()
+  if not self.enterKeyBind then return end
+
+  self.enterKeyBind:disable()
+end
+
+function VimMode:enableEnterBind()
+  if not self.enterKeyBind then return end
+
+  self.enterKeyBind:enable()
 end
 
 function VimMode:disableSequence()

@@ -1,5 +1,25 @@
 local AppWatcher = {}
 
+local function debugEventType(eventType)
+  if eventType == hs.application.watcher.activated then
+    return "activated"
+  elseif eventType == hs.application.watcher.deactivated then
+    return "deactivated"
+  elseif eventType == hs.application.watcher.hidden then
+    return "hidden"
+  elseif eventType == hs.application.watcher.launched then
+    return "launched"
+  elseif eventType == hs.application.watcher.launching then
+    return "launching"
+  elseif eventType == hs.application.watcher.terminated then
+    return "terminated"
+  elseif eventType == hs.application.watcher.unhidden then
+    return "unhidden"
+  else
+    return "unknown event: " .. eventType
+  end
+end
+
 function AppWatcher:new(vim)
   local watcher = {
     -- These are the default apps that we automatically turn off Vim mode
@@ -60,13 +80,14 @@ function AppWatcher:createWatcher()
   -- build the watcher
   self.watcher =
     hs.application.watcher.new(function(applicationName, eventType, application)
-      -- App is not disabled, so we can ignore this
-      if not self.disabled[applicationName] then return end
+      local disabled = self.disabled[applicationName]
 
       if eventType == hs.application.watcher.activated then
-        self:disableVim()
-      elseif eventType == hs.application.watcher.deactivated then
-        self:enableVim()
+        if disabled then
+          self:disableVim()
+        else
+          self:enableVim()
+        end
       end
     end)
 
