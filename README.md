@@ -169,8 +169,15 @@ This sequence only watches for simple characters - it can't handle uppercase
 meant to handle the popularity of people binding `jj`, `jk`, or `kj` to
 entering normal mode in Vim.
 
-The sequence also times out - if you type a `j` and wait < 1sec, it will type
-the `j` for you.
+The sequence also times out by default after `140ms` - if you type a `j` and
+wait for the timeout, it will type the `j` for you. You can control the timeout like so:
+
+```lua
+-- timeout after 100ms instead. this is a nicer default for `jk`, but needs to
+-- be more like 140ms for `jj` to be caught quickly enough.
+
+vim:enterWithSequence('jk', 100)
+```
 
 If you have a sequence of `jk` and you go to type `ja` it will immediately
 pass through the `ja` keys without any latency either. I wanted this to work

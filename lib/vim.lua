@@ -164,8 +164,10 @@ function VimMode:setVisualCaretPosition(position)
   return self
 end
 
-function VimMode:enterWithSequence(keys)
-  self.sequence = KeySequence:new(keys, function()
+-- @param keys [String] the key sequence you want, e.g. "jk"
+-- @param maxDelayBetweenKeysMilliseconds [Integer] how long to wait for the 2nd keypress
+function VimMode:enterWithSequence(keys, maxDelayBetweenKeysMilliseconds)
+  self.sequence = KeySequence:new(keys, maxDelayBetweenKeysMilliseconds, function()
     self:enter()
   end)
 
