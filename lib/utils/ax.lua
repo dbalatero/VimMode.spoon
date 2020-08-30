@@ -7,7 +7,7 @@ axUtils.isTextField = function(element)
 
   local role = element:attributeValue("AXRole")
 
-  return role == "AXTextField" or role == "AXTextArea"
+  return role == "AXTextField" or role == "AXTextArea" or role == "AXComboBox"
 end
 
 axUtils.isRichTextField = function(element)
