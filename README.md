@@ -5,6 +5,8 @@
 🚀 This library will add Vim motions and operators to all your input fields on
 OS X. Why should Emacs users have all the fun?
 
+<img src="https://raw.githubusercontent.com/dbalatero/VimMode.spoon/master/images/vim-mode.gif" alt="Example of VimMode.spoon" />
+
 This uses Hammerspoon, but don't worry - the [quick
 installer](#quick-installation) is a 1-line bash command to get everything
 setup.
