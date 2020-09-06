@@ -17,7 +17,13 @@ axUtils.isRichTextField = function(element)
   --
   -- from observation, plain text inputs/textareas do not seem to have
   -- children.
-  return #element:children() > 0
+  if not element then return false end
+
+  local children = element:attributeValue("AXChildren")
+
+  if not children then return false end
+
+  return #children > 0
 end
 
 -------------------------------------------------
