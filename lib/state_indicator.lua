@@ -204,7 +204,10 @@ function StateIndicator:update()
   if self:render() then
     if not self.showing then
       self.canvas:show()
-      self.canvas:bringToFront()
+
+      -- show it above the Menu Bar
+      self.canvas:level("overlay")
+
       self.showing = true
     end
   elseif self.showing then
