@@ -1,4 +1,4 @@
-local ax = require("hs._asm.axuielement")
+local ax = dofile(vimModeScriptPath .. "lib/axuielement.lua")
 
 local axUtils = dofile(vimModeScriptPath .. "lib/utils/ax.lua")
 
@@ -41,7 +41,7 @@ local function getFocusedElementPosition()
   -- we don't want to get position for anything that isn't a text field
   if not axUtils.isTextField(currentElement) then return nil end
 
-  local position = currentElement:position()
+  local position = currentElement:attributeValue('AXPosition')
   if not position then return nil end
 
   return {

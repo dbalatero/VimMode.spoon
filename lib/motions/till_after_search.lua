@@ -9,8 +9,6 @@ function TillAfterSearch:getRange(buffer, ...)
 
   if not range then return nil end
 
-  vimLogger.i("backwards to " .. inspect(range))
-
   -- go right after the search result
   range.start = range.start + 1
 

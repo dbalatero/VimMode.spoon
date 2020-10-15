@@ -12,6 +12,14 @@ function Selection:new(location, length)
   return selection
 end
 
+function Selection.fromRange(axRange)
+  -- Older versions of axuielement return `loc/len`
+  local location = axRange.location or axRange.loc
+  local length = axRange.length or axRange.len
+
+  return Selection:new(location, length)
+end
+
 function Selection:isSelected()
   return self.length > 0
 end

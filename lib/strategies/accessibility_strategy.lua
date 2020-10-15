@@ -1,4 +1,4 @@
-local ax = require("hs._asm.axuielement")
+local ax = dofile(vimModeScriptPath .. "lib/axuielement.lua")
 local inspect = hs.inspect.inspect
 
 local Strategy = dofile(vimModeScriptPath .. "lib/strategy.lua")
@@ -25,12 +25,8 @@ function AccessibilityStrategy:fire()
   local motion = self.vim.commandState.motion
   local buffer = AccessibilityBuffer:new()
 
-  if operator then vimLogger.i("Firing operator = ", operator.name) end
-  if motion then vimLogger.i("Firing motion = ", motion.name) end
-
   -- set the caret position if we are in visual mode
   if self.vim:isMode('visual') then
-    vimLogger.i('setting caret = ' .. inspect(self.vim.visualCaretPosition))
     buffer:setCaretPosition(self.vim.visualCaretPosition)
   end
 
@@ -72,22 +68,14 @@ function AccessibilityStrategy:fire()
     local length = 0
 
     if self.vim:isMode('visual') then
-      vimLogger.i("Handling visual mode")
-
       local currentCharRange = currentRange:getCharRange()
       local caretPosition = buffer:getCaretPosition()
-
-      vimLogger.i("currentCharRange = " .. inspect(currentCharRange))
-      vimLogger.i("motionRange = " .. inspect(range))
-      vimLogger.i("caretPosition = " .. inspect(caretPosition))
 
       local result = visualUtils.getNewRange(
         currentCharRange,
         range,
         caretPosition
       )
-
-      vimLogger.i("result = " .. inspect(result))
 
       local newRange = result.range
 
@@ -129,7 +117,7 @@ function AccessibilityStrategy:getSelection()
 
   if not range then return nil end
 
-  return Selection:new(range.loc, range.len)
+  return Selection.fromRange(range)
 end
 
 function AccessibilityStrategy:setSelection(location, length)
@@ -137,7 +125,7 @@ function AccessibilityStrategy:setSelection(location, length)
 end
 
 function AccessibilityStrategy:setSelectionRange(selection)
-  self:getCurrentElement():setSelectedTextRange(selection)
+  self:getCurrentElement():setAttributeValue("AXSelectedTextRange", selection)
 end
 
 function AccessibilityStrategy:getValue()

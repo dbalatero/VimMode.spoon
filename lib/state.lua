@@ -33,7 +33,6 @@ local function createStateMachine(vim)
         vim:resetCommandState()
         vim:setNormalMode()
         vim:enterModal('normal')
-        vimLogger.i("normal enter")
       end,
       onenterInsert = function()
         vim.visualCaretPosition = nil

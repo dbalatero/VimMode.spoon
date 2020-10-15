@@ -61,8 +61,6 @@ end
 function RestrictedModal:handleKeyPress(event)
   local character = event:getCharacters()
 
-  vimLogger.i("Pressed " .. character)
-
   if self.registeredKeys[character] then
     return false
   elseif stringUtils.isNonAlphanumeric(character) then

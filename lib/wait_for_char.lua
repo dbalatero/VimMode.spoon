@@ -20,9 +20,6 @@ function WaitForChar:start()
     { hs.eventtap.event.types.keyDown },
     function(event)
       local character = event:getCharacters()
-
-      vimLogger.i("got char " .. character)
-
       local escChar = ""
 
       if character == "" or character == escChar then
