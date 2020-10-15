@@ -66,7 +66,7 @@ function AccessibilityBuffer:getSelectionRange()
   local range = self:getCurrentElement():attributeValue("AXSelectedTextRange")
   if not range then return nil end
 
-  self.selection = Selection:new(range.loc, range.len)
+  self.selection = Selection.fromRange(range)
 
   return self.selection
 end
@@ -81,13 +81,19 @@ end
 function AccessibilityBuffer:getCurrentLineNumber()
   return self
     :getCurrentElement()
-    :lineForIndexWithParameter(self:getCurrentLineRange().location)
+    :parameterizedAttributeValue(
+      'AXLineForIndex',
+      self:getCurrentLineRange().location
+    )
 end
 
 function AccessibilityBuffer:getLineCount()
   local lineNumber = self
     :getCurrentElement()
-    :lineForIndexWithParameter(self:lastValueIndex()) or 0
+    :parameterizedAttributeValue(
+      'AXLineForIndex',
+      self:lastValueIndex()
+    ) or 0
 
   return lineNumber + 1
 end
@@ -136,7 +142,8 @@ function AccessibilityBuffer:isValid()
 end
 
 function AccessibilityBuffer:getCurrentLineNumber()
-  local axLineNumber = self:getCurrentElement():lineForIndexWithParameter(
+  local axLineNumber = self:getCurrentElement():parameterizedAttributeValue(
+    'AXLineForIndex',
     self:getCaretPosition()
   )
 
@@ -152,11 +159,11 @@ end
 function AccessibilityBuffer:getRangeForLineNumber(lineNumber)
   local range = self
     :getCurrentElement()
-    :rangeForLineWithParameter(lineNumber - 1)
+    :parameterizedAttributeValue('AXRangeForLine', lineNumber - 1)
 
   if not range then return Selection:new(0, 0) end
 
-  return Selection:new(range.loc, range.len)
+  return Selection.fromRange(range)
 end
 
 function AccessibilityBuffer.getCurrentApplication()

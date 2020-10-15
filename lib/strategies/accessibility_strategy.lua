@@ -129,7 +129,7 @@ function AccessibilityStrategy:getSelection()
 
   if not range then return nil end
 
-  return Selection:new(range.loc, range.len)
+  return Selection.fromRange(range)
 end
 
 function AccessibilityStrategy:setSelection(location, length)
@@ -137,7 +137,7 @@ function AccessibilityStrategy:setSelection(location, length)
 end
 
 function AccessibilityStrategy:setSelectionRange(selection)
-  self:getCurrentElement():setSelectedTextRange(selection)
+  self:getCurrentElement():setAttributeValue("AXSelectedTextRange", selection)
 end
 
 function AccessibilityStrategy:getValue()

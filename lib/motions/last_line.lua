@@ -3,7 +3,8 @@ local Motion = dofile(vimModeScriptPath .. "lib/motion.lua")
 local LastLine = Motion:new{ name = 'last_line' }
 
 function LastLine.getRange(_, buffer)
-  local start = buffer:getCurrentLineRange().position
+  local range = buffer:getCurrentLineRange()
+  local start = range.location
 
   return {
     start = start,
