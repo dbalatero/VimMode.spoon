@@ -11,12 +11,7 @@ local VimMode = {
 
 vimLogger = hs.logger.new('vim', 'debug')
 
--- Push ./vendor to the load path
-package.path = vimModeScriptPath .. "vendor/?/init.lua;" .. package.path
-package.cpath = vimModeScriptPath .. "vendor/?.so;" .. package.cpath
-
-local ax = require("hs._asm.axuielement")
-
+local ax = dofile(vimModeScriptPath .. "lib/axuielement.lua")
 dofile(vimModeScriptPath .. "lib/utils/benchmark.lua")
 
 local AccessibilityBuffer = dofile(vimModeScriptPath .. "lib/accessibility_buffer.lua")

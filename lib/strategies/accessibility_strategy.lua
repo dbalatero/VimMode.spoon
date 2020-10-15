@@ -1,4 +1,4 @@
-local ax = require("hs._asm.axuielement")
+local ax = dofile(vimModeScriptPath .. "lib/axuielement.lua")
 local inspect = hs.inspect.inspect
 
 local Strategy = dofile(vimModeScriptPath .. "lib/strategy.lua")

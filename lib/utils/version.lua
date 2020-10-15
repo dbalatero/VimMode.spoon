@@ -9,9 +9,6 @@ function versionUtils.hammerspoonVersionLessThan(compareVersion)
 
   local maxLength = math.max(#compare, #current)
 
-  logger.i(hs.inspect.inspect(compare))
-  logger.i(hs.inspect.inspect(current))
-
   for i = 1, maxLength do
     local compareVal = tonumber(compare[i]) or 0
     local currentVal = tonumber(current[i]) or 0

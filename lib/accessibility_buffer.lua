@@ -1,4 +1,4 @@
-local ax = require("hs._asm.axuielement")
+local ax = dofile(vimModeScriptPath .. "lib/axuielement.lua")
 
 local Buffer = dofile(vimModeScriptPath .. "lib/buffer.lua")
 local Selection = dofile(vimModeScriptPath .. "lib/selection.lua")
