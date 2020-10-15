@@ -25,12 +25,8 @@ function AccessibilityStrategy:fire()
   local motion = self.vim.commandState.motion
   local buffer = AccessibilityBuffer:new()
 
-  if operator then vimLogger.i("Firing operator = ", operator.name) end
-  if motion then vimLogger.i("Firing motion = ", motion.name) end
-
   -- set the caret position if we are in visual mode
   if self.vim:isMode('visual') then
-    vimLogger.i('setting caret = ' .. inspect(self.vim.visualCaretPosition))
     buffer:setCaretPosition(self.vim.visualCaretPosition)
   end
 
@@ -72,22 +68,14 @@ function AccessibilityStrategy:fire()
     local length = 0
 
     if self.vim:isMode('visual') then
-      vimLogger.i("Handling visual mode")
-
       local currentCharRange = currentRange:getCharRange()
       local caretPosition = buffer:getCaretPosition()
-
-      vimLogger.i("currentCharRange = " .. inspect(currentCharRange))
-      vimLogger.i("motionRange = " .. inspect(range))
-      vimLogger.i("caretPosition = " .. inspect(caretPosition))
 
       local result = visualUtils.getNewRange(
         currentCharRange,
         range,
         caretPosition
       )
-
-      vimLogger.i("result = " .. inspect(result))
 
       local newRange = result.range
 

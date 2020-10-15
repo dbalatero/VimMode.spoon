@@ -311,7 +311,6 @@ end
 function VimMode:pushDigitTo(type, digit)
   self.commandState:pushCountDigit(type, digit)
   self:updateStateIndicator()
-  vimLogger.i(inspect(self.commandState))
   return self
 end
 
