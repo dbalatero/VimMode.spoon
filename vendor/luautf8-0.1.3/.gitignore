@@ -1,0 +1,16 @@
+UCD/
+UCD.*/
+ucd/
+ucd.*/
+*.dll
+
+lua-utf8.so
+lua-utf8.so.*
+luautf8-*.zip
+luautf8-*.rock
+
+*.gcov
+*.gcda
+*.gcno
+
+test_*.lua
