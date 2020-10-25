@@ -1,5 +1,6 @@
 local Selection = dofile(vimModeScriptPath .. "lib/selection.lua")
 local stringUtils = dofile(vimModeScriptPath .. "lib/utils/string_utils.lua")
+local utf8 = dofile(vimModeScriptPath .. "vendor/luautf8.lua")
 
 local Buffer = {}
 
@@ -84,7 +85,7 @@ function Buffer:getCurrentLineNumber()
     currentLine = currentLine + 1
 
     -- add 1 for the missing \n that was on the line before splitting
-    currentPosition = currentPosition + string.len(lines[currentLine])
+    currentPosition = currentPosition + utf8.len(lines[currentLine])
   end
 
   return currentLine
@@ -107,7 +108,7 @@ function Buffer:lastValueIndex()
 end
 
 function Buffer:getContentsBeforeSelection()
-  local contents = string.sub(self:getValue(), 0, self.selection:positionEnd())
+  local contents = utf8.sub(self:getValue(), 0, self.selection:positionEnd())
 
   if contents == "" then return nil end
 
@@ -115,7 +116,7 @@ function Buffer:getContentsBeforeSelection()
 end
 
 function Buffer:getContentsAfterSelection()
-  local contents = string.sub(self:getValue(), self.selection:positionEnd() + 1)
+  local contents = utf8.sub(self:getValue(), self.selection:positionEnd() + 1)
 
   if contents == "" then return nil end
 
@@ -140,7 +141,7 @@ function Buffer:getCurrentLine()
 end
 
 function Buffer:charAt(position)
-  return string.sub(self:getValue(), position + 1, position + 1)
+  return utf8.sub(self:getValue(), position + 1, position + 1)
 end
 
 -- 1 indexed
@@ -174,7 +175,7 @@ function Buffer:getRangeForLineNumber(lineNumber)
 
   for i, line in ipairs(lines) do
     if i == lineNumber then break end
-    start = start + string.len(line)
+    start = start + utf8.len(line)
   end
 
   local length = #lines[lineNumber]

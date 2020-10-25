@@ -3,6 +3,7 @@ local ax = dofile(vimModeScriptPath .. "lib/axuielement.lua")
 local Buffer = dofile(vimModeScriptPath .. "lib/buffer.lua")
 local Selection = dofile(vimModeScriptPath .. "lib/selection.lua")
 local axUtils = dofile(vimModeScriptPath .. "lib/utils/ax.lua")
+local utf8 = dofile(vimModeScriptPath .. "vendor/luautf8.lua")
 
 local AccessibilityBuffer = Buffer:new()
 
@@ -75,7 +76,7 @@ function AccessibilityBuffer:getCurrentLine()
   local range = self:getCurrentLineRange()
   local start = range.location + 1
 
-  return string.sub(self:getValue(), start, start + range.length - 1)
+  return utf8.sub(self:getValue(), start, start + range.length - 1)
 end
 
 function AccessibilityBuffer:getCurrentLineNumber()

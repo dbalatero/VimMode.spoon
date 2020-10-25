@@ -1,6 +1,7 @@
 local Operator = dofile(vimModeScriptPath .. "lib/operator.lua")
 local times = dofile(vimModeScriptPath .. "lib/utils/times.lua")
 local Replace = Operator:new{name = 'replace'}
+local utf8 = dofile(vimModeScriptPath .. "vendor/luautf8.lua")
 
 function Replace:modifySelection(_, rangeStart, rangeFinish)
   local numChars = rangeFinish - rangeStart + 1
@@ -29,7 +30,7 @@ function Replace:getModifiedBuffer(buffer, rangeStart, rangeFinish)
   local stringStart, stringFinish = rangeStart + 1, rangeFinish + 1
 
   if stringStart > 1 then
-    contents = string.sub(value, 1, stringStart - 1)
+    contents = utf8.sub(value, 1, stringStart - 1)
   end
 
   local numChars = rangeFinish - rangeStart + 1
@@ -38,7 +39,7 @@ function Replace:getModifiedBuffer(buffer, rangeStart, rangeFinish)
     contents = contents .. replaceChar
   end)
 
-  contents = contents .. string.sub(value, stringFinish + 1, -1)
+  contents = contents .. utf8.sub(value, stringFinish + 1, -1)
 
   return buffer:createNew(contents, rangeStart, 0)
 end
