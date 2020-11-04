@@ -23,6 +23,7 @@ install:
 
 script:
   - busted -c
+  - bundle exec rspec spec
 
 after_success:
   - luacov-coveralls -v
