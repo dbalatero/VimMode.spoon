@@ -75,6 +75,12 @@ function BlockCursor:_renderFrame()
     caretRange
   )
 
+  -- chrome doesn't have good support for AXBoundsForRange and returns a 0-sized
+  -- bounds:
+  --
+  -- https://groups.google.com/a/chromium.org/g/chromium-accessibility/c/eB34iqVFAu8
+  if bounds.h == 0 or bounds.w == 0 then return false end
+
   -- move the position and resize
   self.canvas:topLeft({ x = bounds.x, y = bounds.y })
   self.canvas:size({ h = bounds.h, w = bounds.w })
