@@ -4,7 +4,7 @@ sudo: false
 
 env:
   matrix:
-    - LUA="lua 5.3"
+    - LUA="lua 5.4"
 
 before_install:
   - pip install hererocks
