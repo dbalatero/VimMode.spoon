@@ -29,6 +29,7 @@ local function createStateMachine(vim)
     },
     callbacks = {
       onenterNormal = function()
+        vim:enableBlockCursor()
         vim:disableSequence()
         vim:resetCommandState()
         vim:setNormalMode()
@@ -36,6 +37,7 @@ local function createStateMachine(vim)
       end,
       onenterInsert = function()
         vim.visualCaretPosition = nil
+        vim:disableBlockCursor()
         vim:exitAllModals()
         vim:setInsertMode()
         vim:resetCommandState()

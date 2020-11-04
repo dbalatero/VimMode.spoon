@@ -168,6 +168,21 @@ function AccessibilityBuffer:getRangeForLineNumber(lineNumber)
   return Selection.fromRange(range)
 end
 
+function AccessibilityBuffer:isAtLastVisibleCharacter()
+  local visibleRange = self
+    :getCurrentElement()
+    :attributeValue("AXVisibleCharacterRange")
+
+  if not visibleRange then return false end
+
+  local selection = self:getSelectionRange()
+  if not selection then return false end
+
+  local lastVisibleIndex = visibleRange.length + visibleRange.location
+
+  return lastVisibleIndex <= selection.location
+end
+
 function AccessibilityBuffer.getCurrentApplication()
   return ax.applicationElement(hs.application.frontmostApplication())
 end

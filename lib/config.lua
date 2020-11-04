@@ -8,8 +8,9 @@ function Config:new(options)
     alert = {
       font = "Courier New"
     },
+    betaFeatures = {},
     shouldShowAlertInNormalMode = true,
-    shouldDimScreenInNormalMode = true
+    shouldDimScreenInNormalMode = true,
   }
 
   setmetatable(config, self)
@@ -24,6 +25,18 @@ function Config:setOptions(options)
   for key, value in pairs(options) do
     self[key] = value
   end
+end
+
+function Config:isBetaFeatureEnabled(feature)
+  return not not self.betaFeatures[feature]
+end
+
+function Config:enableBetaFeature(feature)
+  self.betaFeatures[feature] = true
+end
+
+function Config:disableBetaFeature(feature)
+  self.betaFeatures[feature] = false
 end
 
 return Config
