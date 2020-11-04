@@ -79,12 +79,14 @@ function AccessibilityBuffer:getCurrentLine()
 end
 
 function AccessibilityBuffer:getCurrentLineNumber()
-  return self
+  local number = self
     :getCurrentElement()
     :parameterizedAttributeValue(
       'AXLineForIndex',
       self:getCurrentLineRange().location
-    )
+    ) or 0
+
+  return number + 1
 end
 
 function AccessibilityBuffer:getLineCount()
