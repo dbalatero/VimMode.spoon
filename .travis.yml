@@ -1,6 +1,8 @@
 language: python
 os: osx
 sudo: false
+addons:
+  chrome: beta
 
 env:
   matrix:
