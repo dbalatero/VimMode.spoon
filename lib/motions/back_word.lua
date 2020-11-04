@@ -1,6 +1,7 @@
 local machine = dofile(vimModeScriptPath .. 'lib/utils/statemachine.lua')
 local Motion = dofile(vimModeScriptPath .. "lib/motion.lua")
 local stringUtils = dofile(vimModeScriptPath .. "lib/utils/string_utils.lua")
+local utf8 = dofile(vimModeScriptPath .. "vendor/luautf8.lua")
 
 local isPunctuation = stringUtils.isPunctuation
 local isWhitespace = stringUtils.isWhitespace
@@ -69,7 +70,7 @@ function BackWord.getRange(_, buffer)
 
   while range.start >= 0 do
     local charIndex = range.start + 1 -- lua strings are 1-indexed :(
-    local char = string.sub(contents, charIndex, charIndex)
+    local char = utf8.sub(contents, charIndex, charIndex)
 
     if char == "\n" then parser:seenWhitespace(char) end
     if isPunctuation(char) then parser:seenPunctuation(char) end

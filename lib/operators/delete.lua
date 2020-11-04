@@ -1,5 +1,6 @@
 local Operator = dofile(vimModeScriptPath .. "lib/operator.lua")
 local Delete = Operator:new{name = 'delete'}
+local utf8 = dofile(vimModeScriptPath .. "vendor/luautf8.lua")
 
 function Delete.getModifiedBuffer(_, buffer, rangeStart, rangeFinish)
   local value = buffer:getValue()
@@ -9,10 +10,10 @@ function Delete.getModifiedBuffer(_, buffer, rangeStart, rangeFinish)
   local stringStart, stringFinish = rangeStart + 1, rangeFinish + 1
 
   if stringStart > 1 then
-    contents = string.sub(value, 1, stringStart - 1)
+    contents = utf8.sub(value, 1, stringStart - 1)
   end
 
-  contents = contents .. string.sub(value, stringFinish + 1, -1)
+  contents = contents .. utf8.sub(value, stringFinish + 1, -1)
 
   return buffer:createNew(contents, rangeStart, 0)
 end

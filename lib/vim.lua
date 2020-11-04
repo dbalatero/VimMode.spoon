@@ -8,6 +8,9 @@ local VimMode = {
 }
 
 ---------------------------------------------
+-- Push ./vendor to the load path
+package.path = vimModeScriptPath .. "vendor/?/init.lua;" .. package.path
+package.cpath = vimModeScriptPath .. "vendor/?.so;" .. package.cpath
 
 vimLogger = hs.logger.new('vim', 'debug')
 

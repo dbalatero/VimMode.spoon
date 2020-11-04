@@ -1,6 +1,7 @@
 local Motion = dofile(vimModeScriptPath .. "lib/motion.lua")
 local EndOfWord = dofile(vimModeScriptPath .. "lib/motions/end_of_word.lua")
 local stringUtils = dofile(vimModeScriptPath .. "lib/utils/string_utils.lua")
+local utf8 = dofile(vimModeScriptPath .. "vendor/luautf8.lua")
 
 local Word = Motion:new{ name = 'word' }
 
@@ -35,7 +36,7 @@ function Word.getRange(_, buffer, operator)
   local bufferLength = buffer:getLength()
   local contents = buffer:getValue()
 
-  local startingChar = string.sub(
+  local startingChar = utf8.sub(
     contents,
     range.finish + 1,
     range.finish + 1
@@ -54,7 +55,7 @@ function Word.getRange(_, buffer, operator)
 
   while range.finish < bufferLength do
     local charIndex = range.finish + 1 -- lua strings are 1-indexed :(
-    local char = string.sub(contents, charIndex, charIndex)
+    local char = utf8.sub(contents, charIndex, charIndex)
 
     if char == "\n" then
       if start == range.finish then range.finish = range.finish + 1 end

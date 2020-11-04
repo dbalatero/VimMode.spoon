@@ -1,4 +1,5 @@
 local Set = dofile(vimModeScriptPath .. "lib/utils/set.lua")
+local utf8 = dofile(vimModeScriptPath .. "vendor/luautf8.lua")
 
 local stringUtils = {}
 
@@ -29,7 +30,7 @@ function stringUtils.toChars(str)
   local current = 1
 
   while current <= #str do
-    table.insert(chars, string.sub(str, current, current))
+    table.insert(chars, utf8.sub(str, current, current))
     current = current + 1
   end
 
@@ -37,11 +38,11 @@ function stringUtils.toChars(str)
 end
 
 function stringUtils.findPrevIndex(str, searchChar, startPos)
-  local length = string.len(str)
+  local length = utf8.len(str)
   local position = math.min(startPos or length, length)
 
   while position > 0 do
-    if string.sub(str, position, position) == searchChar then
+    if utf8.sub(str, position, position) == searchChar then
       return position
     end
 
@@ -52,11 +53,11 @@ function stringUtils.findPrevIndex(str, searchChar, startPos)
 end
 
 function stringUtils.findNextIndex(str, searchChar, startPos)
-  local length = string.len(str)
+  local length = utf8.len(str)
   local position = math.max(startPos or 1, 1)
 
   while position <= length do
-    if string.sub(str, position, position) == searchChar then
+    if utf8.sub(str, position, position) == searchChar then
       return position
     end
 
@@ -71,21 +72,21 @@ function stringUtils.split(delimiter, text, includeDelimiter)
   local list = {}
   local pos = 1
 
-  if string.find("", delimiter, 1) then -- this would result in endless loops
+  if utf8.find("", delimiter, 1) then -- this would result in endless loops
     error("delimiter matches empty string!")
   end
 
   while 1 do
-    local first, last = string.find(text, delimiter, pos)
+    local first, last = utf8.find(text, delimiter, pos)
 
     if first then -- found?
-      local part = string.sub(text, pos, first - 1)
+      local part = utf8.sub(text, pos, first - 1)
       if includeDelimiter then part = part .. delimiter end
 
       table.insert(list, part)
       pos = last + 1
     else
-      table.insert(list, string.sub(text, pos))
+      table.insert(list, utf8.sub(text, pos))
       break
     end
   end
@@ -94,7 +95,7 @@ function stringUtils.split(delimiter, text, includeDelimiter)
 end
 
 function stringUtils.lastChar(text)
-  return string.sub(text, #text, #text)
+  return utf8.sub(text, #text, #text)
 end
 
 return stringUtils

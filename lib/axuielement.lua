@@ -8,10 +8,6 @@ local function loadAxUiElement()
 
   -- support old versions of Hammerspoon that didn't have axuielement packaged.
   if versionUtils.hammerspoonVersionLessThan("0.9.79") then
-    -- Push ./vendor to the load path
-    package.path = vimModeScriptPath .. "vendor/?/init.lua;" .. package.path
-    package.cpath = vimModeScriptPath .. "vendor/?.so;" .. package.cpath
-
     vimModeAxLibrary = require("hs._asm.axuielement")
   else
     -- use the built-in
