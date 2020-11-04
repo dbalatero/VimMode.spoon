@@ -20,6 +20,7 @@ dofile(vimModeScriptPath .. "lib/utils/benchmark.lua")
 local AccessibilityBuffer = dofile(vimModeScriptPath .. "lib/accessibility_buffer.lua")
 local AccessibilityStrategy = dofile(vimModeScriptPath .. "lib/strategies/accessibility_strategy.lua")
 local AppWatcher = dofile(vimModeScriptPath .. "lib/app_watcher.lua")
+local BlockCursor = dofile(vimModeScriptPath .. "lib/block_cursor.lua")
 local CommandState = dofile(vimModeScriptPath .. "lib/command_state.lua")
 local Config = dofile(vimModeScriptPath .. "lib/config.lua")
 local KeySequence = dofile(vimModeScriptPath .. "lib/key_sequence.lua")
@@ -51,6 +52,7 @@ function VimMode:new()
 
   vim:resetCommandState()
 
+  vim.blockCursor = BlockCursor:new()
   vim.config = Config:new()
   vim.enabled = true
   vim.mode = 'insert'
@@ -97,6 +99,10 @@ function VimMode:isMode(name)
 end
 
 ---------------------------
+
+function VimMode:enableBetaFeature(feature)
+  self.config:enableBetaFeature(feature)
+end
 
 function VimMode:shouldShowAlertInNormalMode(showAlert)
   self.config.shouldShowAlertInNormalMode = showAlert
@@ -218,6 +224,18 @@ end
 
 function VimMode:exit()
   self.state:enterInsert()
+end
+
+function VimMode:enableBlockCursor()
+  if not self.config:isBetaFeatureEnabled('block_cursor_overlay') then return end
+
+  self.blockCursor:show()
+end
+
+function VimMode:disableBlockCursor()
+  if not self.config:isBetaFeatureEnabled('block_cursor_overlay') then return end
+
+  self.blockCursor:hide()
 end
 
 function VimMode:setInsertMode()
