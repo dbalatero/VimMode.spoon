@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
-  mac-permissions: circleci/macos
+  macos: circleci/macos@1.0.0
+  python: circleci/python@1.0.0
 
 jobs:
   build-test:
@@ -8,7 +9,10 @@ jobs:
       xcode: 11.7.0
     steps:
       - checkout
-      - mac-permissions/list-permission-types
+      - python/install-packages:
+          args: hererocks
+          pkg-manager: pip
+      - macos/list-permission-types
 
 workflows:
   verify:
