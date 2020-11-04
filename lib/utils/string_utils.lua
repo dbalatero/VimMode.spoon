@@ -42,7 +42,7 @@ function stringUtils.findPrevIndex(str, searchChar, startPos)
   local position = math.min(startPos or length, length)
 
   while position > 0 do
-    if string.sub(str, position, position) == searchChar then
+    if utf8.sub(str, position, position) == searchChar then
       return position
     end
 

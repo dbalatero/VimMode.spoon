@@ -92,7 +92,7 @@ function Buffer:getCurrentLineNumber()
 end
 
 function Buffer:getLength()
-  return #(self:getValue())
+  return utf8.len(self:getValue())
 end
 
 function Buffer:getLastIndex()
