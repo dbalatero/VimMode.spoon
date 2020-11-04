@@ -7,6 +7,7 @@ env:
     - LUA="lua 5.4"
 
 before_install:
+  - bundle install
   - pip install hererocks
   - hererocks here -r^ --$LUA # Install latest LuaRocks version
                               # plus the Lua version for this build job
@@ -28,4 +29,5 @@ notifications:
   email:
     on_success: change
     on_failure: always
+
 
