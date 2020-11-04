@@ -148,6 +148,7 @@ Advanced Mode gives.
 - [x] `y` to yank to clipboard
 - [x] `/` to trigger `cmd+f` search (when `cmd+f` is supported in app)
 - [x] visual mode with `v`
+- [x] UTF-8 support
 - [ ] support prefixing commands with numbers to repeat them (e.g. `2dw`)
 - [ ] `^d` - page down
 - [ ] `^u` - page down
