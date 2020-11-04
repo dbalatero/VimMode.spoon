@@ -1,5 +1,5 @@
-language: python
-
+language: ruby
+os: osx
 sudo: false
 
 env:
