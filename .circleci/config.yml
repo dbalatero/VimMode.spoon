@@ -2,10 +2,15 @@ version: 2.1
 orbs:
   mac-permissions: circleci/macos
 
-workflows:
+jobs:
   build-test:
     macos:
       xcode: 11.7.0
     steps:
-        - checkout
-        - mac-permissions/list-permission-types
+      - checkout
+      - mac-permissions/list-permission-types
+
+workflows:
+  verify:
+    jobs:
+      - build-test
