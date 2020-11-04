@@ -7,6 +7,7 @@ env:
     - LUA="lua 5.4"
 
 before_install:
+  - brew cask install hammerspoon
   - bundle install
   - pip install hererocks
   - hererocks here -r^ --$LUA # Install latest LuaRocks version
