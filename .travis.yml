@@ -7,6 +7,7 @@ env:
     - LUA="lua 5.4"
 
 before_install:
+  - brew install chromedriver
   - brew cask install hammerspoon
   - bundle install
   - pip install hererocks
