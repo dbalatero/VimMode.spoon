@@ -4,7 +4,7 @@ RSpec.configure do |config|
   config.before(:suite) do
     # Refresh Hammerspoon
     system('killall Hammerspoon 2>/dev/null')
-    exit 1 unless system('open -a Hammerspoon')
+    exit 1 unless system('open /Applications/Hammerspoon.app')
 
     puts
     puts '==> Restarted Hammerspoon, sleeping 1 second...'
