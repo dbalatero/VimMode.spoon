@@ -35,20 +35,24 @@ jobs:
           permission-type: "kTCCServiceAccessibility"
 
       # Lua setup
-      - run: pip3 install hererocks
-      - run: hererocks $HOME/here -r^ --lua 5.4
-      - run: echo "export PATH=$PATH:$HOME/here/bin" >> ~/.bash_profile
-      - run: echo 'eval `luarocks path --bin`' >> ~/.bash_profile
-      - run: bin/dev-setup
+      # - run: pip3 install hererocks
+      # - run: hererocks $HOME/here -r^ --lua 5.4
+      # - run: echo "export PATH=$PATH:$HOME/here/bin" >> ~/.bash_profile
+      # - run: echo 'eval `luarocks path --bin`' >> ~/.bash_profile
+      # - run: bin/dev-setup
 
-      # Run lua tests
-      - run: busted -c
+      # # Run lua tests
+      # - run: busted -c
 
       # Integration test setup
+      - run: brew cask install hammerspoon
+      - run: open /Applications/Hammerspoon.app || (echo "uh oh" && exit 1)
+
       - run: echo 'chruby ruby-2.7.1' >> ~/.bash_profile
       - run: bundle install
+      - run: brew cask install chromedriver
       - run: brew cask install google-chrome
-      - run: brew cask install hammerspoon
+      # - run: brew cask install hammerspoon
 
       # Run integration tests
       - run: bundle exec rspec spec
