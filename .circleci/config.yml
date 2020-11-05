@@ -1,14 +1,16 @@
 version: 2.1
 orbs:
   macos: circleci/macos@1.0.0
-  python: circleci/python@1.0.0
+  python: circleci/python@1.2.1
 
 jobs:
   build-test:
     macos:
       xcode: 11.7.0
+    executor: python/default
     steps:
       - checkout
+      - python/dist
       - python/install-packages:
           pkg-manager: pip
       - run: hererocks here -r^ --lua 5.4
