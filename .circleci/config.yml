@@ -8,9 +8,23 @@ jobs:
       xcode: 11.7.0
     steps:
       - checkout
-      - run: brew install python@2
-      - run: pip install -r requirements.txt
-      - run: hererocks here -r^ --lua 5.4
+
+      # Lua setup
+      - run: brew install python@3.8
+      - run: pip install hererocks
+      - run: hererocks $HOME/here -r^ --lua 5.4
+      - run: export PATH=$PATH:$HOME/here/bin
+      - run: eval `luarocks path --bin`
+      - run: bin/dev-setup
+
+      # Integration test setup
+      - run: echo 'chruby ruby-2.7' >> ~/.bash_profile
+      - run: bundle install
+      - run: brew cask install chromedriver
+      - run: brew cask install google-chrome
+      - run: brew cask install hammerspoon
+
+      - macos/add-uitest-permissions
       - macos/list-permission-types
 
 workflows:
