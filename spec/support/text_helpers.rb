@@ -21,8 +21,6 @@ module TextHelpers
     path = File.expand_path(File.dirname(__FILE__) + '/../fixtures')
     visit "file://#{path}/textarea.html"
 
-    system('ps aux | cat')
-
     puts
     puts
     puts '==> Waiting for textarea'
