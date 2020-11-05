@@ -1,7 +1,6 @@
 version: 2.1
 orbs:
   macos: circleci/macos@1.0.0
-  python: circleci/python@1.2.1
 
 jobs:
   build-test:
@@ -9,9 +8,8 @@ jobs:
       xcode: 11.7.0
     steps:
       - checkout
-      - python/dist
-      - python/install-packages:
-          pkg-manager: pip
+      - run: brew install python@2
+      - run: pip install -r requirements.txt
       - run: hererocks here -r^ --lua 5.4
       - macos/list-permission-types
 
