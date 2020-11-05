@@ -8,6 +8,35 @@ jobs:
       xcode: 11.7.0
     steps:
       - checkout
+      - run: echo 'chruby ruby-2.7' >> ~/.bash_profile
+      - run: echo "$(which ruby)"
+      - run: echo "Dying early" && exit 1
+
+      - macos/add-uitest-permissions
+
+      - macos/add-permission:
+          bundle-id: "org.hammerspoon.Hammerspoon"
+          permission-type: "kTCCServiceAppleEvents"
+
+      - macos/add-permission:
+          bundle-id: "org.hammerspoon.Hammerspoon"
+          permission-type: "kTCCServiceAccessibility"
+
+      - macos/add-permission:
+          bundle-id: "/usr/bin/osascript"
+          permission-type: "kTCCServiceAppleEvents"
+
+      - macos/add-permission:
+          bundle-id: "/usr/bin/osascript"
+          permission-type: "kTCCServiceAccessibility"
+
+      - macos/add-permission:
+          bundle-id: "com.google.Chrome"
+          permission-type: "kTCCServiceAppleEvents"
+
+      - macos/add-permission:
+          bundle-id: "com.google.Chrome"
+          permission-type: "kTCCServiceAccessibility"
 
       # Lua setup
       - run: pip3 install hererocks
@@ -17,13 +46,10 @@ jobs:
       - run: bin/dev-setup
 
       # Integration test setup
-      - run: echo 'chruby ruby-2.7' >> ~/.bash_profile
       - run: bundle install
-      - run: brew cask install chromedriver
       - run: brew cask install google-chrome
       - run: brew cask install hammerspoon
 
-      - macos/add-uitest-permissions
       - macos/list-permission-types
 
 workflows:
