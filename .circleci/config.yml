@@ -12,6 +12,7 @@ jobs:
       - python/install-packages:
           args: hererocks
           pkg-manager: pip
+      - run: hererocks here -r^ --lua 5.4
       - macos/list-permission-types
 
 workflows:
