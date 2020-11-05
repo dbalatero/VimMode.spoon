@@ -10,7 +10,6 @@ jobs:
       - checkout
 
       # Lua setup
-      - run: brew install python@3.8
       - run: pip install hererocks
       - run: hererocks $HOME/here -r^ --lua 5.4
       - run: export PATH=$PATH:$HOME/here/bin
