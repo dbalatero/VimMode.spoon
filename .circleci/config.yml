@@ -7,7 +7,6 @@ jobs:
   build-test:
     macos:
       xcode: 11.7.0
-    executor: python/default
     steps:
       - checkout
       - python/dist
