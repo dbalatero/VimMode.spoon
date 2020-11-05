@@ -8,10 +8,6 @@ jobs:
       xcode: 11.7.0
     steps:
       - checkout
-      - run: echo 'chruby ruby-2.7' >> ~/.bash_profile
-      - run: echo "$(which ruby)"
-      - run: echo "Dying early" && exit 1
-
       - macos/add-uitest-permissions
 
       - macos/add-permission:
@@ -45,12 +41,17 @@ jobs:
       - run: eval `luarocks path --bin`
       - run: bin/dev-setup
 
+      # Run lua tests
+      - run: busted -c
+
       # Integration test setup
+      - run: echo 'chruby ruby-2.7.1' >> ~/.bash_profile
       - run: bundle install
       - run: brew cask install google-chrome
       - run: brew cask install hammerspoon
 
-      - macos/list-permission-types
+      # Run integration tests
+      - run: bundle exec rspec spec
 
 workflows:
   verify:
