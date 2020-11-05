@@ -28,29 +28,7 @@ jobs:
 
       - run:
           name: Setting /usr/bin/osascript permissions
-          command: |
-            epochdate=$(($(date +'%s * 1000 + %-N / 1000000')))
-
-            # system events osascript
-            sudo sqlite3 "/Users/distiller/Library/Application Support/com.apple.TCC/TCC.db" \
-              "REPLACE INTO access (service, client, client_type, allowed, prompt_count, policy_id, indirect_object_identifier_type, indirect_object_identifier, flags, last_modified) VALUES('kTCCServiceAppleEvents', '/usr/bin/osascript', 1, 1, 1, NULL, 0, 'com.apple.systemevents', NULL, $epochdate);"
-
-            sudo sqlite3 "/Library/Application Support/com.apple.TCC/TCC.db" \
-              "REPLACE INTO access (service, client, client_type, allowed, prompt_count, policy_id, indirect_object_identifier_type, indirect_object_identifier, flags, last_modified) VALUES('kTCCServiceAppleEvents', '/usr/bin/osascript', 1, 1, 1, NULL, 0, 'com.apple.systemevents', NULL, $epochdate);"
-
-            # finder osascript (TODO: delete?)
-            sudo sqlite3 "/Users/distiller/Library/Application Support/com.apple.TCC/TCC.db" \
-              "REPLACE INTO access (service, client, client_type, allowed, prompt_count, policy_id, indirect_object_identifier_type, indirect_object_identifier, flags, last_modified) VALUES('kTCCServiceAppleEvents', '/usr/bin/osascript', 1, 1, 1, NULL, 0, 'com.apple.finder', NULL, $epochdate);"
-
-            sudo sqlite3 "/Library/Application Support/com.apple.TCC/TCC.db" \
-              "REPLACE INTO access (service, client, client_type, allowed, prompt_count, policy_id, indirect_object_identifier_type, indirect_object_identifier, flags, last_modified) VALUES('kTCCServiceAppleEvents', '/usr/bin/osascript', 1, 1, 1, NULL, 0, 'com.apple.finder', NULL, $epochdate);"
-
-            # chrome osascript
-            sudo sqlite3 "/Users/distiller/Library/Application Support/com.apple.TCC/TCC.db" \
-              "REPLACE INTO access (service, client, client_type, allowed, prompt_count, policy_id, indirect_object_identifier_type, indirect_object_identifier, flags, last_modified) VALUES('kTCCServiceAppleEvents', '/usr/bin/osascript', 1, 1, 1, NULL, 0, 'com.google.Chrome', NULL, $epochdate);"
-
-            sudo sqlite3 "/Library/Application Support/com.apple.TCC/TCC.db" \
-              "REPLACE INTO access (service, client, client_type, allowed, prompt_count, policy_id, indirect_object_identifier_type, indirect_object_identifier, flags, last_modified) VALUES('kTCCServiceAppleEvents', '/usr/bin/osascript', 1, 1, 1, NULL, 0, 'com.google.Chrome', NULL, $epochdate);"
+          command: bin/ci-permissions
 
       - macos/list-permissions
 
