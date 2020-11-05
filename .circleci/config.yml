@@ -37,8 +37,8 @@ jobs:
       # Lua setup
       - run: pip3 install hererocks
       - run: hererocks $HOME/here -r^ --lua 5.4
-      - run: export PATH=$PATH:$HOME/here/bin
-      - run: eval `luarocks path --bin`
+      - run: echo "export PATH=$PATH:$HOME/here/bin" >> ~/.bash_profile
+      - run: echo 'eval `luarocks path --bin`' >> ~/.bash_profile
       - run: bin/dev-setup
 
       # Run lua tests
