@@ -47,6 +47,7 @@ jobs:
       # Integration test setup
       - run: brew cask install hammerspoon
       - run: open /Applications/Hammerspoon.app || (echo "uh oh" && exit 1)
+      - run: ps aux
 
       - run: echo 'chruby ruby-2.7.1' >> ~/.bash_profile
       - run: bundle install
