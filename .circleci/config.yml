@@ -49,7 +49,7 @@ jobs:
       - run: cat $HOME/.hammerspoon/init.lua
       - run: brew cask install hammerspoon
       - run: open /Applications/Hammerspoon.app || (echo "uh oh" && exit 1)
-      - run: ps aux
+      - run: ps aux | cat
 
       - run: echo 'chruby ruby-2.7.1' >> ~/.bash_profile
       - run: bundle install
@@ -58,7 +58,7 @@ jobs:
       # - run: brew cask install hammerspoon
 
       # Run integration tests
-      - run: bundle exec rspec spec
+      # - run: bundle exec rspec spec
 
 workflows:
   verify:
