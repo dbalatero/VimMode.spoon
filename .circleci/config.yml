@@ -48,7 +48,7 @@ jobs:
       - run: bin/ci-config
       - run: cat $HOME/.hammerspoon/init.lua
 
-      - run: echo 'chruby ruby-2.6.5' >> ~/.bash_profile
+      - run: echo 'chruby ruby-2.6' >> ~/.bash_profile
       - run: bundle install
       - run: brew cask install chromedriver
       - run: brew cask install google-chrome
