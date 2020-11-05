@@ -10,7 +10,7 @@ jobs:
       - checkout
 
       # Lua setup
-      - run: pip install hererocks
+      - run: pip3 install hererocks
       - run: hererocks $HOME/here -r^ --lua 5.4
       - run: export PATH=$PATH:$HOME/here/bin
       - run: eval `luarocks path --bin`
