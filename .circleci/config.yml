@@ -52,6 +52,8 @@ jobs:
             sudo sqlite3 "/Library/Application Support/com.apple.TCC/TCC.db" \
               "REPLACE INTO access (service, client, client_type, allowed, prompt_count, policy_id, indirect_object_identifier_type, indirect_object_identifier, flags, last_modified) VALUES('kTCCServiceAppleEvents', '/usr/bin/osascript', 1, 1, 1, NULL, 0, 'com.google.Chrome', NULL, $epochdate);"
 
+      - macos/list-permissions
+
       # Lua setup
       # - run: pip3 install hererocks
       # - run: hererocks $HOME/here -r^ --lua 5.4
