@@ -92,6 +92,16 @@ jobs:
             open /Applications/Google\ Chrome.app
             screencapture -tjpg /tmp/screenshots/3_chrome.jpg
 
+            osascript <<EOF
+              tell application "System Events"
+                tell process "Google Chrome"
+                  set value of attribute "AXEnhancedUserInterface" to true
+                end tell
+              end tell
+            EOF
+
+            screencapture -tjpg /tmp/screenshots/4_osascript.jpg
+
       - store_artifacts:
           path: /tmp/screenshots
           destination: screenshots
