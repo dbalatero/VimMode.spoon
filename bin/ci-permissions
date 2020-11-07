@@ -4,12 +4,15 @@ set -e
 
 epochdate=$(($(date +'%s * 1000 + %-N / 1000000')))
 
-COLUMNS="(service, client, client_type, allowed, prompt_count, csreq, policy_id, indirect_object_identifier_type, indirect_object_identifier, indirect_object_code_identity, flags, last_modified)"
+
+COLUMNS="(service,client,client_type,allowed,prompt_count,csreq,policy_id,indirect_object_identifier_type,indirect_object_identifier,indirect_object_code_identity,flags,last_modified)"
 
 # User permissions
 cat << EOF | sudo sqlite3 "$HOME/Library/Application Support/com.apple.TCC/TCC.db"
-  REPLACE INTO access $COLUMNS VALUES('kTCCServiceAppleEvents','com.apple.Terminal',0,1,1,NULL,NULL,0,'com.apple.systemevents',X'fade0c000000003400000001000000060000000200000016636f6d2e6170706c652e73797374656d6576656e7473000000000003',NULL,$epochdate);
+  REPLACE INTO access $COLUMNS VALUES('kTCCServiceAppleEvents','com.apple.Terminal',0,1,1,NULL,NULL,0,'com.apple.systemevents',NULL,NULL,$epochdate);
 EOF
+
+COLUMNS="(service, client, client_type, allowed, prompt_count, csreq, policy_id, indirect_object_identifier_type, indirect_object_identifier, indirect_object_code_identity, flags, last_modified)"
 
 # System permissions
 cat << EOF | sudo sqlite3 "/Library/Application Support/com.apple.TCC/TCC.db"
