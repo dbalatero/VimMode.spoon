@@ -11,14 +11,6 @@ jobs:
       - macos/add-uitest-permissions
 
       - macos/add-permission:
-          bundle-id: "org.hammerspoon.Hammerspoon"
-          permission-type: "kTCCServiceAppleEvents"
-
-      - macos/add-permission:
-          bundle-id: "org.hammerspoon.Hammerspoon"
-          permission-type: "kTCCServiceAccessibility"
-
-      - macos/add-permission:
           bundle-id: "com.google.Chrome"
           permission-type: "kTCCServiceAppleEvents"
 
@@ -27,7 +19,7 @@ jobs:
           permission-type: "kTCCServiceAccessibility"
 
       - run:
-          name: Setting /usr/bin/osascript permissions
+          name: Setting additional Hammerspoon Mac permissions
           command: bin/ci-permissions
 
       - macos/list-permissions
@@ -46,12 +38,16 @@ jobs:
       - run: bin/ci-config
       - run: cat $HOME/.hammerspoon/init.lua
 
+      - run: brew cask install --no-quarantine chromedriver google-chrome hammerspoon
+      - run:
+          command: |
+            sudo xattr -r -d com.apple.quarantine "/Applications/Google Chrome.app"
+            sudo xattr -r -d com.apple.quarantine /Applications/Hammerspoon.app
+
+      # RSpec + gems
       - run: echo 'chruby ruby-2.6' >> ~/.bash_profile
       - run: gem install bundler
       - run: bundle install
-      - run: brew cask install chromedriver
-      - run: brew cask install google-chrome
-      - run: brew cask install hammerspoon
 
       # Run integration tests
       - run: bundle exec rspec spec
