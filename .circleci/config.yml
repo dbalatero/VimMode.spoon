@@ -99,6 +99,11 @@ jobs:
             open /Applications/Google\ Chrome.app
             screencapture -tjpg /tmp/screenshots/3_chrome.jpg
 
+      - run:
+          name: osascript
+          command: |
+            open /Applications/Google\ Chrome.app
+
             osascript \<<EOF
               tell application "System Events"
                 tell process "Google Chrome"
@@ -106,8 +111,6 @@ jobs:
                 end tell
               end tell
             EOF
-
-            screencapture -tjpg /tmp/screenshots/4_osascript.jpg
 
       - store_artifacts:
           path: /tmp/screenshots
