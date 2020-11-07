@@ -44,6 +44,7 @@ jobs:
       # Lua setup
       - restore_cache:
           keys:
+            - here-cache-v1-{{ arch }}-{{ checksum "bin/dev-setup" }}
             - here-cache-v1-{{ arch }}
             - here-cache-v1
 
@@ -58,12 +59,12 @@ jobs:
             echo "export PATH=$PATH:$HOME/here/bin" >> ~/.bash_profile
             echo 'eval `luarocks path --bin`' >> ~/.bash_profile
 
+      - run: bin/dev-setup
+
       - save_cache:
-          key: here-cache-v1-{{ arch }}
+          key: here-cache-v1-{{ arch }}-{{ checksum "bin/dev-setup" }}
           paths:
             - ~/here
-
-      - run: bin/dev-setup
 
       # Run lua tests
       - run: busted -c
