@@ -8,12 +8,12 @@ COLUMNS="(service, client, client_type, allowed, prompt_count, csreq, policy_id,
 
 # User permissions
 cat << EOF | sudo sqlite3 "$HOME/Library/Application Support/com.apple.TCC/TCC.db"
-  REPLACE INTO access $COLUMNS VALUES('kTCCServiceAppleEvents','com.apple.Terminal',0,1,1,X'fade0c000000003000000001000000060000000200000012636f6d2e6170706c652e5465726d696e616c000000000003',NULL,0,'com.apple.systemevents',X'fade0c000000003400000001000000060000000200000016636f6d2e6170706c652e73797374656d6576656e7473000000000003',NULL,$epochdate);
+  REPLACE INTO access $COLUMNS VALUES('kTCCServiceAppleEvents','com.apple.Terminal',0,1,1,NULL,NULL,0,'com.apple.systemevents',X'fade0c000000003400000001000000060000000200000016636f6d2e6170706c652e73797374656d6576656e7473000000000003',NULL,$epochdate);
 EOF
 
 # System permissions
 cat << EOF | sudo sqlite3 "/Library/Application Support/com.apple.TCC/TCC.db"
-  REPLACE INTO access $COLUMNS VALUES('kTCCServiceDeveloperTool','com.apple.Terminal',0,0,1,NULL,NULL,NULL,'UNUSED',NULL,0,1604768545);
-  REPLACE INTO access $COLUMNS VALUES('kTCCServiceAccessibility','org.hammerspoon.Hammerspoon',0,1,1,NULL,NULL,NULL,'UNUSED',NULL,0,1604770951);
-  REPLACE INTO access $COLUMNS VALUES('kTCCServiceAccessibility','com.apple.Terminal',0,1,1,X'fade0c000000003000000001000000060000000200000012636f6d2e6170706c652e5465726d696e616c000000000003',NULL,NULL,'UNUSED',NULL,0,1604771131);
+  REPLACE INTO access $COLUMNS VALUES('kTCCServiceDeveloperTool','com.apple.Terminal',0,0,1,NULL,NULL,NULL,'UNUSED',NULL,0,$epochdate);
+  REPLACE INTO access $COLUMNS VALUES('kTCCServiceAccessibility','org.hammerspoon.Hammerspoon',0,1,1,NULL,NULL,NULL,'UNUSED',NULL,0,$epochdate);
+  REPLACE INTO access $COLUMNS VALUES('kTCCServiceAccessibility','com.apple.Terminal',0,1,1,NULL,NULL,NULL,'UNUSED',NULL,0,$epochdate);
 EOF
