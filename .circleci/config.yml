@@ -51,22 +51,16 @@ jobs:
       - run:
           name: Lua 5.4 setup
           command: |
-            if [ ! -d "$HOME/here" ]; then
-              pip3 install hererocks
-              hererocks $HOME/here -r^ --lua 5.4
-            fi
-
             echo "export PATH=$PATH:$HOME/here/bin" >> ~/.bash_profile
             echo 'eval `luarocks path --bin`' >> ~/.bash_profile
 
-      - run:
-          name: Lua unit test dev setup
-          command: |
-            if [ ! -f "$HOME/here/.restored-from-cache" ]; then
+            if [ ! -d "$HOME/here" ]; then
+              pip3 install hererocks
+              hererocks $HOME/here -r^ --lua 5.4
+
+              source ~/.bash_profile
               bin/dev-setup
             fi
-
-            touch "$HOME/here/.restored-from-cache"
 
       - save_cache:
           key: here-cache-v1-{{ arch }}-{{ checksum "bin/dev-setup" }}
