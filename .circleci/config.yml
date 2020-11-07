@@ -59,7 +59,14 @@ jobs:
             echo "export PATH=$PATH:$HOME/here/bin" >> ~/.bash_profile
             echo 'eval `luarocks path --bin`' >> ~/.bash_profile
 
-      - run: bin/dev-setup
+      - run:
+          name: Lua unit test dev setup
+          command: |
+            if [ ! -f "$HOME/here/.restored-from-cache" ]; then
+              bin/dev-setup
+            fi
+
+            touch "$HOME/here/.restored-from-cache"
 
       - save_cache:
           key: here-cache-v1-{{ arch }}-{{ checksum "bin/dev-setup" }}
