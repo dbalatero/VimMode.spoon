@@ -16,7 +16,7 @@ COLUMNS="(service, client, client_type, allowed, prompt_count, csreq, policy_id,
 
 # System permissions
 cat << EOF | sudo sqlite3 "/Library/Application Support/com.apple.TCC/TCC.db"
-  REPLACE INTO access $COLUMNS VALUES('kTCCServiceDeveloperTool','com.apple.Terminal',0,0,1,NULL,NULL,NULL,'UNUSED',NULL,0,$epochdate);
+  REPLACE INTO access $COLUMNS VALUES('kTCCServiceDeveloperTool','com.apple.Terminal',0,1,1,NULL,NULL,NULL,'UNUSED',NULL,0,$epochdate);
   REPLACE INTO access $COLUMNS VALUES('kTCCServiceAccessibility','org.hammerspoon.Hammerspoon',0,1,1,NULL,NULL,NULL,'UNUSED',NULL,0,$epochdate);
   REPLACE INTO access $COLUMNS VALUES('kTCCServiceAccessibility','com.apple.Terminal',0,1,1,NULL,NULL,NULL,'UNUSED',NULL,0,$epochdate);
 EOF
