@@ -96,7 +96,12 @@ jobs:
       - run:
           name: osascript
           command: |
-            open /Applications/Google\ Chrome.app
+            /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome \
+              --disable-default-apps \
+              --no-default-browser-check \
+              --no-first-run \
+              --force-renderer-accessibility & >/dev/null
+
 
             osascript \<<EOF
               tell application "System Events"
