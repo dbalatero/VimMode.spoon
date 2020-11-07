@@ -49,8 +49,25 @@ jobs:
       - run: gem install bundler
       - run: bundle install
 
+      - run:
+          name: Screenshot
+          command: |
+            mkdir /tmp/screenshots
+            screencapture -tjpg /tmp/screenshots/1_before.jpg
+
+            open /Applications/Hammerspoon.app
+            sleep 5
+            screencapture -tjpg /tmp/screenshots/2_hs.jpg
+
+            open /Applications/Google\ Chrome.app
+            screencapture -tjpg /tmp/screenshots/3_chrome.jpg
+
+      - store_artifacts:
+          path: /tmp/screenshots
+          destination: screenshots
+
       # Run integration tests
-      - run: bundle exec rspec spec
+      # - run: bundle exec rspec spec
 
 workflows:
   verify:
