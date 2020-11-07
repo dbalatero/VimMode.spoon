@@ -4,8 +4,6 @@ orbs:
 
 jobs:
   build-test:
-    environment:
-      HOMEBREW_NO_AUTO_UPDATE: 1
     macos:
       xcode: 11.7.0
     steps:
@@ -44,14 +42,31 @@ jobs:
             - vendor/bundle
 
       # Lua setup
-      # - run: pip3 install hererocks
-      # - run: hererocks $HOME/here -r^ --lua 5.4
-      # - run: echo "export PATH=$PATH:$HOME/here/bin" >> ~/.bash_profile
-      # - run: echo 'eval `luarocks path --bin`' >> ~/.bash_profile
-      # - run: bin/dev-setup
+      - restore_cache:
+          keys:
+            - here-cache-v1-{{ arch }}
+            - here-cache-v1
 
-      # # Run lua tests
-      # - run: busted -c
+      - run:
+          name: Lua 5.4 setup
+          command: |
+            if [ ! -d "$HOME/here" ]; then
+              pip3 install hererocks
+              hererocks $HOME/here -r^ --lua 5.4
+            fi
+
+            echo "export PATH=$PATH:$HOME/here/bin" >> ~/.bash_profile
+            echo 'eval `luarocks path --bin`' >> ~/.bash_profile
+
+      - save_cache:
+          key: here-cache-v1-{{ arch }}
+          paths:
+            - ~/here
+
+      - run: bin/dev-setup
+
+      # Run lua tests
+      - run: busted -c
 
       # Integration test setup
       - run: bin/ci-config
