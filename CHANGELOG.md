@@ -2,6 +2,7 @@
 
 * Added the `iw` "in word" text object motion
 * Added the `i[`, `i<`, `i{`, `i'`, `i"`, and `i`` motions.
+* Added `ctrl-u` and `ctrl-d` to page up/down half a visible screen
 
 # 2020-11-04
 

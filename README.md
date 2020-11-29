@@ -148,9 +148,9 @@ Advanced Mode gives.
 - [x] `/` to trigger `cmd+f` search (when `cmd+f` is supported in app)
 - [x] visual mode with `v`
 - [x] UTF-8 support
+- [x] `^d` - page down
+- [x] `^u` - page down
 - [ ] support prefixing commands with numbers to repeat them (e.g. `2dw`)
-- [ ] `^d` - page down
-- [ ] `^u` - page down
 
 ## Configuration
 
