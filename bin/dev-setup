@@ -35,9 +35,17 @@ function brew_cask_install() {
 brew_install selenium-server-standalone
 brew_cask_install chromedriver
 
+install_lua_package penlight
+install_lua_package lua_cliargs
+install_lua_package luasystem
+install_lua_package mediator_lua
+install_lua_package lua-term
+install_lua_package luacov
 install_lua_package luacov-coveralls
 install_lua_package busted
 install_lua_package luacheck
 install_lua_package debugger
 install_lua_package luaselenium
 install_lua_package luautf8
+install_lua_package luassert
+install_lua_package say

@@ -144,6 +144,18 @@ function Buffer:charAt(position)
   return utf8.sub(self:getValue(), position + 1, position + 1)
 end
 
+function Buffer:prevChar()
+  local location = self:getCaretPosition()
+  if location == 0 then return nil end
+
+  return self:charAt(location - 1)
+end
+
+function Buffer:nextChar()
+  local location = self:getCaretPosition()
+  return self:charAt(location + 1)
+end
+
 -- 1 indexed
 -- clamps the position to the end of the line in case the column is
 -- out of bounds.

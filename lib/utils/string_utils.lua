@@ -17,12 +17,18 @@ function stringUtils.isWhitespace(char)
 end
 
 function stringUtils.isNonAlphanumeric(str)
-  return not not str:match("%W")
+  return not not utf8.match(str, "%W")
 end
 
 function stringUtils.isPrintableChar(char)
   return not stringUtils.isPunctuation(char) and
     not stringUtils.isWhitespace(char)
+end
+
+function stringUtils.isWordBoundary(char)
+  if char == nil then return true end
+
+  return stringUtils.isNonAlphanumeric(char)
 end
 
 function stringUtils.toChars(str)
