@@ -152,16 +152,17 @@ local function createVimModal(vim)
 
   -- reusable bindings
   modal.bindCountsToModal = function(mdl, name)
+    -- disable counts for now
     return mdl
-      :bindWithRepeat({}, '1', pushDigitTo(name, 1))
-      :bindWithRepeat({}, '2', pushDigitTo(name, 2))
-      :bindWithRepeat({}, '3', pushDigitTo(name, 3))
-      :bindWithRepeat({}, '4', pushDigitTo(name, 4))
-      :bindWithRepeat({}, '5', pushDigitTo(name, 5))
-      :bindWithRepeat({}, '6', pushDigitTo(name, 6))
-      :bindWithRepeat({}, '7', pushDigitTo(name, 7))
-      :bindWithRepeat({}, '8', pushDigitTo(name, 8))
-      :bindWithRepeat({}, '9', pushDigitTo(name, 9))
+      -- :bindWithRepeat({}, '1', pushDigitTo(name, 1))
+      -- :bindWithRepeat({}, '2', pushDigitTo(name, 2))
+      -- :bindWithRepeat({}, '3', pushDigitTo(name, 3))
+      -- :bindWithRepeat({}, '4', pushDigitTo(name, 4))
+      -- :bindWithRepeat({}, '5', pushDigitTo(name, 5))
+      -- :bindWithRepeat({}, '6', pushDigitTo(name, 6))
+      -- :bindWithRepeat({}, '7', pushDigitTo(name, 7))
+      -- :bindWithRepeat({}, '8', pushDigitTo(name, 8))
+      -- :bindWithRepeat({}, '9', pushDigitTo(name, 9))
   end
 
   modal.bindMotionsToModal = function(mdl, type)
