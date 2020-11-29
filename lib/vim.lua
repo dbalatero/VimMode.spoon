@@ -56,9 +56,11 @@ function VimMode:new()
   vim.config = Config:new()
   vim.enabled = true
   vim.mode = 'insert'
+
   vim.modal = createVimModal(vim):setOnBeforePress(function(mods, key)
     local realKey = keyUtils.getRealChar(mods, key)
     vim.commandState:pushChar(realKey)
+    vim:updateStateIndicator()
   end)
 
   vim.state = createStateMachine(vim)

@@ -11,6 +11,7 @@ local EntireLine = dofile(vimModeScriptPath .. "lib/motions/entire_line.lua")
 local FirstLine = dofile(vimModeScriptPath .. "lib/motions/first_line.lua")
 local FirstNonBlank = dofile(vimModeScriptPath .. "lib/motions/first_non_blank.lua")
 local ForwardSearch = dofile(vimModeScriptPath .. "lib/motions/forward_search.lua")
+local InWord = dofile(vimModeScriptPath .. "lib/motions/in_word.lua")
 local LastLine = dofile(vimModeScriptPath .. "lib/motions/last_line.lua")
 local LineBeginning = dofile(vimModeScriptPath .. "lib/motions/line_beginning.lua")
 local LineEnd = dofile(vimModeScriptPath .. "lib/motions/line_end.lua")
@@ -157,6 +158,7 @@ local function createVimModal(vim)
       :bindWithRepeat({'shift'}, 'w', motion(BigWord))
       :bindWithRepeat({'shift'}, 'g', motion(LastLine))
       :bind({}, 'g', function() vim:enterModal('g') end)
+      :bind({}, 'i', function() vim:enterModal('inTextObject') end)
       :bindWithRepeat({}, 'up', motion(Up))
       :bindWithRepeat({}, 'down', motion(Down))
       :bindWithRepeat({}, 'left', motion(Left))
@@ -168,6 +170,11 @@ local function createVimModal(vim)
     :withContext('g')
     :bind({}, 'escape', function() vim:exitAsync() end)
     :bind({}, 'g', motion(FirstLine))
+
+  -- "in" text object prefixes
+  modal
+    :withContext('inTextObject')
+    :bind({}, 'w', motion(InWord))
 
   -- Visual mode
   modal
