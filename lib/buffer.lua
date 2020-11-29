@@ -151,6 +151,10 @@ function Buffer:prevChar()
   return self:charAt(location - 1)
 end
 
+function Buffer:currentChar()
+  return self:charAt(self:getCaretPosition())
+end
+
 function Buffer:nextChar()
   local location = self:getCaretPosition()
   return self:charAt(location + 1)
