@@ -118,12 +118,12 @@ Advanced Mode gives.
 - [x] `w` fwd by word
 - [x] `W` fwd by big word (`:h WORD`)
 - [x] `iw` - in word
-- [ ] `i'` - in single quotes
-- [ ] `i(` - in parens
-- [ ] `i{` - in braces
-- [ ] `i<` - in angle brackets
-- [ ] `i`` - in backticks
-- [ ] `i"` - in double quotes
+- [x] `i'` - in single quotes
+- [x] `i(` - in parens
+- [x] `i{` - in braces
+- [x] `i<` - in angle brackets
+- [x] `i`` - in backticks
+- [x] `i"` - in double quotes
 
 ### Operators
 

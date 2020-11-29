@@ -1,6 +1,7 @@
 # 2020-11-29
 
-* Add the `iw` "in word" text object motion
+* Added the `iw` "in word" text object motion
+* Added the `i[`, `i<`, `i{`, `i'`, `i"`, and `i`` motions.
 
 # 2020-11-04
 

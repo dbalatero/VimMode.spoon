@@ -4,6 +4,7 @@ local WaitForChar = dofile(vimModeScriptPath .. "lib/wait_for_char.lua")
 -- motions
 local BackwardSearch = dofile(vimModeScriptPath .. "lib/motions/backward_search.lua")
 local BackWord = dofile(vimModeScriptPath .. "lib/motions/back_word.lua")
+local BetweenChars = dofile(vimModeScriptPath .. "lib/motions/between_chars.lua")
 local BigWord = dofile(vimModeScriptPath .. "lib/motions/big_word.lua")
 local CurrentSelection = dofile(vimModeScriptPath .. "lib/motions/current_selection.lua")
 local EndOfWord = dofile(vimModeScriptPath .. "lib/motions/end_of_word.lua")
@@ -72,6 +73,14 @@ local function createVimModal(vim)
           end)
         end
       }:start()
+    end
+  end
+
+  local betweenChars = function(start, finish)
+    return function()
+      local motion = BetweenChars:new()
+      motion:setSearchChars(start, finish)
+      vim:enterMotion(motion)
     end
   end
 
@@ -174,6 +183,34 @@ local function createVimModal(vim)
   -- "in" text object prefixes
   modal
     :withContext('inTextObject')
+    -- i`
+    :bind({}, "`", betweenChars("`", "`"))
+
+    -- i(
+    :bind({'shift'}, "9", betweenChars("(", ")"))
+    -- i)
+    :bind({'shift'}, "0", betweenChars("(", ")"))
+
+    -- i{
+    :bind({'shift'}, "[", betweenChars("{", "}"))
+    -- i}
+    :bind({'shift'}, "]", betweenChars("{", "}"))
+
+    -- i[
+    :bind({}, "[", betweenChars("[", "]"))
+    -- i]
+    :bind({}, "]", betweenChars("[", "]"))
+
+    -- i<
+    :bind({'shift'}, ",", betweenChars("<", ">"))
+    -- i>
+    :bind({'shift'}, ".", betweenChars("<", ">"))
+
+    -- i'
+    :bind({}, "'", betweenChars("'", "'"))
+    -- i"
+
+    :bind({'shift'}, "'", betweenChars('"', '"'))
     :bind({}, 'w', motion(InWord))
 
   -- Visual mode
