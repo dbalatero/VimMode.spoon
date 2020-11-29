@@ -169,6 +169,31 @@ function AccessibilityBuffer:getRangeForLineNumber(lineNumber)
   return Selection.fromRange(range)
 end
 
+function AccessibilityBuffer:visibleLineRange()
+  local visibleRange = self
+    :getCurrentElement()
+    :attributeValue("AXVisibleCharacterRange")
+
+  if not visibleRange then return nil end
+
+  local startLineNumber = self:getCurrentElement():parameterizedAttributeValue(
+    'AXLineForIndex',
+    visibleRange.location
+  )
+
+  local finishLineNumber = self:getCurrentElement():parameterizedAttributeValue(
+    'AXLineForIndex',
+    visibleRange.location + visibleRange.length - 1
+  )
+
+  if not startLineNumber or not finishLineNumber then return nil end
+
+  return {
+    start = startLineNumber + 1,
+    finish = finishLineNumber + 1
+  }
+end
+
 function AccessibilityBuffer:isAtLastVisibleCharacter()
   local visibleRange = self
     :getCurrentElement()

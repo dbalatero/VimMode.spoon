@@ -1,3 +1,4 @@
+local AccessibilityBuffer = dofile(vimModeScriptPath .. "lib/accessibility_buffer.lua")
 local ContextualModal = dofile(vimModeScriptPath .. "lib/contextual_modal.lua")
 local WaitForChar = dofile(vimModeScriptPath .. "lib/wait_for_char.lua")
 
@@ -16,6 +17,7 @@ local InWord = dofile(vimModeScriptPath .. "lib/motions/in_word.lua")
 local LastLine = dofile(vimModeScriptPath .. "lib/motions/last_line.lua")
 local LineBeginning = dofile(vimModeScriptPath .. "lib/motions/line_beginning.lua")
 local LineEnd = dofile(vimModeScriptPath .. "lib/motions/line_end.lua")
+local Noop = dofile(vimModeScriptPath .. "lib/motions/noop.lua")
 local TillAfterSearch = dofile(vimModeScriptPath .. "lib/motions/till_after_search.lua")
 local TillBeforeSearch = dofile(vimModeScriptPath .. "lib/motions/till_before_search.lua")
 local Word = dofile(vimModeScriptPath .. "lib/motions/word.lua")
@@ -30,6 +32,8 @@ local Change = dofile(vimModeScriptPath .. "lib/operators/change.lua")
 local Delete = dofile(vimModeScriptPath .. "lib/operators/delete.lua")
 local Replace = dofile(vimModeScriptPath .. "lib/operators/replace.lua")
 local Yank = dofile(vimModeScriptPath .. "lib/operators/yank.lua")
+
+local times = dofile(vimModeScriptPath .. "lib/utils/times.lua")
 
 local function createVimModal(vim)
   local motion = function(type)
@@ -46,6 +50,24 @@ local function createVimModal(vim)
 
   local fireOperator = function(type)
     operator(type)()
+  end
+
+  local pageDirection = function(direction)
+    return function()
+      local lines = 10
+      local buffer = AccessibilityBuffer:new()
+
+      if buffer:isValid() then
+        visibleRange = buffer:visibleLineRange()
+        lines = (visibleRange.finish - visibleRange.start) / 2
+      end
+
+      if lines > 0 then
+        times(lines, function() fireMotion(direction) end)
+      else
+        fireMotion(Noop)
+      end
+    end
   end
 
   local operatorNeedingChar = function(type, optionalMotion)
@@ -177,12 +199,13 @@ local function createVimModal(vim)
   -- g prefixes
   modal
     :withContext('g')
-    :bind({}, 'escape', function() vim:exitAsync() end)
+    :bind({}, 'escape', function() vim:cancel() end)
     :bind({}, 'g', motion(FirstLine))
 
   -- "in" text object prefixes
   modal
     :withContext('inTextObject')
+    :bind({}, 'escape', function() vim:cancel() end)
     -- i`
     :bind({}, "`", betweenChars("`", "`"))
 
@@ -270,6 +293,8 @@ local function createVimModal(vim)
       -- redo
       hs.eventtap.keyStroke({'cmd','shift'}, 'z', 0)
     end)
+    :bind({'ctrl'}, 'd', pageDirection(Down))
+    :bind({'ctrl'}, 'u', pageDirection(Up))
     :bind({'shift'}, 'o', function()
       hs.eventtap.keyStroke({'cmd'}, 'left', 0)
       hs.eventtap.keyStroke({}, 'return', 0)
