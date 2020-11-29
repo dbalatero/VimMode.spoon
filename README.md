@@ -117,7 +117,7 @@ Advanced Mode gives.
 - [x] `hjkl` - arrow keys
 - [x] `w` fwd by word
 - [x] `W` fwd by big word (`:h WORD`)
-- [ ] `iw` - in word
+- [x] `iw` - in word
 - [ ] `i'` - in single quotes
 - [ ] `i(` - in parens
 - [ ] `i{` - in braces
