@@ -108,7 +108,6 @@ Advanced Mode gives.
 - [x] `F<char>`
 - [x] `t<char>`
 - [x] `T<char>`
-- [ ] `aw` - a word
 - [x] `b` - back by word
 - [ ] `B` - back by big word (`:h WORD`)
 - [x] `e` - fwd to end of word
