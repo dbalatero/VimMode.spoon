@@ -32,6 +32,24 @@ function Registry:registerHandler(contextKey, mods, key, pressedfn, releasedfn, 
   return self
 end
 
+function Registry:hasAnyHandler(contextKey, mods, key)
+  local context = self.fns[contextKey]
+  if not context then return false end
+
+  local keyHandlers = context[key]
+  if not keyHandlers then return false end
+
+  for _, entry in pairs(keyHandlers) do
+    if tableUtils.matches(entry.mods, mods) then
+      local handlers = entry.handlers
+
+      return not not (handlers.onPressed or handlers.onRepeat or handlers.onReleased)
+    end
+  end
+
+  return false
+end
+
 function Registry:getHandler(contextKey, mods, key, eventType)
   local context = self.fns[contextKey]
   if not context then return nil end

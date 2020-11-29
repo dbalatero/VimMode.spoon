@@ -1,7 +1,18 @@
 local Registry = dofile(vimModeScriptPath .. "lib/contextual_modal/registry.lua")
+local stringUtils = dofile(vimModeScriptPath .. "lib/utils/string_utils.lua")
 local tableUtils = dofile(vimModeScriptPath .. "lib/utils/table.lua")
 
 local ContextualModal = {}
+
+local function mapToList(map)
+  local list = {}
+
+  for key, value in pairs(map) do
+    table.insert(list, key)
+  end
+
+  return list
+end
 
 -- Wraps a modal and provides different key layers depending on which
 -- context you happen to be in.
@@ -26,6 +37,7 @@ local ContextualModal = {}
 -- modal:enterContext("foo") -- pressing 'e' prints 'foo e'
 -- modal:enterContext("bar") -- pressing 'e' prints 'bar e'
 function ContextualModal:new()
+  local registry = Registry:new()
   local wrapper = {
     activeContext = nil,
     bindingContext = nil,
@@ -33,11 +45,38 @@ function ContextualModal:new()
     entered = false,
     modal = hs.hotkey.modal.new(),
     onBeforePress = function() end,
-    registry = Registry:new()
+    registry = registry,
   }
 
   setmetatable(wrapper, self)
   self.__index = self
+
+  -- Prevent any keys that aren't registered with the modal from passing thru.
+  self.restrictedTap = hs.eventtap.new(
+    { hs.eventtap.event.types.keyDown },
+    function(event)
+      local key = event:getCharacters()
+
+      if stringUtils.isNonAlphanumeric(key) then
+        -- let alt+tab and other keys through
+        return false
+      end
+
+      local mods = mapToList(event:getFlags())
+      local hasHandler = registry:hasAnyHandler(
+        wrapper.activeContext,
+        mods,
+        key
+      )
+
+      if hasHandler then
+        return false
+      else
+        -- Block any key from passing through
+        return true
+      end
+    end
+  )
 
   return wrapper
 end
@@ -125,6 +164,7 @@ function ContextualModal:enterContext(contextKey)
   if not self.entered then
     self.entered = true
     self.modal:enter()
+    self.restrictedTap:start()
   end
 
   return self
@@ -136,6 +176,7 @@ function ContextualModal:exit()
   if self.entered then
     self.entered = false
     self.modal:exit()
+    self.restrictedTap:stop()
   end
 
   return self
