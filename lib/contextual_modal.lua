@@ -1,6 +1,7 @@
 local Registry = dofile(vimModeScriptPath .. "lib/contextual_modal/registry.lua")
 local stringUtils = dofile(vimModeScriptPath .. "lib/utils/string_utils.lua")
 local tableUtils = dofile(vimModeScriptPath .. "lib/utils/table.lua")
+local utf8 = dofile(vimModeScriptPath .. "vendor/luautf8.lua")
 
 local ContextualModal = {}
 
@@ -52,29 +53,37 @@ function ContextualModal:new()
   self.__index = self
 
   -- Prevent any keys that aren't registered with the modal from passing thru.
+  --
+  -- TODO[dbalatero]: get this working again. doesn't really work well
+  -- with firing other keys :(
   self.restrictedTap = hs.eventtap.new(
     { hs.eventtap.event.types.keyDown },
     function(event)
-      local key = event:getCharacters()
+      return false
+      -- local key = hs.keycodes.map[event:getKeyCode()] or event:getCharacters()
 
-      if stringUtils.isNonAlphanumeric(key) then
-        -- let alt+tab and other keys through
-        return false
-      end
+      -- if stringUtils.isNonAlphanumeric(key) then
+      --   -- let alt+tab and other keys through
+      --   return false
+      -- end
 
-      local mods = mapToList(event:getFlags())
-      local hasHandler = registry:hasAnyHandler(
-        wrapper.activeContext,
-        mods,
-        key
-      )
+      -- if utf8.len(key) > 1 then
+      --   return false
+      -- end
 
-      if hasHandler then
-        return false
-      else
-        -- Block any key from passing through
-        return true
-      end
+      -- local mods = mapToList(event:getFlags())
+      -- local hasHandler = registry:hasAnyHandler(
+      --   wrapper.activeContext,
+      --   mods,
+      --   key
+      -- )
+
+      -- if hasHandler then
+      --   return false
+      -- else
+      --   -- Block any key from passing through
+      --   return true
+      -- end
     end
   )
 

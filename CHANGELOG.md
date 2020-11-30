@@ -1,3 +1,7 @@
+# 2020-11-30
+
+* Rollback the keypress disallowing - it conflicts with the keys we send in fallback mode.
+
 # 2020-11-29
 
 * Added the `iw` "in word" text object motion
