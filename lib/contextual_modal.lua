@@ -52,41 +52,6 @@ function ContextualModal:new()
   setmetatable(wrapper, self)
   self.__index = self
 
-  -- Prevent any keys that aren't registered with the modal from passing thru.
-  --
-  -- TODO[dbalatero]: get this working again. doesn't really work well
-  -- with firing other keys :(
-  self.restrictedTap = hs.eventtap.new(
-    { hs.eventtap.event.types.keyDown },
-    function(event)
-      return false
-      -- local key = hs.keycodes.map[event:getKeyCode()] or event:getCharacters()
-
-      -- if stringUtils.isNonAlphanumeric(key) then
-      --   -- let alt+tab and other keys through
-      --   return false
-      -- end
-
-      -- if utf8.len(key) > 1 then
-      --   return false
-      -- end
-
-      -- local mods = mapToList(event:getFlags())
-      -- local hasHandler = registry:hasAnyHandler(
-      --   wrapper.activeContext,
-      --   mods,
-      --   key
-      -- )
-
-      -- if hasHandler then
-      --   return false
-      -- else
-      --   -- Block any key from passing through
-      --   return true
-      -- end
-    end
-  )
-
   return wrapper
 end
 
@@ -173,7 +138,6 @@ function ContextualModal:enterContext(contextKey)
   if not self.entered then
     self.entered = true
     self.modal:enter()
-    self.restrictedTap:start()
   end
 
   return self
@@ -185,7 +149,6 @@ function ContextualModal:exit()
   if self.entered then
     self.entered = false
     self.modal:exit()
-    self.restrictedTap:stop()
   end
 
   return self
