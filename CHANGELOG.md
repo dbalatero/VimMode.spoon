@@ -1,3 +1,7 @@
+# 2020-12-28
+
+* Added a beta feature for enforcing fallback mode on certain URL patterns in Chrome and Safari (see README)
+
 # 2020-11-30
 
 * Rollback the keypress disallowing - it conflicts with the keys we send in fallback mode.
