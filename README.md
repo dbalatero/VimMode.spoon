@@ -32,6 +32,9 @@ fields or anything in 1Password, as it can't read those fields!
   - [Disabling vim mode for certain apps](#disabling-vim-mode-for-certain-apps)
   - [Disabling the floating alert when you enter Vim mode(s)](#disabling-the-floating-alert-when-you-enter-vim-modes)
   - [Enabling screen dim when you enter normal mode](#enabling-screen-dim-when-you-enter-normal-mode)
+* [Beta Features](#beta-features)
+  - [Block cursor mode](#block-cursor-mode)
+  - [Enforce fallback mode with URL patterns](#enforce-fallback-mode-with-url-patterns)
 * [Manual Installation](#manual-installation)
 * [Testing](#testing)
 
@@ -232,6 +235,50 @@ local vim = VimMode:new()
 
 vim:shouldDimScreenInNormalMode(true)
 ```
+
+## Beta Features
+
+There are a few beta features you can try out right now and give feedback on:
+
+### Block cursor mode
+
+This adds an experimental block cursor on top of the current character, to
+emulate what it looks like in Vim. This only works in fields that support
+Advanced Mode.
+
+<img src="https://user-images.githubusercontent.com/59429/103227216-cdb34080-48fb-11eb-9bc5-b0004a2b64ae.png" />
+
+To enable:
+
+```lua
+vim:enableBetaFeature('block_cursor_overlay')
+```
+
+**Discussed in**: [#63](https://github.com/dbalatero/VimMode.spoon/issues/63)
+
+### Enforce fallback mode with URL patterns
+
+Some websites just really need to be forced into fallback mode at all times,
+and the detection we have isn't good enough to do so. This *may* be deprecated
+going forward in favor of getting better field detection or handling rich
+fields better.
+
+This currently only works for Chrome and Safari, as Firefox has a trash
+AppleScript interface.
+
+To enable:
+
+```lua
+vim:enableBetaFeature('fallback_only_urls')
+
+-- When entering normal mode on any URL that matches any of the patterns below,
+-- we will enforce fallback mode.
+vim:setFallbackOnlyUrlPatterns({
+  "docs.google.com",
+})
+```
+
+**Discussed in**: [#71](https://github.com/dbalatero/VimMode.spoon/issues/71)
 
 ## Manual Installation
 

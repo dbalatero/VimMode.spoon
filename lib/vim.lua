@@ -16,6 +16,7 @@ vimLogger = hs.logger.new('vim', 'debug')
 
 local ax = dofile(vimModeScriptPath .. "lib/axuielement.lua")
 dofile(vimModeScriptPath .. "lib/utils/benchmark.lua")
+dofile(vimModeScriptPath .. "lib/utils/browser.lua")
 
 local AccessibilityBuffer = dofile(vimModeScriptPath .. "lib/accessibility_buffer.lua")
 local AccessibilityStrategy = dofile(vimModeScriptPath .. "lib/strategies/accessibility_strategy.lua")
@@ -52,7 +53,7 @@ function VimMode:new()
 
   vim:resetCommandState()
 
-  vim.blockCursor = BlockCursor:new()
+  vim.blockCursor = BlockCursor:new(vim)
   vim.config = Config:new()
   vim.enabled = true
   vim.mode = 'insert'
@@ -228,6 +229,10 @@ function VimMode:exit()
   self.state:enterInsert()
 end
 
+function VimMode:setFallbackOnlyUrlPatterns(patterns)
+  self.config:setOptions({ fallbackOnlyUrlPatterns = patterns })
+end
+
 function VimMode:enableBlockCursor()
   if not self.config:isBetaFeatureEnabled('block_cursor_overlay') then return end
 
@@ -302,7 +307,7 @@ function VimMode:exitModalAsync()
 end
 
 function VimMode:canUseAdvancedMode()
-  return AccessibilityBuffer:new():isValid()
+  return AccessibilityBuffer:new(self):isValid()
 end
 
 function VimMode:exitAllModals()

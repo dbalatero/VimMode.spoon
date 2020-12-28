@@ -2,7 +2,7 @@ local AccessibilityBuffer = dofile(vimModeScriptPath .. "lib/accessibility_buffe
 
 local BlockCursor = {}
 
-function BlockCursor:new()
+function BlockCursor:new(vim)
   local canvas = hs.canvas.new({ x = 0, y = 0, h = 1, w = 1 })
   local rectangleElementIndex = 1
 
@@ -20,6 +20,7 @@ function BlockCursor:new()
 
   local cursor = {
     canvas = canvas,
+    vim = vim,
   }
 
   setmetatable(cursor, self)
@@ -52,7 +53,7 @@ end
 
 -- Renders a single frame. Returns `true` if successful.
 function BlockCursor:_renderFrame()
-  local buffer = AccessibilityBuffer:new()
+  local buffer = AccessibilityBuffer:new(self.vim)
   if not buffer:isValid() then return false end
 
   local currentElement = buffer:getCurrentElement()

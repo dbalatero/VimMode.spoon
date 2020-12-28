@@ -9,6 +9,7 @@ function Config:new(options)
       font = "Courier New"
     },
     betaFeatures = {},
+    fallbackOnlyUrlPatterns = {},
     shouldShowAlertInNormalMode = true,
     shouldDimScreenInNormalMode = true,
   }
