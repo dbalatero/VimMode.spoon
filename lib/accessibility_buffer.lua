@@ -3,6 +3,7 @@ local ax = dofile(vimModeScriptPath .. "lib/axuielement.lua")
 local Buffer = dofile(vimModeScriptPath .. "lib/buffer.lua")
 local Selection = dofile(vimModeScriptPath .. "lib/selection.lua")
 local axUtils = dofile(vimModeScriptPath .. "lib/utils/ax.lua")
+local browserUtils = dofile(vimModeScriptPath .. "lib/utils/browser.lua")
 local utf8 = dofile(vimModeScriptPath .. "vendor/luautf8.lua")
 
 local AccessibilityBuffer = Buffer:new()
@@ -28,12 +29,13 @@ local bannedApps = {
   Slack = true
 }
 
-function AccessibilityBuffer:new()
+function AccessibilityBuffer:new(vim)
   local buffer = {}
 
   setmetatable(buffer, self)
   self.__index = self
 
+  buffer.vim = vim
   buffer.currentElement = nil
   buffer.value = nil
   buffer.selection = nil
@@ -140,8 +142,46 @@ function AccessibilityBuffer:isValid()
   if not self:getSelectionRange() then return false end
   if not self:isInTextField() then return false end
   if self:isRichTextField() then return false end
+  if self:onFallbackOnlyUrl() then return false end
 
   return true
+end
+
+function AccessibilityBuffer:onFallbackOnlyUrl()
+  config = self.vim.config
+
+  if not config:isBetaFeatureEnabled('fallback_only_urls') then
+    return false
+  end
+
+  local patterns = config.fallbackOnlyUrlPatterns
+
+  if #patterns == 0 then
+    return false
+  end
+
+  local currentElement = self:getCurrentElement()
+  if not currentElement then return false end
+
+  -- Don't disable in the Chrome location bar.
+  local description = currentElement:attributeValue('AXDescription')
+
+  -- Matches Chrome or Safari navbar
+  if description == "Address and search bar" or description == "Address and Search" then
+    return false
+  end
+
+  url = browserUtils.frontmostCurrentUrl()
+
+  if url then
+    for _, pattern in ipairs(patterns) do
+      if utf8.match(url, pattern) then
+        return true
+      end
+    end
+  end
+
+  return false
 end
 
 function AccessibilityBuffer:getCurrentLineNumber()

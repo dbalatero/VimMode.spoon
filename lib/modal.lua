@@ -55,7 +55,7 @@ local function createVimModal(vim)
   local pageDirection = function(direction)
     return function()
       local lines = 10
-      local buffer = AccessibilityBuffer:new()
+      local buffer = AccessibilityBuffer:new(vim)
 
       if buffer:isValid() then
         visibleRange = buffer:visibleLineRange()

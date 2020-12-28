@@ -23,7 +23,7 @@ end
 function AccessibilityStrategy:fire()
   local operator = self.vim.commandState.operator
   local motion = self.vim.commandState.motion
-  local buffer = AccessibilityBuffer:new()
+  local buffer = AccessibilityBuffer:new(self.vim)
 
   -- set the caret position if we are in visual mode
   if self.vim:isMode('visual') then
@@ -97,7 +97,7 @@ function AccessibilityStrategy:fire()
       location = (direction == 'left' and start) or finish
     end
 
-    AccessibilityBuffer:new():setSelectionRange(location, length)
+    AccessibilityBuffer:new(self.vim):setSelectionRange(location, length)
   end
 end
 
@@ -139,7 +139,7 @@ function AccessibilityStrategy:setValue(value)
 end
 
 function AccessibilityStrategy:isValid()
-  return AccessibilityBuffer:new():isValid()
+  return AccessibilityBuffer:new(self.vim):isValid()
 end
 
 function AccessibilityStrategy:getUIRole()
