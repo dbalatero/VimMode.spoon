@@ -1,7 +1,7 @@
 # 2020-12-28
 
 * Added a beta feature for enforcing fallback mode on certain URL patterns in Chrome and Safari (see README)
-* Made hitting `escape` when tapping `g` cancel and reset to normal mode
+* Made hitting `escape` when tapping `g` cancel and reset to normal mode [closes #56]
 
 # 2020-11-30
 
