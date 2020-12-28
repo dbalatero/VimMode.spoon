@@ -271,7 +271,8 @@ To enable:
 ```lua
 vim:enableBetaFeature('fallback_only_urls')
 
--- Any URL
+-- When entering normal mode on any URL that matches any of the patterns below,
+-- we will enforce fallback mode.
 vim:setFallbackOnlyUrlPatterns({
   "docs.google.com",
 })
