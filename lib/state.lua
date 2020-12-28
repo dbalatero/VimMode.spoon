@@ -8,6 +8,7 @@ local function createStateMachine(vim)
       { name = 'enterNormal', from = 'visual-mode', to = 'normal-mode' },
       { name = 'enterNormal', from = 'firing', to = 'normal-mode' },
       { name = 'enterNormal', from = 'operator-pending', to = 'normal-mode' },
+      { name = 'enterNormal', from = 'normal-mode', to = 'normal-mode' },
 
       { name = 'enterMotion', from = 'normal-mode', to = 'entered-motion' },
       { name = 'enterMotion', from = 'operator-pending', to = 'entered-motion' },
