@@ -33,8 +33,13 @@ local createFocusWatcher = dofile(vimModeScriptPath .. "lib/focus_watcher.lua")
 local createHotPatcher = dofile(vimModeScriptPath .. "lib/hot_patcher.lua")
 local createVimModal = dofile(vimModeScriptPath .. "lib/modal.lua")
 local createStateMachine = dofile(vimModeScriptPath .. "lib/state.lua")
+local debug = dofile(vimModeScriptPath .. "lib/utils/debug.lua")
 local findFirst = dofile(vimModeScriptPath .. "lib/utils/find_first.lua")
 local keyUtils = dofile(vimModeScriptPath .. "lib/utils/keys.lua")
+
+VimMode.utils = {
+  debug = debug,
+}
 
 local function alertDeprecation(msg)
   hs.alert.show(
