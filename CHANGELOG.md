@@ -1,3 +1,8 @@
+# 2021-02-13
+
+* Added a function for running an accessibility test suite against any field: `hs.hotkey.bind(mods, key, VimMode.utils.debug.testAccessibilityField)`
+  * Will add more tests to this suite as we need to debug more problems down the line-ideally people can just run this function when reporting a bug.
+
 # 2020-12-28
 
 * Added a beta feature for enforcing fallback mode on certain URL patterns in Chrome and Safari (see README)
