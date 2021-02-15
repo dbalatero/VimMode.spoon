@@ -53,10 +53,12 @@ axUtils.patchCurrentApplication = function()
   alreadyPatchedApps[patchKey] = true
   local axApp = ax.applicationElement(currentApp)
 
-  if axApp then
-    patchChromiumWithAccessibilityFlag(axApp)
-    patchElectronAppsWithAccessibilityFlag(axApp)
-  end
+  -- vimLogger.i("[patch " .. patchKey .. "] value: " .. hs.inspect.inspect(axApp:attributeValue('AXEnhancedUserInterface')))
+
+  -- if axApp then
+  --   patchChromiumWithAccessibilityFlag(axApp)
+  --   patchElectronAppsWithAccessibilityFlag(axApp)
+  -- end
 end
 
 return axUtils
