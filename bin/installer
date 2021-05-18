@@ -91,7 +91,7 @@ function install_hammerspoon() {
     saysuccess "Hammerspoon is already installed!"
   else
     sayinfo "Hammerspoon not found, installing..."
-    brew cask install hammerspoon | indent
+    brew install --cask hammerspoon | indent
   fi
 }
 
