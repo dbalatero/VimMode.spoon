@@ -1,0 +1,124 @@
+version: 2.1
+orbs:
+  macos: circleci/macos@1.0.0
+
+jobs:
+  build-test:
+    macos:
+      xcode: 11.7.0
+    steps:
+      - checkout
+      - macos/add-uitest-permissions
+
+      - macos/add-permission:
+          bundle-id: "com.google.Chrome"
+          permission-type: "kTCCServiceAppleEvents"
+
+      - macos/add-permission:
+          bundle-id: "com.google.Chrome"
+          permission-type: "kTCCServiceAccessibility"
+
+      - run:
+          name: Setting additional Hammerspoon Mac permissions
+          command: bin/ci-permissions
+
+      - macos/list-permissions
+
+      # RSpec + gems
+      - run: echo 'chruby ruby-2.6' >> ~/.bash_profile
+      - run: gem install bundler
+
+      - restore_cache:
+          keys:
+            - gem-cache-v1-{{ arch }}-{{ checksum "Gemfile.lock" }}
+            - gem-cache-v1-{{ arch }}
+            - gem-cache-v1
+
+      - run: bundle install --path vendor/bundle
+
+      - save_cache:
+          key: gem-cache-v1-{{ arch }}-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+
+      # Lua setup
+      - restore_cache:
+          keys:
+            - here-cache-v1-{{ arch }}-{{ checksum "bin/dev-setup" }}
+            - here-cache-v1-{{ arch }}
+            - here-cache-v1
+
+      - run:
+          name: Lua 5.4 setup
+          command: |
+            echo "export PATH=$PATH:$HOME/here/bin" >> ~/.bash_profile
+            echo 'eval `luarocks path --bin`' >> ~/.bash_profile
+
+            if [ ! -d "$HOME/here" ]; then
+              pip3 install hererocks
+              hererocks $HOME/here -r^ --lua 5.4
+
+              source ~/.bash_profile
+              bin/dev-setup
+            fi
+
+      - save_cache:
+          key: here-cache-v1-{{ arch }}-{{ checksum "bin/dev-setup" }}
+          paths:
+            - ~/here
+
+      # Run lua tests
+      - run: busted -c
+
+      # Integration test setup
+      - run: bin/ci-config
+      - run: cat $HOME/.hammerspoon/init.lua
+
+      - run: brew cask install --no-quarantine chromedriver google-chrome hammerspoon
+      - run:
+          command: |
+            sudo xattr -r -d com.apple.quarantine "/Applications/Google Chrome.app"
+            sudo xattr -r -d com.apple.quarantine /Applications/Hammerspoon.app
+
+      - run:
+          name: Screenshot
+          command: |
+            mkdir /tmp/screenshots
+            screencapture -tjpg /tmp/screenshots/1_before.jpg
+
+            open /Applications/Hammerspoon.app
+            sleep 5
+            screencapture -tjpg /tmp/screenshots/2_hs.jpg
+
+            open /Applications/Google\ Chrome.app
+            screencapture -tjpg /tmp/screenshots/3_chrome.jpg
+
+      - run:
+          name: osascript
+          command: |
+            /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome \
+              --disable-default-apps \
+              --no-default-browser-check \
+              --no-first-run \
+              --force-renderer-accessibility & >/dev/null
+
+
+            osascript \<<EOF
+              tell application "System Events"
+                tell process "Google Chrome"
+                  set value of attribute "AXEnhancedUserInterface" to true
+                end tell
+              end tell
+            EOF
+
+      - store_artifacts:
+          path: /tmp/screenshots
+          destination: screenshots
+
+      # Run integration tests
+      # - run: bundle exec rspec spec
+
+workflows:
+  verify:
+    jobs:
+      - build-test
