@@ -4,9 +4,9 @@ local function loadVendored()
   local arch = hs.execute("uname -p")
 
   if arch == "arm\n" then
-    return require("luautf8.lua-utf8-arm")
+    return require("luautf8.arm.lua-utf8")
   else
-    return require("luautf8.lua-utf8-x86")
+    return require("luautf8.x86.lua-utf8")
   end
 end
 
