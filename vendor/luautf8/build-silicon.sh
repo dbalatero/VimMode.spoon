@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-echo "Building for M1..."
+echo "Building for Apple Silicon..."
 
 rm -fr lutf8lib.o
 
