@@ -4,6 +4,7 @@ local WaitForChar = dofile(vimModeScriptPath .. "lib/wait_for_char.lua")
 
 -- motions
 local BackwardSearch = dofile(vimModeScriptPath .. "lib/motions/backward_search.lua")
+local BackBigWord = dofile(vimModeScriptPath .. "lib/motions/back_big_word.lua")
 local BackWord = dofile(vimModeScriptPath .. "lib/motions/back_word.lua")
 local BetweenChars = dofile(vimModeScriptPath .. "lib/motions/between_chars.lua")
 local BigWord = dofile(vimModeScriptPath .. "lib/motions/big_word.lua")
@@ -177,6 +178,7 @@ local function createVimModal(vim)
       end)
       :bindWithRepeat({'shift'}, '4', motion(LineEnd)) -- $
       :bindWithRepeat({}, 'b', motion(BackWord))
+      :bindWithRepeat({'shift'}, 'b', motion(BackBigWord))
       :bindWithRepeat({}, 'e', motion(EndOfWord))
       :bind({}, 'f', motionNeedingChar(ForwardSearch))
       :bind({'shift'}, 'f', motionNeedingChar(BackwardSearch))

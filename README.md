@@ -113,7 +113,7 @@ Advanced Mode gives.
 - [x] `T<char>`
 - [x] `a` - move right and enter insert
 - [x] `b` - back by word
-- [ ] `B` - back by big word (`:h WORD`)
+- [x] `B` - back by big word (`:h WORD`)
 - [x] `e` - fwd to end of word
 - [ ] `E` - fwd to end of big word (`:h WORD`)
 - [x] `gg` - top of buffer
