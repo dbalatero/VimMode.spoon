@@ -199,6 +199,21 @@ close to `inoremap jk <esc>`.
 vim:bindHotKeys({ enter = {{'ctrl'}, ';'} })
 ```
 
+### Forcing fallback mode for certain apps
+
+Some apps work best in fallback mode. To force fallback mode for these apps, do:
+
+```lua
+local VimMode = hs.loadSpoon('VimMode')
+local vim = VimMode:new()
+
+-- Dwarf Fortress needs to use fallback mode :)j
+vim:useFallbackMode('dwarfort.exe')
+
+-- same w/ Chrome
+vim:useFallbackMode('Google Chrome')
+```
+
 ### Disabling vim mode for certain apps
 
 You probably want to disable this Vim mode in the terminal, or any actual

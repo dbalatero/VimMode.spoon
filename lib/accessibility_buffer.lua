@@ -133,7 +133,14 @@ end
 function AccessibilityBuffer:isBannedApp()
   local currentApp = hs.application.frontmostApplication()
 
-  return not not bannedApps[currentApp:name()]
+  -- Is it banned in this local file?
+  local name = currentApp:name()
+  local hardcodedBan = not not bannedApps[name]
+
+  -- is it banned in the config
+  local configuredBan = not not self.vim.config.fallbackOnlyApps[name]
+
+  return hardcodedBan or configuredBan
 end
 
 function AccessibilityBuffer:isValid()

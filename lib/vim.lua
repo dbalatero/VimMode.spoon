@@ -289,6 +289,10 @@ function VimMode:enter()
   end
 end
 
+function VimMode:useFallbackMode(appName)
+  self.config.fallbackOnlyApps[appName] = true
+end
+
 -- If we try to exit from the ContextualModal synchronously, we end
 -- up in a bad state where the 'i' key just repeats forever.
 --
