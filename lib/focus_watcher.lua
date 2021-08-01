@@ -3,6 +3,8 @@ local ax = dofile(vimModeScriptPath .. "lib/axuielement.lua")
 local registeredPids = {}
 
 local function createApplicationWatcher(application, vim)
+  if not application then return nil end
+
   local pid = application:pid()
   local observer
 
@@ -22,13 +24,17 @@ local function createApplicationWatcher(application, vim)
     registeredPids[pid] = observer
   end
 
-  if not pcall(creator) then
+  local status, error = pcall(creator)
+
+  if not status then
     registeredPids[pid] = nil
 
     vimLogger.d(
       "Could not start watcher for PID: " .. pid ..
         " and name: " .. application:name()
     )
+
+    vimLogger.d("Error: " .. hs.inspect.inspect(error))
   end
 
   return observer
