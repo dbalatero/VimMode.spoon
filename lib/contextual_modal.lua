@@ -52,6 +52,8 @@ function ContextualModal:new()
   setmetatable(wrapper, self)
   self.__index = self
 
+  wrapper:bindDefaults()
+
   return wrapper
 end
 
@@ -68,6 +70,19 @@ function ContextualModal:handlePress(mods, key, eventType)
       self.onBeforePress(mods, key)
       handler()
     end
+  end
+end
+
+-- By default, bind all the keys to no-ops
+function ContextualModal:bindDefaults()
+  local keyChars = "abcdefghijklmnopqrstuvwxyz1234567890"
+  local noop = function() end
+
+  for i = 1, #keyChars do
+    local char = keyChars:sub(i, i)
+
+    self.modal:bind(nil, char, noop, noop, noop)
+    self.modal:bind({'shift'}, char, noop, noop, noop)
   end
 end
 
