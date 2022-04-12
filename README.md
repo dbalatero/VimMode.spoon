@@ -2,14 +2,17 @@
 
 [![Build Status](https://travis-ci.com/dbalatero/VimMode.spoon.svg?branch=master)](https://travis-ci.com/dbalatero/VimMode.spoon)
 
-🚀 This library will add Vim motions and operators to all your input fields on
+:rocket: This library will add Vim motions and operators to all your input fields on
 OS X. Why should Emacs users have all the fun?
 
-<img src="https://raw.githubusercontent.com/dbalatero/VimMode.spoon/master/images/vim-mode.gif" alt="Example of VimMode.spoon" />
-
-This uses Hammerspoon, but don't worry - the [quick
-installer](#quick-installation) is a 1-line bash command to get everything
-setup.
+<figure>
+  <img src="https://raw.githubusercontent.com/dbalatero/VimMode.spoon/master/images/vim-mode.gif" alt="Example of VimMode.spoon" />
+  <figcaption>
+    This uses Hammerspoon, but don't worry - the [quick
+    installer](#quick-installation) is a 1-line bash command to get everything
+    setup.
+  </figcaption>
+</figure>
 
 Not all motions or operators are implemented, but you can open an issue if
 you're missing something.
@@ -42,7 +45,7 @@ fields or anything in 1Password, as it can't read those fields!
 
 Run this command in Terminal:
 
-```
+```sh
 bash <(curl -s https://raw.githubusercontent.com/dbalatero/VimMode.spoon/master/bin/installer)
 ```
 
@@ -59,13 +62,13 @@ then *read the post-install info* printed at the end and follow the instructions
 Once installed:
 
 * To enter normal mode, hit whichever key you bind to it (see below for key bind instructions)
-* To exit normal mode, press `i` and you're back to a normal OS X input.
+* To exit normal mode, press <kbd>i</kbd> and you're back to a normal OS X input.
 
 ## Staying up to date
 
 To update the plugin, run:
 
-```
+```sh
 cd ~/.hammerspoon/Spoons/VimMode.spoon && git pull
 ```
 
@@ -102,55 +105,55 @@ Advanced Mode gives.
 
 ### Motions
 
-- [x] `A` - jump to end of line
-- [x] `G` - jump to last line of input
-- [x] `I` - jump to beginning of line
+- [x] <kbd>A</kbd> - jump to end of line
+- [x] <kbd>G</kbd> - jump to last line of input
+- [x] <kbd>I</kbd> - jump to beginning of line
 - [x] `0` - beginning of line
 - [x] `$` - end of line
 - [x] `f<char>`
 - [x] `F<char>`
 - [x] `t<char>`
 - [x] `T<char>`
-- [x] `a` - move right and enter insert
-- [x] `b` - back by word
-- [x] `B` - back by big word (`:h WORD`)
-- [x] `e` - fwd to end of word
-- [ ] `E` - fwd to end of big word (`:h WORD`)
+- [x] <kbd>a</kbd> - move right and enter insert
+- [x] <kbd>b</kbd> - back by word
+- [x] <kbd>B</kbd> - back by big word (`:h WORD`)
+- [x] <kbd>e</kbd> - fwd to end of word
+- [ ] <kbd>E</kbd> - fwd to end of big word (`:h WORD`)
 - [x] `gg` - top of buffer
 - [x] `hjkl` - arrow keys
-- [x] `w` fwd by word
-- [x] `W` fwd by big word (`:h WORD`)
+- [x] <kbd>w</kbd> fwd by word
+- [x] <kbd>W</kbd> fwd by big word (`:h WORD`)
 - [x] `iw` - in word
 - [x] `i'` - in single quotes
 - [x] `i(` - in parens
 - [x] `i{` - in braces
 - [x] `i<` - in angle brackets
-- [x] `i`` - in backticks
+- [x] <code>i\`</code> - in backticks
 - [x] `i"` - in double quotes
 
 ### Operators
 
-- [x] `shift + c` - delete to end of line, exit normal mode
-- [x] `shift + d` delete to end of line
-- [x] `c` - delete and exit normal mode
-- [x] `d` - delete
+- [x] <kbd>shift</kbd> + <kbd>c</kbd> - delete to end of line, exit normal mode
+- [x] <kbd>shift</kbd> + <kbd>d</kbd> delete to end of line
+- [x] <kbd>c</kbd> - delete and exit normal mode
+- [x] <kbd>d</kbd> - delete
 - [x] `cc` - delete line and enter insert mode
 - [x] `dd` - delete line
 - [x] `r<char>` to replace - currently broken
-- [x] `x` to delete char under cursor
+- [x] <kbd>x</kbd> to delete char under cursor
 
 ### Other
 
-- [x] `i` to go back to insert mode
-- [x] `o` - add new line below, exit normal mode
-- [x] `shift + o` - add new line above, exit normal mode
-- [x] `p` to paste
-- [x] `s` to delete under cursor, exit normal mode
+- [x] <kbd>i</kbd> to go back to insert mode
+- [x] <kbd>o</kbd> - add new line below, exit normal mode
+- [x] <kbd>shift</kbd> + <kbd>o</kbd> - add new line above, exit normal mode
+- [x] <kbd>p</kbd> to paste
+- [x] <kbd>s</kbd> to delete under cursor, exit normal mode
 - [x] `^r` to redo
-- [x] `u` to undo
-- [x] `y` to yank to clipboard
-- [x] `/` to trigger `cmd+f` search (when `cmd+f` is supported in app)
-- [x] visual mode with `v`
+- [x] <kbd>u</kbd> to undo
+- [x] <kbd>y</kbd> to yank to clipboard
+- [x] <kbd>/</kbd> to trigger `cmd+f` search (when `cmd+f` is supported in app)
+- [x] visual mode with <kbd>v</kbd>
 - [x] UTF-8 support
 - [x] `^d` - page down
 - [x] `^u` - page down
@@ -159,7 +162,7 @@ Advanced Mode gives.
 ## Configuration
 
 Here are all the configuration options available for you. Add/edit your config
-in ~/.hammerspoon/init.lua`.
+in `~/.hammerspoon/init.lua`.
 
 ### Binding jk to enter normal mode
 
@@ -171,7 +174,7 @@ vim:enterWithSequence('jk')
 ```
 
 This sequence only watches for simple characters - it can't handle uppercase
-(`enterWithSequence('JK')`) or any other modifier keys (ctrl, shift). This is
+(`enterWithSequence('JK')`) or any other modifier keys (<kbd>ctrl</kbd>, <kbd>shift</kbd>). This is
 meant to handle the popularity of people binding `jj`, `jk`, or `kj` to
 entering normal mode in Vim.
 
@@ -220,7 +223,7 @@ You probably want to disable this Vim mode in the terminal, or any actual
 instance of Vim. Calling `vim:disableForApp(...)` allows you to disable or
 enable Vim mode depending on which window is in focus.
 
-```
+```lua
 local VimMode = hs.loadSpoon('VimMode')
 local vim = VimMode:new()
 
@@ -234,7 +237,7 @@ vim:disableForApp('Terminal')
 
 ### Disabling the floating alert when you enter Vim mode(s)
 
-```
+```lua
 local VimMode = hs.loadSpoon('VimMode')
 local vim = VimMode:new()
 
@@ -245,7 +248,7 @@ vim:shouldShowAlertInNormalMode(false)
 
 This turns on a Flux-style dim when you enter normal mode.
 
-```
+```lua
 local VimMode = hs.loadSpoon('VimMode')
 local vim = VimMode:new()
 
@@ -302,7 +305,7 @@ Install [Hammerspoon](http://www.hammerspoon.org/go/)
 
 Next, run this in your Terminal:
 
-```
+```sh
 mkdir -p ~/.hammerspoon/Spoons
 git clone https://github.com/dbalatero/VimMode.spoon \
   ~/.hammerspoon/Spoons/VimMode.spoon
@@ -327,7 +330,7 @@ There are unit tests and integration tests!
 
 To run the unit tests:
 
-```
+```sh
 cd VimMode.spoon
 
 bin/dev-setup
@@ -335,9 +338,9 @@ busted spec
 ```
 
 To run the integration tests, there is a bit of setup, which you can read
-about in the `docs/Integration_Tests.md` document. However, once you setup,
+about in the [`docs/Integration_Tests.md`](./docs/Integration_Tests.md) document. However, once you setup,
 it should just be:
 
-```
+```sh
 bundle exec rspec spec
 ```
