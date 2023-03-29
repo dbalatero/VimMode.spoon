@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -o pipefail
+
 CONFIG_DIR="$HOME/.hammerspoon"
 SPOONS_DIR="$CONFIG_DIR/Spoons"
 
@@ -32,6 +34,11 @@ saysuccess() {
   dotsay "✅ @blue[[$1]]"
 }
 
+sayerror() {
+  printf "  "
+  dotsay "❌ @red[[$1]]"
+}
+
 sayinfo() {
   printf "  "
   dotsay "+ @yellow[[$1]]"
@@ -39,6 +46,11 @@ sayinfo() {
 
 indent() {
   sed 's/^/    /'
+}
+
+panic() {
+    sayerror "Error occurred. Please check the previous output"
+    exit 1
 }
 
 _colorized() {
@@ -129,8 +141,8 @@ function bootstrap_spoon_install() {
   if [ ! -d "$SPOONS_DIR/SpoonInstall.spoon" ]; then
     sayinfo "Installing SpoonInstall.spoon in $SPOONS_DIR"
 
-    wget -nv $url -O $destination | indent
-    unzip -d $SPOONS_DIR $destination | indent
+    wget -nv $url -O $destination | indent || panic
+    unzip -d $SPOONS_DIR $destination | indent || panic
   else
     saysuccess "SpoonInstall.spoon already setup"
   fi
@@ -145,7 +157,7 @@ function bootstrap_vim_mode_spoon() {
     sayinfo "Cloning VimMode.spoon from Git"
     echo
 
-    git clone https://github.com/dbalatero/VimMode.spoon "$dir" | indent
+    git clone https://github.com/dbalatero/VimMode.spoon "$dir" | indent || panic
     echo
   fi
 
