@@ -3,9 +3,9 @@ local stringUtils = dofile(vimModeScriptPath .. "lib/utils/string_utils.lua")
 
 local ForwardSearch = Motion:new{ name = 'forward_search' }
 
-function ForwardSearch:getRange(buffer)
+function ForwardSearch:getRange(buffer, opts)
   local start = buffer:getCaretPosition()
-  local stringStart = start + 1
+  local stringStart = start + (opts and opts.startOffset or 0) + 1
   local searchChar = self:getExtraChar()
 
   local nextOccurringIndex = stringUtils.findNextIndex(
@@ -13,6 +13,11 @@ function ForwardSearch:getRange(buffer)
     searchChar,
     stringStart + 1 -- start from the next char
   )
+
+  buffer.vim.commandState:saveLastInlineSearch({
+    search = opts and opts.isReversed and "F" or "f",
+    char = searchChar,
+  })
 
   if not nextOccurringIndex then return nil end
 
