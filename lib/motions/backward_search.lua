@@ -14,10 +14,12 @@ function BackwardSearch:getRange(buffer, opts)
     stringFinish - 1 -- start from the prev char
   )
 
-  buffer.vim.commandState:saveLastInlineSearch({
-    search = opts and opts.isReversed and "f" or "F",
-    char = searchChar,
-  })
+  if buffer.vim and opts and opts.explicitMotion then
+      buffer.vim.commandState:saveLastInlineSearch({
+        search = opts and opts.isReversed and "f" or "F",
+        char = searchChar,
+      })
+  end
 
   if not prevOccurringIndex then return nil end
 

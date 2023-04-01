@@ -14,10 +14,14 @@ function ForwardSearch:getRange(buffer, opts)
     stringStart + 1 -- start from the next char
   )
 
-  buffer.vim.commandState:saveLastInlineSearch({
-    search = opts and opts.isReversed and "F" or "f",
-    char = searchChar,
-  })
+  -- buffer.vim is nil for tests
+  -- TODO: move commandState mutation somewhere else
+  if buffer.vim and opts and opts.explicitMotion then
+    buffer.vim.commandState:saveLastInlineSearch({
+      search = opts and opts.isReversed and "F" or "f",
+      char = searchChar,
+    })
+  end
 
   if not nextOccurringIndex then return nil end
 
