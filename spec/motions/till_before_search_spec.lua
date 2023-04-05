@@ -1,4 +1,5 @@
 local Buffer = require("lib/buffer")
+local CommandState = require("lib/command_state")
 local TillBeforeSearch = require("lib/motions/till_before_search")
 
 describe("TillBeforeSearch", function()
@@ -41,6 +42,8 @@ describe("TillBeforeSearch", function()
     for _, case in ipairs(cases) do
       it(case.name, function()
         local buffer = Buffer:new()
+        buffer.vim = { commandState = CommandState:new() }
+
         buffer:setValue(case.str)
 
         local indexFromRaw = case.from:find("x")
@@ -66,6 +69,8 @@ describe("TillBeforeSearch", function()
 
     it("does nothing of no occurence found", function()
       local buffer = Buffer:new()
+      buffer.vim = { commandState = CommandState:new() }
+
       buffer:setValue("just a word")
 
       buffer:setSelectionRange(2, 0)
