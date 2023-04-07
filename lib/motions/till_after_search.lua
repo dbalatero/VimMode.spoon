@@ -3,9 +3,16 @@ local BackwardSearch = dofile(vimModeScriptPath .. "lib/motions/backward_search.
 
 local TillAfterSearch = Motion:new{ name = 'till_after_search' }
 
-function TillAfterSearch:getRange(buffer, ...)
-  local motion = BackwardSearch:new():setExtraChar(self:getExtraChar())
-  local range = motion:getRange(buffer, ...)
+function TillAfterSearch:getRange(buffer, opts)
+  local searchChar = self:getExtraChar()
+  local motion = BackwardSearch:new():setExtraChar(searchChar)
+  local startOffset = opts and opts.isRepeated and -1 or 0
+  local range = motion:getRange(buffer, { startOffset = startOffset })
+
+  buffer.vim.commandState:saveLastInlineSearch({
+    search = opts and opts.isReversed and "t" or "T",
+    char = searchChar,
+  })
 
   if not range then return nil end
 
