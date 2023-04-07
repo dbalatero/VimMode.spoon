@@ -9,8 +9,10 @@ Capybara.register_driver :chrome do |app|
   capabilities = Selenium::WebDriver::Remote::Capabilities.new(
     chromeOptions: {
       args: %w[
-        no-sandbox
+        disable-default-apps
         force-renderer-accessibility
+        no-default-browser-check
+        no-first-run
       ]
     }
   )

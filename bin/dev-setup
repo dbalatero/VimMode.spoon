@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 function install_lua_package() {
   local package_name=$1
 
