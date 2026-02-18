@@ -17,17 +17,21 @@ module TextHelpers
     sleep 0.01
   end
 
-  def open_and_focus_page!(mode: "advanced")
+  def open_and_focus_page!(mode: 'advanced')
     path = File.expand_path(File.dirname(__FILE__) + '/../fixtures')
     visit "file://#{path}/textarea.html"
 
+    puts
+    puts
+    puts '==> Waiting for textarea'
+
     expect(page).to have_css('textarea:focus')
 
-    set_chrome_accessibility!(mode == "advanced")
+    set_chrome_accessibility!(mode == 'advanced')
     sleep 0.1
   end
 
-  def expect_textarea_change_in_normal_mode(from:, to:, &block)
+  def expect_textarea_change_in_normal_mode(from:, to:)
     set_textarea_value_and_selection from
 
     normal_mode do
@@ -153,7 +157,11 @@ module TextHelpers
       EOF
     CMD
 
+    puts '==> Setting chrome accessibility'
+
     system(script)
+
+    puts '    Done!'
   end
 
   class Keystroke
@@ -203,16 +211,16 @@ end
 
 module ModeHelpers
   def fallback_mode(&block)
-    context "fallback mode", fallback: true do
-      before { open_and_focus_page! mode: "fallback" }
+    context 'fallback mode', fallback: true do
+      before { open_and_focus_page! mode: 'fallback' }
 
       instance_exec(&block)
     end
   end
 
   def advanced_mode(&block)
-    context "advanced mode", advanced: true do
-      before { open_and_focus_page! mode: "advanced" }
+    context 'advanced mode', advanced: true do
+      before { open_and_focus_page! mode: 'advanced' }
 
       instance_exec(&block)
     end

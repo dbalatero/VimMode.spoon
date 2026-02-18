@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+set -e
+
+epochdate=$(($(date +'%s * 1000 + %-N / 1000000')))
+
+
+COLUMNS="(service,client,client_type,allowed,prompt_count,csreq,policy_id,indirect_object_identifier_type,indirect_object_identifier,indirect_object_code_identity,flags,last_modified)"
+
+# User permissions
+cat << EOF | sudo sqlite3 "$HOME/Library/Application Support/com.apple.TCC/TCC.db"
+  REPLACE INTO access $COLUMNS VALUES('kTCCServiceAppleEvents','com.apple.Terminal',0,1,1,NULL,NULL,0,'com.apple.systemevents',NULL,NULL,$epochdate);
+
+  REPLACE INTO access $COLUMNS VALUES('kTCCServiceAppleEvents','/usr/bin/osascript',1,1,1,NULL,NULL,0,'com.apple.finder',NULL,NULL,$epochdate);
+  REPLACE INTO access $COLUMNS VALUES('kTCCServiceAppleEvents','/usr/bin/osascript',1,1,1,NULL,NULL,0,'com.google.Chrome',NULL,NULL,$epochdate);
+  REPLACE INTO access $COLUMNS VALUES('kTCCServiceAppleEvents','/usr/bin/osascript',1,1,1,NULL,NULL,0,'com.apple.systemevents',NULL,NULL,$epochdate);
+EOF
+
+COLUMNS="(service, client, client_type, allowed, prompt_count, csreq, policy_id, indirect_object_identifier_type, indirect_object_identifier, indirect_object_code_identity, flags, last_modified)"
+
+# System permissions
+cat << EOF | sudo sqlite3 "/Library/Application Support/com.apple.TCC/TCC.db"
+  REPLACE INTO access $COLUMNS VALUES('kTCCServiceAccessibility','com.apple.systemevents',0,1,1,NULL,NULL,NULL,'UNUSED',NULL,0,$epochdate);
+  REPLACE INTO access $COLUMNS VALUES('kTCCServiceDeveloperTool','com.apple.Terminal',0,1,1,NULL,NULL,NULL,'UNUSED',NULL,0,$epochdate);
+  REPLACE INTO access $COLUMNS VALUES('kTCCServiceAccessibility','org.hammerspoon.Hammerspoon',0,1,1,NULL,NULL,NULL,'UNUSED',NULL,0,$epochdate);
+  REPLACE INTO access $COLUMNS VALUES('kTCCServiceAccessibility','com.apple.Terminal',0,1,1,NULL,NULL,NULL,'UNUSED',NULL,0,$epochdate);
+  REPLACE INTO access $COLUMNS VALUES('kTCCServiceAccessibility','com.google.Chrome',0,1,1,NULL,NULL,NULL,'UNUSED',NULL,0,$epochdate);
+
+  REPLACE INTO access $COLUMNS VALUES('kTCCServicePostEvent','com.apple.systemevents',0,1,1,NULL,NULL,NULL,'UNUSED',NULL,0,$epochdate);
+  REPLACE INTO access $COLUMNS VALUES('kTCCServicePostEvent','com.google.Chrome',0,1,1,NULL,NULL,NULL,'UNUSED',NULL,0,$epochdate);
+  REPLACE INTO access $COLUMNS VALUES('kTCCServicePostEvent','org.hammerspoon.Hammerspoon',0,1,1,NULL,NULL,NULL,'UNUSED',NULL,0,$epochdate);
+EOF

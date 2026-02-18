@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+set -e
+
+CONFIG_DIR="$HOME/.hammerspoon"
+
+function bootstrap_init_lua() {
+  local init_file="$CONFIG_DIR/init.lua"
+
+  touch $init_file
+
+  echo "Patching $init_file with Vim init code"
+
+  cat << EOF | tee -a "$init_file" > /dev/null
+local VimMode = dofile("$HOME/project/init.lua")
+local vim = VimMode:new()
+
+vim:disableForApp('Terminal')
+vim:shouldDimScreenInNormalMode(false)
+vim:shouldShowAlertInNormalMode(true)
+vim:enterWithSequence('jk')
+EOF
+}
+
+echo "Setting up Hammerspoon config directory..."
+echo
+mkdir -p $CONFIG_DIR
+
+bootstrap_init_lua
