@@ -1,12 +1,17 @@
 language: python
-
+os: osx
 sudo: false
+addons:
+  chrome: beta
 
 env:
   matrix:
     - LUA="lua 5.4"
 
 before_install:
+  - brew install chromedriver
+  - brew cask install hammerspoon
+  - bundle install
   - pip install hererocks
   - hererocks here -r^ --$LUA # Install latest LuaRocks version
                               # plus the Lua version for this build job
@@ -20,6 +25,7 @@ install:
 
 script:
   - busted -c
+  - bundle exec rspec spec
 
 after_success:
   - luacov-coveralls -v
@@ -28,4 +34,5 @@ notifications:
   email:
     on_success: change
     on_failure: always
+
 
