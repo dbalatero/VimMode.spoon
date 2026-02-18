@@ -2,8 +2,9 @@ local numberUtils = dofile(vimModeScriptPath .. "lib/utils/number_utils.lua")
 
 local CommandState = {}
 
-function CommandState:new()
+function CommandState:new(lastInlineSearch)
   local state = {
+    lastInlineSearch = lastInlineSearch,
     charsEntered = "",
     motion = nil,
     motionTimes = nil,
@@ -16,6 +17,12 @@ function CommandState:new()
   self.__index = self
 
   return state
+end
+
+function CommandState:saveLastInlineSearch(lastInlineSearch)
+  self.lastInlineSearch = lastInlineSearch
+
+  return self
 end
 
 function CommandState:getCharsEntered()

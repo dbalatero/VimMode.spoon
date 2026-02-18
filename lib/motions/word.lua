@@ -21,7 +21,8 @@ local isPrintableChar = stringUtils.isPrintableChar
 --
 
 -- TODO handle more edge cases for :help word
-function Word.getRange(_, buffer, operator)
+function Word.getRange(_, buffer, opts)
+  local operator = opts and opts.operator or nil
   local start = buffer:getCaretPosition()
 
   local range = {

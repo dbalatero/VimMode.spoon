@@ -161,7 +161,9 @@ function VimMode:setPendingInput(value)
 end
 
 function VimMode:resetCommandState()
-  self.commandState = CommandState:new()
+  local lastInlineSearch =
+    self.commandState and self.commandState.lastInlineSearch or nil
+  self.commandState = CommandState:new(lastInlineSearch)
 end
 
 function VimMode:enterOperator(operator)
