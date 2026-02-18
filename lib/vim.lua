@@ -291,6 +291,8 @@ end
 
 function VimMode:useFallbackMode(appName)
   self.config.fallbackOnlyApps[appName] = true
+
+  return self
 end
 
 -- If we try to exit from the ContextualModal synchronously, we end
